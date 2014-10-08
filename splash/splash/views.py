@@ -16,8 +16,8 @@ def new_program(request):
 
 def load_program(request, program_code):
 	#Check if program_code exists
-	if (gateway.is_exist(program_code)):
-		if (gateway.is_private(program_code)):
+	if (gateway.program_is_exist(program_code)):
+		if (gateway.program_is_private(program_code)):
 			#Check if authorized and program owner == user. if yes, return page. else, redirect to main page with unauthorized msg
 			return render(request, 'program.html', {"url_sub_folder": program_code, "request": request})
 		else:
@@ -44,6 +44,6 @@ def generate_new_page(request, generate_page_args):
 
 def generate_program_code():
 	new_code = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(5))
-	while (gateway.is_exist(new_code)):
+	while (gateway.program_is_exist(new_code)):
 		new_code = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(5))
 	return new_code

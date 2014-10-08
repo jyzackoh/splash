@@ -7,7 +7,7 @@ def add_new_program(program_code, permission, owner):
 def update_program(program_code, serialized_program):
 	pass
 
-def is_exist(program_code):
+def program_is_exist(program_code):
 	program_obj = None
 	try:
 		program_obj = Programs.objects.get(program_code=program_code)
@@ -19,8 +19,8 @@ def is_exist(program_code):
 	else:
 		return True
 
-def is_private(program_code):
-	if (is_exist(program_code)):
+def program_is_private(program_code):
+	if (program_is_exist(program_code)):
 		program_obj = Programs.objects.get(program_code=program_code)
 		if (program_obj.permission == 'PR'):
 			return True
