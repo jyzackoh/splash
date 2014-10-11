@@ -13,4 +13,6 @@ urlpatterns = patterns('',
     url(r'^([0-9a-zA-Z]{5})/$', load_program),
     url(r'^([0-9a-zA-Z]{0,9999})/$', not_found_page),
     url(r'^admin/', include(admin.site.urls)),
+
+    url(r'^oauth2callback', auth_return)
 )

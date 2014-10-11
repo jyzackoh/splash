@@ -9,3 +9,7 @@ class Programs(models.Model):
 	serialized_program = models.TextField()
 	permission = models.CharField(max_length=2, choices=PERMISSIONS, default='PU')
 	owner = models.CharField(max_length=255)
+
+class CredentialsModel(models.Model):
+	id = models.ForeignKey(User, primary_key=True)
+	credential = CredentialsField()
