@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-from splash.views import index, new_program, load_program, not_found_page
+from splash.views import index, new_program, load_program, not_found_page, auth_return
 from django.contrib import admin
 admin.autodiscover()
 

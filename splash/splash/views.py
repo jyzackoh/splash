@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 import splash.gateway as gateway
-import random, string
+import random, string, os
+from . import settings
+from django.http import HttpResponseRedirect
 
 import httplib2
 from splash.models import CredentialsModel
@@ -63,31 +65,33 @@ def generate_program_code():
 
 CLIENT_SECRETS = os.path.join(os.path.dirname(__file__), '..', 'client_secrets.json')
 
+print(CLIENT_SECRETS)
+
 FLOW = flow_from_clientsecrets(
-    CLIENT_SECRETS,
-    scope='https://www.googleapis.com/auth/plus.me',
-    redirect_uri='http://localhost:8000/oauth2callback')
+	CLIENT_SECRETS,
+	scope='https://www.googleapis.com/auth/plus.me',
+	redirect_uri='http://localhost:8000/oauth2callback')
 
 def index(request):
-	storage = Storage(CredentialsModel, 'id', request.user, 'credential')
+	storage = Storage(CredentialsModel, 'id', request.user.id, 'credential')
 	credential = storage.get()
 
 	if credential is None or credential.invalid == True:
 		# IMPORTANT settings.SECRETKEY?!?!
-		FLOW.params['state'] = xsrfutil.generate_token(settings.SECRET_KEY, request.user)
+		FLOW.params['state'] = xsrfutil.generate_token(settings.SECRET_KEY, request.user.id)
 		authorize_url = FLOW.step1_get_authorize_url()
 		return HttpResponseRedirect(authorize_url)
 	else:
 		# To authorize any http requests with credentials. We might not need this as we only need authentication!
 		http = httplib2.Http()
-    	http = credential.authorize(http)
+		http = credential.authorize(http)
 		return render(request, 'index.html', {})
 
 def auth_return(request):
-	if not xsrfutil.validate_token(settings.SECRET_KEY, request.REQUEST['state'], request.user):
+	if not xsrfutil.validate_token(settings.SECRET_KEY, request.REQUEST['state'], request.user.id):
 		return  HttpResponseBadRequest()
 
 	credential = FLOW.step2_exchange(request.REQUEST)
-	storage = Storage(CredentialsModel, 'id', request.user, 'credential')
+	storage = Storage(CredentialsModel, 'id', request.user.id, 'credential')
 	storage.put(credential)
 	return HttpResponseRedirect("/")
