@@ -91,7 +91,17 @@ def auth_return(request):
 	if not xsrfutil.validate_token(settings.SECRET_KEY, request.REQUEST['state'], request.user.id):
 		return  HttpResponseBadRequest()
 
-	credential = FLOW.step2_exchange(request.REQUEST)
-	storage = Storage(CredentialsModel, 'id', request.user.id, 'credential')
-	storage.put(credential)
-	return HttpResponseRedirect("/")
+	if 'error' in request.REQUEST:
+		return HttpResponseRedirect("/")
+
+	#We don't even want to store the user's stuff. Just need their Email. So we get the credential and just apply it to current session.
+	#Current settings only work for localhost version.
+	credential = FLOW.step2_exchange(request.REQUEST['code'])
+
+	#storage = Storage(CredentialsModel, 'id', request.user.id, 'credential')
+	#storage.put(credential)
+	#return HttpResponseRedirect("/")
+
+	http = httplib2.Http()
+	http = credential.authorize(http)
+	return render(request, 'index.html', {})
