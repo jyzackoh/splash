@@ -1,8 +1,8 @@
 from splash.models import Programs
 
 def add_new_program(program_code, permission, owner):
+	#print(owner)
 	Programs.objects.create(program_code=program_code, serialized_program="", permission=permission, owner=owner)
-	pass
 
 def update_program(program_code, serialized_program):
 	pass
@@ -26,3 +26,16 @@ def program_is_private(program_code):
 			return True
 	else:
 		return False
+
+def get_owner(program_code):
+	try:
+		program_obj = Programs.objects.get(program_code=program_code)
+	except Programs.DoesNotExist:
+		program_obj = None
+
+	print(str(program_obj.owner))
+
+	if (program_obj):
+		return program_obj.owner
+	else:
+		return None
