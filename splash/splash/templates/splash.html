@@ -13,7 +13,7 @@
                 <li><a href="/new_program/PR">
                     <span class="glyphicon glyphicon-file"></span> New
                 </a></li>
-                <li><a href="#">
+                <li><a href="/save/{{ program_code }}">
                     <span class="glyphicon glyphicon-save"></span> Save
                 </a></li>
                 <li class="dropdown">
@@ -21,9 +21,9 @@
                         <span class="glyphicon glyphicon-eye-open"></span> Visibility <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a href="#">Private</a></li>
+                        <li><a href="/toggle_permissions/{{ program_code }}/PR">Private</a></li>
                         <li class="divider"></li>
-                        <li><a href="#">Public</a></li>
+                        <li><a href="/toggle_permissions/{{ program_code }}/PU">Public</a></li>
                     </ul>
                 </li>
             </ul>

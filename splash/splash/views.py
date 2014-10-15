@@ -9,9 +9,13 @@ def new_program(request, permission):
 def load_program(request, program_code):
 	return utils.get_loaded_program(request, program_code)
 
-def save_program(request):
-	#read POST request and store it in the respective model
-	pass
+def toggle_permissions(request, program_code, permission):
+	print("TOGGLING " + str(program_code) + " to " + str(permission) + "!")
+	return redirect("/"+program_code)
+
+def save_program(request, program_code):
+	print("SAVING " + str(program_code) + "!")
+	return redirect("/"+program_code)
 
 def not_found_page(request, program_code):
 	return render(request, 'not_found.html', {"program_code": program_code})

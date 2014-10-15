@@ -38,11 +38,11 @@ def get_loaded_program(request, program_code):
 	if (gateway.program_is_exist(program_code)):
 		if (gateway.program_is_private(program_code)):
 			if (gateway.get_owner(program_code)==owner):
-				return render(request, 'splash.html', {"privacy_status": 'private'})
+				return render(request, 'splash.html', {"privacy_status": 'private', "program_code": program_code})
 			else:
 				return render(request, 'unauthorized.html', {"program_code":program_code})
 		else:
-			return render(request, 'splash.html', {"privacy_status": 'public'})
+			return render(request, 'splash.html', {"privacy_status": 'public', "program_code": program_code})
 
 	generate_page_args = create_page_args(program_code, 'PR', owner)
 	return generate_new_page(request, generate_page_args)
