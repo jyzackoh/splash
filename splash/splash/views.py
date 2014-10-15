@@ -1,77 +1,64 @@
 from django.shortcuts import render, redirect
-import splash.gateway as gateway
-import random, string, os
-from . import settings
 from django.http import HttpResponseRedirect
+from . import settings
 
-import httplib2, urllib2
 from splash.models import CredentialsModel
 from oauth2client import xsrfutil
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.django_orm import Storage
 from apiclient.discovery import build
 
+import splash.gateway as gateway
+import splash.utils as utils
+import httplib2, urllib2, random, string, os
+
+CLIENT_SECRETS = os.path.join(os.path.dirname(__file__), '..', 'client_secrets.json')
+
+FLOW = flow_from_clientsecrets(
+	CLIENT_SECRETS,
+	scope=['https://www.googleapis.com/auth/plus.profile.emails.read', 'profile'],
+	redirect_uri='http://localhost:8000/oauth2callback')
+
 def new_program(request, permission):
+	owner = utils.get_google_id_string(request)
+
 	if (permission != 'PU' and permission != 'PR'):
 		return redirect('/')
-	generate_page_args = {
-		'program_code': generate_program_code(),
-		'permission': permission,
-		'owner': ''
-	}
+
+	program_code = utils.generate_program_code()
+	generate_page_args = utils.create_page_args(program_code, permission, owner)
+
 	return generate_new_page(request, generate_page_args)
 
 
 def load_program(request, program_code):
+	owner = utils.get_google_id_string(request)
+
 	#Check if program_code exists
 	if (gateway.program_is_exist(program_code)):
 		if (gateway.program_is_private(program_code)):
-			#Check if authorized and program owner == user. if yes, return page. else, redirect to main page with unauthorized msg
-			return render(request, 'program.html', {"url_sub_folder": program_code + 'is private', "request": request})
+			if (gateway.get_owner(program_code)==owner):
+				return render(request, 'splash.html', {"privacy_status": 'private'})
+			else:
+				return render(request, 'unauthorized.html', {"program_code":program_code})
 		else:
-			return render(request, 'program.html', {"url_sub_folder": program_code})
-	else:
-		generate_page_args = {
-			'program_code': program_code,
-			'permission': 'PR',
-			'owner': ''
-		}
-		return generate_new_page(request, generate_page_args)
+			return render(request, 'splash.html', {"privacy_status": 'public'})
 
+	generate_page_args = utils.create_page_args(program_code, 'PR', owner)
+	return generate_new_page(request, generate_page_args)
+
+def save_program(request):
+	#read POST request and store it in the respective model
+	pass
 
 def not_found_page(request, program_code):
 	return render(request, 'not_found.html', {"program_code": program_code})
-
 
 def generate_new_page(request, generate_page_args):
 	#Generate a new program object
 	gateway.add_new_program(generate_page_args['program_code'], generate_page_args['permission'], generate_page_args['owner'])
 	#Tie this new program_code to user and empty string
 	return redirect('/'+generate_page_args['program_code'])
-
-
-def generate_program_code():
-	new_code = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(5))
-	while (gateway.program_is_exist(new_code)):
-		new_code = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(5))
-	return new_code
-
-# The key is held in a CREDENTIALS object
-# All the steps needed to go through getting CREDENTIALS is in a FLOW object
-# Since keys can change over time, a STORAGE object is used for storing and retriving keys
-# Set up and run a FLOW to get CREDENTIALS to keep in STORAGE
-# Access STORAGE for the key when needed
-
-
-
-CLIENT_SECRETS = os.path.join(os.path.dirname(__file__), '..', 'client_secrets.json')
-
-print(CLIENT_SECRETS)
-
-FLOW = flow_from_clientsecrets(
-	CLIENT_SECRETS,
-	scope=['https://www.googleapis.com/auth/plus.profile.emails.read', 'profile'],
-	redirect_uri='http://localhost:8000/oauth2callback')
 
 def index(request):
 	google_id = None
@@ -110,6 +97,7 @@ def auth_return(request):
 		serviceName='oauth2', version='v2',
 		http=http)
 	user_info = None
+	
 	try:
 		user_info = user_info_service.userinfo().get().execute()
 	except:
