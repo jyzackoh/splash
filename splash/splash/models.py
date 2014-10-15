@@ -13,5 +13,5 @@ class Programs(models.Model):
 	owner = models.CharField(max_length=255)
 
 class CredentialsModel(models.Model):
-	id = models.ForeignKey(User, primary_key=True)
+	id = models.TextField(primary_key=True)
 	credential = CredentialsField()

@@ -4,11 +4,12 @@ import random, string, os
 from . import settings
 from django.http import HttpResponseRedirect
 
-import httplib2
+import httplib2, urllib2
 from splash.models import CredentialsModel
 from oauth2client import xsrfutil
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.django_orm import Storage
+from apiclient.discovery import build
 
 def new_program(request, permission):
 	if (permission != 'PU' and permission != 'PR'):
@@ -69,12 +70,16 @@ print(CLIENT_SECRETS)
 
 FLOW = flow_from_clientsecrets(
 	CLIENT_SECRETS,
-	scope='https://www.googleapis.com/auth/plus.me',
+	scope=['https://www.googleapis.com/auth/plus.profile.emails.read', 'profile'],
 	redirect_uri='http://localhost:8000/oauth2callback')
 
 def index(request):
-	storage = Storage(CredentialsModel, 'id', request.user.id, 'credential')
-	credential = storage.get()
+	google_id = None
+	credential = None
+	if request.session.get('google_id', False):
+		google_id = str(request.session.get('google_id'))
+		storage = Storage(CredentialsModel, 'id', google_id, 'credential')
+		credential = storage.get()
 
 	if credential is None or credential.invalid == True:
 		# IMPORTANT settings.SECRETKEY?!?!
@@ -97,11 +102,23 @@ def auth_return(request):
 	#We don't even want to store the user's stuff. Just need their Email. So we get the credential and just apply it to current session.
 	#Current settings only work for localhost version.
 	credential = FLOW.step2_exchange(request.REQUEST['code'])
-
-	#storage = Storage(CredentialsModel, 'id', request.user.id, 'credential')
-	#storage.put(credential)
-	#return HttpResponseRedirect("/")
-
+	
 	http = httplib2.Http()
 	http = credential.authorize(http)
-	return render(request, 'index.html', {})
+
+	user_info_service = build(
+		serviceName='oauth2', version='v2',
+		http=http)
+	user_info = None
+	try:
+		user_info = user_info_service.userinfo().get().execute()
+	except:
+		logging.error('An error occurred: %s', e)
+
+	if (user_info and user_info.get('id')):
+		##We can now use this user id to check whether the page can be rendered/store it in a cookie.
+		request.session['google_id'] = str(user_info.get('id'))
+		storage = Storage(CredentialsModel, 'id', str(request.session['google_id']), 'credential')
+		storage.put(credential)
+	
+	return HttpResponseRedirect("/")
