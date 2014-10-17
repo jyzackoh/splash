@@ -1,0 +1,27 @@
+.block {
+	border: 2px solid;
+	padding: 5px;
+	border-radius: 5px;
+	display: inline-block; /* to make parent wrap child for nesting*/
+	margin-top: 5px; /* for positioning when nesting*/
+}
+
+.block-signature {
+    position: relative;
+    overflow: auto;
+}
+
+.block-name {
+	float:left;
+	margin-top: 3px; /*manually pushing block name down to align with inputs :(*/
+	margin-right: 5px;
+}
+
+.block-args {
+	margin: 0;
+	float: right;
+}
+
+.block-arg {
+	width: 30px;
+}
