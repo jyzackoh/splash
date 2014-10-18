@@ -4,6 +4,8 @@
 	border-radius: 5px;
 	display: inline-block; /* to make parent wrap child for nesting*/
 	background: #FFF;
+	position: relative;
+	min-width: 180px;
 }
 
 .block-signature {
@@ -32,10 +34,11 @@
 
 .chain-snap-area {
 	height: 40px;
-	width: 100%;
+	min-width: 180px;
 	background: default;
 	border-radius: 5px;
 	background: #DDD;
+	position: absolute;
 }
 
 .drag-hover {
@@ -46,6 +49,14 @@
 	display: inline-block;
 	margin: none;
 	padding: none;
+}
+
+.canvas {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	left: 100px;
+	top: 100px;
 }
 
 body {

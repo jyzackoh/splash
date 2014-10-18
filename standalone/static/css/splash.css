@@ -1,3 +1,11 @@
+.splashStudio .container {
+	width: 100%;
+}
+
+.splashStudio .row {
+	margin-top: 60px;
+}
+
 .signIn{
     width: 150px;
     text-align: left;
@@ -16,7 +24,6 @@
 }
 
 .stage {
-	margin-top: 55px;
 	margin-bottom: 10px;
 	min-height: 53%;
 	/*background: #AEF5D8;*/
@@ -72,7 +79,6 @@
 }
 
 .palette {
-	margin-top: 55px;
 	min-height: 87.5%;
 	background: #A8A8A8;
 }
@@ -95,9 +101,9 @@
 }
 
 .canvas {
-	margin-top: 55px;
 	min-height: 87.5%;
-	background: #F5F4AE;
+	/*background: #F5F4AE;*/
+	background: lightgrey;
 	
 }
 
