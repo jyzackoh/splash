@@ -36,6 +36,13 @@ splash.Util = {
 		} else {
 			throw new Error('Only class definitions can inherit other class definitions.');
 		}
+	},
+	parseParameters: function(that, parameters) {
+		if(_.isPlainObject(parameters)) {
+			for(var i in parameters) {
+				that[i] = parameters[i];
+			}
+		}
 	}
 };
 
@@ -133,84 +140,6 @@ splash.BlockLink.prototype.render = function() {
     return htmlElement;
 }
 
-splash.Block = function(parameters) {
-	this.nextBlockLink = new splash.BlockLink(this);
-	this.parentLink = undefined;
-	this.args = {};
-	this.htmlElement = this.render();
-
-	if(_.isPlainObject(parameters)) {
-		for(var i in parameters) {
-			this[i] = parameters[i];
-		}
-	}
-}
-
-splash.Block.prototype.name = "Block";
-splash.Block.prototype.expectedArgsCount = 0;
-splash.Block.prototype.postExecutionDelay = 0;
-splash.Block.prototype.codeSnippet = function() {};
-splash.Block.prototype.render = function() {
-    var htmlElement = $('<div class="chain"><div class="block"><div class="block-signature"><div class="block-name">Block Name</div><div class="block-args"><input class="block-arg" placeholder="arg1" maxlength="3"><span>and</span><input class="block-arg" placeholder="arg2" maxlength="3"></div></div><div class="sub-blocks"><!-- nested blocks here --></div></div></div>')
-    .draggable({
-        helper: _.partial(splash.Renderer.blockDragHelper, this),
-        appendTo: "body"
-    });
-    return htmlElement;
-};
-// Sub-classes should not overwrite the following functions (i.e. "final methods")
-splash.Block.prototype.setnextBlockLink = function(nextBlockLink) {
-	this.nextBlockLink.child = nextBlockLink;
-	nextBlockLink.parentLink = this.nextBlockLink; // the blocklink
-}
-splash.Block.prototype.getnextBlockLink = function() {
-	return this.nextBlockLink.child;
-}
-
-splash.Sprite = function(parameters) {
-	this.firstLevelBlocks = [];
-
-	if(_.isPlainObject(parameters)) {
-		for(var i in parameters) {
-			this[i] = parameters[i];
-		}
-	}
-}
-
-splash.Block.prototype.addFirstLevelBlock = function(block) {
-	this.firstLevelBlocks.push(block);
-}
-splash.Block.prototype.removeFirstLevelBlock = function(block) {
-	for(var i = 0; i < firstLevelBlocks.length; i++) {
-		if(this.firstLevelBlocks[i] == block) {
-			this.firstLevelBlocks.splice(i, 1);
-			return true;
-		}
-	}
-	return false;
-}
-
-var abc1 = new splash.Block({
-	name: "abc1",
-	codeSnippet: function() {
-		console.log("hi1");
-	}
-});
-var abc2 = new splash.Block({
-	name: "abc2",
-	codeSnippet: function() {
-		console.log("hi2");
-	}
-});
-var abc3 = new splash.Block({
-    name: "abc3",
-    codeSnippet: function() {
-        console.log("hi3");
-    }
-});
-
-abc1.setnextBlockLink(abc2);
-abc2.setnextBlockLink(abc3);
 
 $(function() {
 	splash.Interpreter.executeBlockChain(abc1);
@@ -228,5 +157,6 @@ splash.ChildBlock.prototype = inherit(splash.Block.prototype);
 
 //*/
 </script>
+<script src="/static/js/splash.js"></script>
 
 <body></body>
