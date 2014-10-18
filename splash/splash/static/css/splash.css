@@ -1,3 +1,7 @@
+.splashStudio .container {
+	width: 100%;
+}
+
 .signIn{
     width: 150px;
     text-align: left;
@@ -97,7 +101,8 @@
 .canvas {
 	margin-top: 55px;
 	min-height: 87.5%;
-	background: #F5F4AE;
+	/*background: #F5F4AE;*/
+	background: lightgrey;
 	
 }
 
