@@ -1,0 +1,65 @@
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css">
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="jquery-ui-modified.js"></script>
+<style>
+	body {
+		margin: 0px;
+	}
+	.block {
+		background: #ccc;
+		width: 100px;
+		top: 100px;
+		left: 500px;
+		position: absolute;
+	}
+	.ddrop {
+		background: #999;
+		width: 400px;
+		height: 400px;
+		top: 100px;
+		position: absolute;
+	}
+</style>
+<script>
+$(function() {
+	$(".block").draggable({
+		helper: function() {
+			console.log(this);
+			return this;
+		}
+	});
+
+
+	$(".ddrop").droppable({
+		drop: function( event, ui ) {
+			console.log(ui.draggable.attr("data-isTemplate"));
+			var thisElement = $(this);
+			var objectToMove;
+
+			if(ui.draggable.attr("data-isTemplate") == "true") {
+				objectToMove = ui.draggable.clone();
+				objectToMove.attr("data-isTemplate", "false");
+				objectToMove.appendTo( thisElement );
+			}
+			else {
+				objectToMove = ui.draggable;
+			}
+
+			objectToMove.css({
+				left: ui.offset.left - thisElement.position().left,
+				top: ui.offset.top - thisElement.position().top,
+				position: "absolute"
+			});
+		}
+	});
+
+
+});
+</script>
+
+<body>
+<div class="block" data-isTemplate="true">Hello</div>
+
+<div class="ddrop">Drop here.</div>
+
+</body>

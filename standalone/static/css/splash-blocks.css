@@ -1,0 +1,53 @@
+.block {
+	border: 2px solid;
+	padding: 5px;
+	border-radius: 5px;
+	display: inline-block; /* to make parent wrap child for nesting*/
+	background: #FFF;
+}
+
+.block-signature {
+    position: relative;
+    overflow: auto;
+}
+
+.block-name {
+	float:left;
+	margin-top: 3px; /*manually pushing block name down to align with inputs :(*/
+	margin-right: 5px;
+}
+
+.block-args {
+	margin: 0;
+	float: right;
+}
+
+.block-arg {
+	width: 30px;
+}
+
+.sub-blocks {
+	/* padding-top: 5px; */
+}
+
+.chain-snap-area {
+	height: 40px;
+	width: 100%;
+	background: default;
+	border-radius: 5px;
+	background: #DDD;
+}
+
+.drag-hover {
+	background: #FFFFBF;
+}
+
+.chain {
+	display: inline-block;
+	margin: none;
+	padding: none;
+}
+
+body {
+	position: relative;
+}
