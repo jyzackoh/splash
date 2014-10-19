@@ -2,9 +2,39 @@ var splash = splash || {};
 
 
 splash.Obj = function Obj(parameters) {
+	this.serializeId = 0;
 	splash.Util.parseParameters(this, parameters);
 }
-splash.Obj.prototype.serialize = function() {};
+
+splash.Obj.prototype.serialize = function() {
+	var returnedCollection = {};
+  _.forEach(this, function(value, key) {
+
+    if (value instanceof Array) {
+    	returnedCollection[key] = [];
+      for(index in value) {
+      	if (typeof value[index] === 'object') {
+      		// BEWARE! Needs fixing An arr within an arr cannot be serialized!
+      		returnedCollection[key].push(value[index].serialize());
+      	} else {
+      		returnedCollection[key].push(value[index]);
+      	}
+      }
+
+    } else if (value instanceof splash.Obj) {
+    	returnedCollection[key] = {
+    		value.constructor.name : value.serialize();
+    	};
+    
+    } else {
+    	returnedCollection[key] = value;
+    
+    }
+  });
+ 
+  return returnedCollection;
+};
+
 splash.Obj.prototype.deserialize = function() {};
 
 splash.BlockLink = function BlockLink(parent, child, parameters) {
