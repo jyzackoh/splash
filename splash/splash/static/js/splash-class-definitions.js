@@ -1,13 +1,13 @@
 var splash = splash || {};
 
 
-splash.Obj = function(parameters) {
+splash.Obj = function Obj(parameters) {
 	splash.Util.parseParameters(this, parameters);
 }
 splash.Obj.prototype.serialize = function() {};
 splash.Obj.prototype.deserialize = function() {};
 
-splash.BlockLink = function(parent, child, parameters) {
+splash.BlockLink = function BlockLink(parent, child, parameters) {
 	splash.Obj.call(this);
 	
 	this.parent = parent; // this should _not_ change as each blocklink is tied permanently to a link (only child should change)
@@ -27,7 +27,7 @@ splash.BlockLink.prototype.render = function() {
     return htmlElement;
 }
 
-splash.Block = function(parameters) {
+splash.Block = function Block(parameters) {
 	splash.Obj.call(this);
 
 	this.nextBlockLink = new splash.BlockLink(this);
@@ -83,7 +83,7 @@ splash.Block.prototype.removeParentLink = function() {
 }
 
 //Set X Block
-splash.SetXBlock = function(parameters) {
+splash.SetXBlock = function SetXBlock(parameters) {
 	splash.Block.call(this);
 	splash.Util.parseParameters(this, parameters);
 }
@@ -97,7 +97,7 @@ splash.SetXBlock.prototype.codeSnippet = function() {
 
 
 //Set Y Block
-splash.SetYBlock = function(parameters) {
+splash.SetYBlock = function SetYBlock(parameters) {
 	splash.Block.call(this);
 	splash.Util.parseParameters(this, parameters);
 }
@@ -110,7 +110,7 @@ splash.SetYBlock.prototype.codeSnippet = function() {
 };
 
 //Show Block
-splash.ShowBlock = function(parameters) {
+splash.ShowBlock = function ShowBlock(parameters) {
 	splash.Block.call(this);
 	splash.Util.parseParameters(this, parameters);
 }
@@ -123,7 +123,7 @@ splash.ShowBlock.prototype.codeSnippet = function() {
 
 
 //Hide Block
-splash.HideBlock = function(parameters) {
+splash.HideBlock = function HideBlock(parameters) {
 	splash.Block.call(this);
 	splash.Util.parseParameters(this, parameters);
 }
@@ -137,7 +137,7 @@ splash.HideBlock.prototype.codeSnippet = function() {
 
 
 //Move X Block
-splash.MoveXBlock = function(parameters) {
+splash.MoveXBlock = function MoveXBlock(parameters) {
 	splash.Block.call(this);
 	splash.Util.parseParameters(this, parameters);
 }
@@ -152,7 +152,7 @@ splash.MoveXBlock.prototype.codeSnippet = function() {
 
 
 //Move Y Block
-splash.MoveYBlock = function(parameters) {
+splash.MoveYBlock = function MoveYBlock(parameters) {
 	splash.Block.call(this);
 	splash.Util.parseParameters(this, parameters);
 }
@@ -165,7 +165,7 @@ splash.MoveYBlock.prototype.codeSnippet = function() {
 };
 
 //Wait Block
-splash.WaitBlock = function(parameters) {
+splash.WaitBlock = function WaitBlock(parameters) {
 	splash.Block.call(this);
 	splash.Util.parseParameters(this, parameters);
 }
@@ -179,7 +179,7 @@ splash.WaitBlock.prototype.codeSnippet = function() {
 
 
 //Repeat Block
-splash.RepeatBlock = function(parameters) {
+splash.RepeatBlock = function RepeatBlock(parameters) {
 	splash.Block.call(this);
 	splash.Util.parseParameters(this, parameters);
 }
@@ -192,7 +192,7 @@ splash.RepeatBlock.prototype.codeSnippet = function() {
 };
 
 //Change Costume Block
-splash.ChangeCostumeBlock = function(parameters) {
+splash.ChangeCostumeBlock = function ChangeCostumeBlock(parameters) {
 	splash.Block.call(this);
 	splash.Util.parseParameters(this, parameters);
 }
@@ -205,7 +205,7 @@ splash.ChangeCostumeBlock.prototype.codeSnippet = function() {
 };
 
 //Change Background Block
-splash.ChangeBackgroundBlock = function(parameters) {
+splash.ChangeBackgroundBlock = function ChangeBackgroundBlock(parameters) {
 	splash.Block.call(this);
 	splash.Util.parseParameters(this, parameters);
 }
@@ -217,8 +217,7 @@ splash.ChangeBackgroundBlock.prototype.codeSnippet = function() {
 	this.args.sprite.isVisible = false;
 };
 
-
-splash.Sprite = function(parameters) {
+splash.Sprite = function Sprite(parameters) {
 	this.firstLevelBlocks = [];
 	this.x = 0;
 	this.y = 0;
