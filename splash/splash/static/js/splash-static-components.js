@@ -57,7 +57,7 @@ splash.SpriteManager = {
 	setCurrentSprite: function(sprite) {
 		this.currentSprite = sprite;
 	},
-	getCurrentSprite: function(sprite) {
+	getCurrentSprite: function() {
 		return this.currentSprite;
 	},
 	addSprite: function(sprite) {
