@@ -3,7 +3,45 @@
 	padding: 5px;
 	border-radius: 5px;
 	display: inline-block; /* to make parent wrap child for nesting*/
-	margin-top: 5px; /* for positioning when nesting*/
+	background: #FFF;
+	position: relative;
+	min-width: 180px;
+}
+
+.block-default {
+	background-color: none;
+}
+
+.block-crimson {
+	background-color: #dc143c;
+}
+
+.block-goldenrod {
+	background-color: #daa520;
+}
+
+.block-gold {
+	background-color: #fdd700;
+}
+
+.block-forestgreen {
+	background-color: #228b22;
+}
+
+.block-dodgerblue {
+	background-color: #1e90ff;
+}
+
+.block-midnightblue {
+	background-color: #191970;
+}
+
+.block-indigo {
+	background-color: #4b0082;
+}
+
+.block-plum {
+	background-color: #dda0dd;
 }
 
 .block-signature {
@@ -15,6 +53,13 @@
 	float:left;
 	margin-top: 3px; /*manually pushing block name down to align with inputs :(*/
 	margin-right: 5px;
+	color: white;
+	text-shadow: 	0px 0px 1px #000, 
+					0px 0px 1px #000, 
+					0px 0px 1px #000,
+					0px 0px 1px #000,
+					0px 0px 1px #000, 
+					0px 0px 1px #000;
 }
 
 .block-args {
@@ -24,4 +69,21 @@
 
 .block-arg {
 	width: 30px;
+}
+
+.sub-blocks {
+	/* padding-top: 5px; */
+}
+
+.chain-snap-area {
+	height: 40px;
+	min-width: 180px;
+	background: default;
+	border-radius: 5px;
+	background: #DDD;
+	position: absolute;
+}
+
+.drag-hover {
+	background: #FFFFBF;
 }
