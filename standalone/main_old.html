@@ -1,0 +1,158 @@
+
+<link rel="stylesheet" href="/static/css/jquery-ui.css">
+<link rel="stylesheet" href="/static/css/bootstrap.min.css">
+<link rel="stylesheet" href="/static/css/splash-blocks.css" rel="stylesheet" type="text/css">
+
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/jquery-ui.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/lodash.min.js"></script>
+
+<script>
+function d(what) {
+	$("#debug_div").append(
+		$("<p></p>").html(what)
+	);
+}
+
+var splash = splash || {};	
+
+
+
+splash.BlockLink = function(parent, child) {
+	this.parent = parent; // this should _not_ change as each blocklink is tied permanently to a link (only child should change)
+	this.child = child;
+	this.htmlElement = this.render();
+}
+splash.BlockLink.prototype.render = function() {
+	var htmlElement = $('<div class="chain-snap-area"></div>')
+		.droppable({
+			hoverClass: "drag-hover",
+			tolerance: "pointer",
+			drop: _.partial(splash.DragDropController.snapAreaDropHandler, this)
+		});
+    return htmlElement;
+}
+
+splash.Sprite = function(parameters) {
+	this.firstLevelBlocks = [];
+
+	if(_.isPlainObject(parameters)) {
+		for(var i in parameters) {
+			this[i] = parameters[i];
+		}
+	}
+}
+
+splash.Sprite.prototype.addFirstLevelBlock = function(block) {
+	this.firstLevelBlocks.push(block);
+}
+splash.Sprite.prototype.removeFirstLevelBlock = function(block) {
+	var index = this.firstLevelBlocks.indexOf(block);
+		if(index != -1)
+			this.firstLevelBlocks.splice(index, 1);
+}
+
+
+
+
+
+
+
+
+
+splash.Block = function(parameters) {
+	this.nextBlockLink = new splash.BlockLink(this);
+	this.parentLink = undefined;
+	this.args = {};
+
+	if(_.isPlainObject(parameters)) {
+		for(var i in parameters) {
+			this[i] = parameters[i];
+		}
+	}
+
+	this.htmlElement = this.render();
+}
+
+splash.Block.prototype.name = "Block";
+splash.Block.prototype.expectedArgsCount = 0;
+splash.Block.prototype.postExecutionDelay = 0;
+splash.Block.prototype.codeSnippet = function() {};
+splash.Block.prototype.render = function() {
+    var htmlElement = $('<div class="block-drag-area"><div class="block"><div class="block-signature"><div class="block-name">' + this.name +'</div><div class="block-args"><input class="block-arg" placeholder="arg1" maxlength="3"><span>and</span><input class="block-arg" placeholder="arg2" maxlength="3"></div></div><div class="sub-blocks"><!-- nested blocks here --></div></div></div>')
+    .draggable({
+    	start: _.partial(splash.DragDropController.unchainAndDrawDroppables, this),
+    	stop: _.partial(splash.DragDropController.cleanupAndClearDroppables, this)
+    });
+    return htmlElement;
+};
+// Sub-classes should not overwrite the following functions (i.e. "final methods")
+splash.Block.prototype.setNextBlockLink = function(nextBlock) {
+	this.nextBlockLink.child = nextBlock;
+	nextBlock.parentLink = this.nextBlockLink; // the blocklink
+}
+splash.Block.prototype.getNextBlockLink = function() {
+	return this.nextBlockLink.child;
+}
+splash.Block.prototype.removeParentLink = function() {
+	this.parentLink.child = undefined;
+	this.parentLink = undefined;
+}
+
+
+$(function() {
+	$("html").on("mousemove", function(event) {
+		$("#debug").html(
+			event.pageX + ", " + event.pageY + "<br>"
+		);
+	})
+
+	var newSprite = new splash.Sprite();
+	splash.SpriteManager.addSprite(newSprite);
+
+	splash.SpriteManager.setCurrentSprite(newSprite);
+	var abc1 = new splash.Block({
+		name: "abc1",
+		codeSnippet: function() {
+			console.log("hi1");
+		}
+	});
+	var abc2 = new splash.Block({
+		name: "abc2",
+		codeSnippet: function() {
+			console.log("hi2");
+		}
+	});
+	var abc3 = new splash.Block({
+	    name: "abc3",
+	    codeSnippet: function() {
+	        console.log("hi3");
+	    }
+	});
+	var abc4 = new splash.Block({
+	    name: "abc4",
+	    codeSnippet: function() {
+	        console.log("hi4");
+	    }
+	});
+
+	abc1.setNextBlockLink(abc2);
+	abc2.setNextBlockLink(abc3);
+
+	newSprite.addFirstLevelBlock(abc1);
+	newSprite.addFirstLevelBlock(abc4);
+
+	$(".canvas").append(splash.Renderer.renderBlockChain(abc1));
+	$(".canvas").append(splash.Renderer.renderBlockChain(abc4));
+
+	goo = function() {
+		splash.Interpreter.runAllStripeBlocks(newSprite);
+	}
+});
+
+
+</script>
+<div id="debug"></div>
+<button onclick="goo()">Run</button>
+<body><div class="canvas"></div></body>
