@@ -55,23 +55,44 @@ splash.SpriteManager = {
 	currentSprite: undefined,
 	spriteList: [],
 	setCurrentSprite: function(sprite) {
-		this.currentSprite = sprite;
+		splash.SpriteManager.currentSprite = sprite;
 	},
 	getCurrentSprite: function(sprite) {
-		return this.currentSprite;
+		return splash.SpriteManager.currentSprite;
 	},
 	addSprite: function(sprite) {
-		this.spriteList.push(sprite);
+		splash.SpriteManager.spriteList.push(sprite);
 	},
 	removeSprite: function(sprite) {
-		var index = this.spriteList.indexOf(sprite);
+		var index = splash.SpriteManager.spriteList.indexOf(sprite);
 		if(index != -1)
-			spriteList.splice(index, 1);
+			splash.SpriteManager.spriteList.splice(index, 1);
 	}
 };
 
 splash.BackgroundManager = {
-	setBackground: function() {}
+	currentBackground: undefined,
+	backgroundList: [],
+	setCurrentBackground: function(backgroundName) {
+		var that = splash.BackgroundManager;
+		for(var i in that.backgroundList) {
+			if(that.backgroundList[i].name == backgroundName) {
+				that.currentBackground = that.backgroundList[i];
+				$(".stageOutput").css({
+					"background-image": 'url("/static/images/' + that.currentBackground.url + '")'
+				});
+				break;
+			}
+		}
+	},
+	addBackground: function(background) {
+		splash.BackgroundManager.backgroundList.push(background);
+	},
+	removeBackground: function(background) {
+		var index = splash.BackgroundManager.backgroundList.indexOf(background);
+		if(index != -1)
+			splash.BackgroundManager.backgroundList.splice(index, 1);
+	}
 }
 
 splash.Renderer = {
@@ -231,3 +252,102 @@ splash.DragDropController = {
 		});
 	}
 };
+
+splash.Serializer = {
+	splashObjectList: [],
+	splashObjectSerializeId: 1,
+	serializeInitial: function(obj) {
+		var that = splash.Serializer;
+		that.splashObjectSerializeId = 1;
+		var returnObject = that.serialize(obj);
+		that.serializeCleanup();
+		return returnObject;
+	},
+	serialize: function(obj) {
+		var that = splash.Serializer;
+		var returnObject = {};
+
+		if(obj instanceof splash.Obj) {
+			if(obj.serializeId == 0) {
+				that.splashObjectList.push(obj);
+				returnObject = obj.serialize(that.splashObjectSerializeId++);
+			}
+			else {
+				returnObject.type = "splashObjectReference";
+				returnObject.serializeId = obj.serializeId;
+			}
+		}
+		else if(_.isPlainObject(obj)) {
+			var value = {};
+			for(var i in obj) {
+				value[i] = that.serialize(obj[i]);
+			}
+
+			returnObject.type = "plainObject";
+			returnObject.value = value;
+		}
+		else if(_.isArray(obj)) {
+			var value = [];
+			for(var i in obj) {
+				value.push(that.serialize(obj[i]));
+			}
+
+			returnObject.type = "array";
+			returnObject.value = value;
+		}
+		else {
+			returnObject.type = "primitive";
+			returnObject.value = obj;
+		}
+
+		return returnObject;
+	},
+	serializeCleanup: function() {
+		var that = splash.Serializer;
+		while(that.splashObjectList.length != 0) {
+			that.splashObjectList.pop().serializeId = 0;
+		}
+	},
+	deserializeInitial: function(obj) {
+		var that = splash.Serializer;
+		var returnObject = that.deserialize(obj);
+		that.deserializeCleanup();
+		return returnObject;
+	},
+	deserialize: function(obj) {
+		var that = splash.Serializer;
+		var returnObject;
+
+		if(obj.type == "splashObject") {
+			var value = splash[obj.class].prototype.deserialize(obj);
+
+			that.splashObjectList[obj.serializeId] = value;
+			return value;
+		}
+		else if(obj.type == "splashObjectReference") {
+			return that.splashObjectList[obj.value];
+		}
+		else if(obj.type == "plainObject") {
+			var value = {};
+			for(var i in obj) {
+				value[i] = that.deserialize(obj[i]);
+			}
+
+			return value;
+		}
+		else if(obj.type == "array") {
+			var value = [];
+			for(var i in obj.value) {
+				value.push(that.deserialize(obj.value[i]));
+			}
+
+			return value;
+		}
+		else { //obj.type == "primitive";
+			return obj.value;
+		}
+	},
+	deserializeCleanup: function(obj) {
+		splash.Serializer.splashObjectList = [];
+	}
+}

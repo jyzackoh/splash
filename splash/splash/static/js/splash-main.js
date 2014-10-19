@@ -1,4 +1,17 @@
 $(function() {
+
+	splash.BackgroundManager.addBackground(new splash.Background({
+		name: "beach",
+		url: "background_beach.png"
+	}));
+
+	splash.BackgroundManager.addBackground(new splash.Background({
+		name: "school",
+		url: "background_school.png"
+	}));
+
+	splash.BackgroundManager.setCurrentBackground("beach");
+
 	var newSprite = new splash.Sprite();
 	splash.SpriteManager.addSprite(newSprite);
 
@@ -37,6 +50,10 @@ $(function() {
 	$(".canvas").append(splash.Renderer.renderBlockChain(abc1));
 	$(".canvas").append(splash.Renderer.renderBlockChain(abc4));
 
+	var pppl = JSON.stringify(splash.Serializer.serializeInitial(newSprite));
+	console.log("TEST 2 START");
+	console.log(splash.Serializer.deserializeInitial(JSON.parse(pppl)));
+	console.log("TEST 2 END");
 
 	var MOVEMENT = "#movementPal";
 	var VISIBILITY = "#visibilityPal";

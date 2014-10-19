@@ -6,45 +6,49 @@ splash.Obj = function Obj(parameters) {
 	splash.Util.parseParameters(this, parameters);
 }
 
-splash.Obj.prototype.serialize = function() {
-	var returnedCollection = {};
-  _.forEach(this, function(value, key) {
+splash.Obj.prototype.serialize = function(splashObjectId) {
+	this.serializeId = splashObjectId;
 
-    if (value instanceof Array) {
-    	returnedCollection[key] = [];
-      for(index in value) {
-      	if (typeof value[index] === 'object') {
-      		// BEWARE! Needs fixing An arr within an arr cannot be serialized!
-      		returnedCollection[key].push(value[index].serialize());
-      	} else {
-      		returnedCollection[key].push(value[index]);
-      	}
-      }
+	//splash.Serializer.serialize()
+	var returnObject = {
+		type: "splashObject",
+		class: this.constructor.name,
+		serializeId: splashObjectId,
+		value: {}
+	};
 
-    } else if (value instanceof splash.Obj) {
-    	returnedCollection[key] = {
-    		value.constructor.name : value.serialize();
-    	};
-    
-    } else {
-    	returnedCollection[key] = value;
-    
-    }
-  });
- 
-  return returnedCollection;
+	_.forOwn(this, function(value, key) {
+		if(key == "htmlElement") return;
+
+		if(key == "serializeId")
+			return;
+		returnObject.value[key] = splash.Serializer.serialize(value);
+	});
+
+	return returnObject;
 };
 
-splash.Obj.prototype.deserialize = function() {};
+splash.Obj.prototype.deserialize = function(obj) {
+	var parameters = {};
 
-splash.BlockLink = function BlockLink(parent, child, parameters) {
+	for(var i in obj.value) {
+		parameters[i] = splash.Serializer.deserialize(obj.value[i]);
+	}
+
+	var returnObject = new splash[obj.class](parameters);
+
+	return returnObject;
+};
+
+splash.BlockLink = function BlockLink(parameters) {
 	splash.Obj.call(this);
 	
-	this.parent = parent; // this should _not_ change as each blocklink is tied permanently to a link (only child should change)
-	this.child = child;
-	this.htmlElement = this.render();
+	this.parent = undefined; // this should _not_ change after construction as each blocklink is tied permanently to a link (only child should change)
+	this.child = undefined;
 	
-	splash.Util.parseParameters(this, parameters); //currently ignored
+	splash.Util.parseParameters(this, parameters);
+
+	this.htmlElement = this.render();
 }
 splash.Util.inherits(splash.BlockLink, splash.Obj);
 splash.BlockLink.prototype.render = function() {
@@ -60,7 +64,7 @@ splash.BlockLink.prototype.render = function() {
 splash.Block = function Block(parameters) {
 	splash.Obj.call(this);
 
-	this.nextBlockLink = new splash.BlockLink(this);
+	this.nextBlockLink = new splash.BlockLink({parent: this});
 	this.parentLink = undefined;
 	this.args = [];
 	
@@ -264,3 +268,13 @@ splash.Sprite.prototype.removeFirstLevelBlock = function(block) {
 		if(index != -1)
 			this.firstLevelBlocks.splice(index, 1);
 }
+
+splash.Background = function Background(parameters) {
+	splash.Obj.call(this);
+	
+	this.name = "Default";
+	this.url = "background_default.png"
+	
+	splash.Util.parseParameters(this, parameters);
+}
+splash.Util.inherits(splash.Background, splash.Obj);
