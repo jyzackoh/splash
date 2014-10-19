@@ -425,9 +425,16 @@ splash.PageManager = {
 			location.replace("/new_program/");
 		});
 		$("#saveButton").on("click", function() {
+			splash.PageManager.showMessage("Saving...");
+
 			var saveData = JSON.stringify(splash.Serializer.serializeInitial(splash.SpriteManager.spriteList));
 			$.post("save/", saveData, function(reply) {
-				console.log(reply);
+				if(reply.success == "True") {
+					splash.PageManager.showMessage("Saved!", true);
+				}
+				else {
+					splash.PageManager.showMessage(reply.error, true);
+				}
 			}, "text");
 		});
 		$("#makePrivateButton").on("click", function() {
@@ -442,8 +449,48 @@ splash.PageManager = {
 		});
 	},
 	load: function() {
-		$.get("load/", "", function(reply) {
-			console.log(reply);
-		}, "text");
+		splash.PageManager.hideMessage();
+		try {
+			$.get("load/", "", function(reply) {
+				var loadedObj = splash.Serializer.deserializeInitial(JSON.parse(reply.data));
+				splash.SpriteManager.spriteList = loadedObj;
+				splash.SpriteManager.setCurrentSprite(splash.SpriteManager.spriteList[0]);
+
+				_forEach(splash.SpriteManager.getCurrentSprite().firstLevelBlocks, function(block) {
+					var htmlElement = splash.Renderer.renderBlockChain(block);
+					htmlElement.css({
+						top: block.positionInfo.top,
+						left: block.positionInfo.left
+					});
+					$(".canvas").append(htmlElement);
+				});
+
+				splash.PageManager.hideMessage();
+			}, "text");
+		}
+		catch(e) {
+			splash.PageManager.showMessage("An error occured while attempting to load the program.", true);
+		}
+	},
+	showMessage: function(msg, closeButton) {
+		$(".overlay span h3").html(msg);
+		$(".overlay span button").on("click", function() {
+			$(".overlay").hide();
+		});
+
+		if(closeButton) {
+			$(".overlay span button").on("click", function() {
+				$(".overlay").hide();
+			});
+			$(".overlay span button").show();
+		}
+		else {
+			$(".overlay span button").hide();
+		}
+
+		$(".overlay").show();
+	},
+	hideMessage: function() {
+		$(".overlay").hide();
 	}
 }

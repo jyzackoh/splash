@@ -124,3 +124,25 @@
 .sprite {
 	position: absolute;
 }
+
+.overlay {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	background: black;
+	opacity: 0.9;
+	z-index: 2000;
+	color: white;
+	display: table;
+}
+
+.overlay span {
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.overlay button {
+	background: white;
+	color: black;
+}
