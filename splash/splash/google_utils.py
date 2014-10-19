@@ -32,7 +32,7 @@ def get_auth_action(request, credential):
 		# To authorize any http requests with credentials. We might not need this as we only need authentication!
 		http = httplib2.Http()
 		http = credential.authorize(http)
-		return render(request, 'index.html', {})
+		return redirect('/new_program')
 
 def token_is_valid(request):
 	return xsrfutil.validate_token(settings.SECRET_KEY, request.REQUEST['state'], '')
