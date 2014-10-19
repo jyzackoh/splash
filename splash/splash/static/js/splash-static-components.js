@@ -382,10 +382,19 @@ splash.Serializer = {
 }
 
 splash.StageManager = {
+	stageDimension: {
+		width: 10,
+		height: 10
+	},
 	initialize: function() {
+		splash.StageManager.initializeDimensions();
 		splash.StageManager.initializeBackgrounds();
 		splash.StageManager.initializeSprites();
 		splash.StageManager.initializeButtons();
+	},
+	initializeDimensions: function() {
+		splash.StageManager.stageDimension.width = $(".stageOutput").width();
+		splash.StageManager.stageDimension.height = $(".stageOutput").height();
 	},
 	initializeBackgrounds: function() {
 		splash.BackgroundManager.addBackground(new splash.Background({

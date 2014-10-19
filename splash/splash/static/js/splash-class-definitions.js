@@ -88,7 +88,7 @@ splash.Block.prototype.render = function() {
 		var returnString = '';
 		for (var i = 0; i < that.expectedArgsCount; i++) {
 			// returnString += '<input class="block-arg" type="number" maxlength="3" min="0" max="'+ that.inputLimits[i] +'">';
-			returnString += '<input type="number" value="0" class="block-arg" maxlength="3" min="0" max="'+ that.inputLimits[i] +'">';
+			returnString += '<input type="number" value="0" class="block-arg" maxlength="3" min="'+ that.inputLimits[i].min +'" max="'+ that.inputLimits[i].max +'">';
 		}
     return returnString;
 	};
@@ -99,23 +99,20 @@ splash.Block.prototype.render = function() {
 		stop: _.partial(splash.DragDropController.cleanupAndClearDroppables, this)
 	});
 
-	// NOTE: Does not trigger if first input is invalid!
-	htmlElement.on("change", function() {
-	  	var listOfArgs = $(this).find('.block-arg');
+		// NOTE: Does not trigger if first input is invalid!
+	htmlElement.children(".block").on("change", function() {
+	  var listOfArgs = $(this).find('.block-arg');
 		for (var i = 0; i < listOfArgs.length; i++) {
 			var inputField = $(listOfArgs[i]);
-			//console.log("Change Detected");
-			//console.log(inputField.val());
-			//console.log(inputField.val().length);
 
 			if (isNaN(parseInt(inputField.val()))) {
 				inputField.val(0);
 			} else {
-				if (inputField.val() > that.inputLimits[i]) {
-					inputField.val(that.inputLimits[i]);
+				if (inputField.val() > that.inputLimits[i].max) {
+					inputField.val(that.inputLimits[i].max);
 				}
-				if (inputField.val() < 0) {
-					inputField.val(0);
+				if (inputField.val() < that.inputLimits[i].min) {
+					inputField.val(that.inputLimits[i].min);
 				}
 			}
 
@@ -161,6 +158,7 @@ splash.Block.prototype.deserialize = function(obj) {
 
 //Set X Block
 splash.SetXBlock = function SetXBlock(parameters) {
+	this.inputLimits = [{max: Math.floor(splash.StageManager.stageDimension.width/this.step), min:0}];
 	splash.Block.call(this);
 	splash.Util.parseParameters(this, parameters);
 }
@@ -168,8 +166,6 @@ splash.Util.inherits(splash.SetXBlock, splash.Block);
 splash.SetXBlock.prototype.name = "Set X to";
 splash.SetXBlock.prototype.colour = "crimson";
 splash.SetXBlock.prototype.expectedArgsCount = 1;
-// NEED TO SET INPUTLIMITS DYNAMICALLY
-splash.SetXBlock.prototype.inputLimits = [99];
 splash.SetXBlock.prototype.codeSnippet = function() {
 	var steps = this.args[0] * this.step;
 	splash.SpriteManager.getCurrentSprite().setPosition("x", steps);
@@ -177,6 +173,7 @@ splash.SetXBlock.prototype.codeSnippet = function() {
 
 //Set Y Block
 splash.SetYBlock = function SetYBlock(parameters) {
+	this.inputLimits = [{max: Math.floor(splash.StageManager.stageDimension.height/this.step), min:0}];
 	splash.Block.call(this);
 	splash.Util.parseParameters(this, parameters);
 }
@@ -184,8 +181,6 @@ splash.Util.inherits(splash.SetYBlock, splash.Block);
 splash.SetYBlock.prototype.name = "Set Y to";
 splash.SetYBlock.prototype.colour = "crimson";
 splash.SetYBlock.prototype.expectedArgsCount = 1;
-// NEED TO SET INPUTLIMITS DYNAMICALLY
-splash.SetYBlock.prototype.inputLimits = [99];
 splash.SetYBlock.prototype.codeSnippet = function() {
 	var steps = this.args[0] * this.step;
 	splash.SpriteManager.getCurrentSprite().setPosition("y", steps);
@@ -224,7 +219,7 @@ splash.Util.inherits(splash.MoveXBlock, splash.Block);
 splash.MoveXBlock.prototype.name = "Step along X by";
 splash.MoveXBlock.prototype.colour = "forestgreen";
 splash.MoveXBlock.prototype.expectedArgsCount = 1;
-splash.MoveXBlock.prototype.inputLimits = [99];
+splash.MoveXBlock.prototype.inputLimits = [{max:50, min:-50}];
 splash.MoveXBlock.prototype.postExecutionDelay = 410;
 splash.MoveXBlock.prototype.codeSnippet = function() {
 	//console.log(this);
@@ -241,7 +236,7 @@ splash.Util.inherits(splash.MoveYBlock, splash.Block);
 splash.MoveYBlock.prototype.name = "Step along Y by";
 splash.MoveYBlock.prototype.colour = "forestgreen";
 splash.MoveYBlock.prototype.expectedArgsCount = 1;
-splash.MoveYBlock.prototype.inputLimits = [99];
+splash.MoveYBlock.prototype.inputLimits = [{max:50, min:-50}];
 splash.MoveYBlock.prototype.postExecutionDelay = 410;
 splash.MoveYBlock.prototype.codeSnippet = function() {
 	var steps = this.args[0] * this.step;
@@ -258,7 +253,7 @@ splash.WaitBlock.prototype.name = "Wait for";
 splash.WaitBlock.prototype.colour = "dodgerblue";
 splash.WaitBlock.prototype.expectedArgsCount = 1;
 splash.WaitBlock.prototype.postExecutionDelay = 0;
-splash.WaitBlock.prototype.inputLimits = [99];
+splash.WaitBlock.prototype.inputLimits = [{max:100, min:0}];
 splash.WaitBlock.prototype.codeSnippet = function() {
 	this.postExecutionDelay = this.args[0] * 1000; // to seconds
 };
@@ -275,7 +270,7 @@ splash.Util.inherits(splash.RepeatBlock, splash.Block);
 splash.RepeatBlock.prototype.name = "Repeat for";
 splash.RepeatBlock.prototype.colour = "midnightblue";
 splash.RepeatBlock.prototype.expectedArgsCount = 1;
-splash.RepeatBlock.prototype.inputLimits = [20];
+splash.RepeatBlock.prototype.inputLimits = [{max:100, min:0}];
 splash.RepeatBlock.prototype.codeSnippet = function() {
 	this.args.sprite.isVisible = false;
 };
@@ -302,7 +297,7 @@ splash.Util.inherits(splash.ChangeCostumeBlock, splash.Block);
 splash.ChangeCostumeBlock.prototype.name = "Change costume to";
 splash.ChangeCostumeBlock.prototype.colour = "indigo";
 splash.ChangeCostumeBlock.prototype.expectedArgsCount = 1;
-splash.ChangeCostumeBlock.prototype.inputLimits = [2];
+splash.ChangeCostumeBlock.prototype.inputLimits = [{max:2, min:0}];
 splash.ChangeCostumeBlock.prototype.codeSnippet = function() {
 	splash.SpriteManager.getCurrentSprite().changeCostume(this.args[0]);
 };
@@ -316,9 +311,9 @@ splash.Util.inherits(splash.ChangeBackgroundBlock, splash.Block);
 splash.ChangeBackgroundBlock.prototype.name = "Change background to";
 splash.ChangeBackgroundBlock.prototype.colour = "plum";
 splash.ChangeBackgroundBlock.prototype.expectedArgsCount = 1;
-splash.Block.prototype.inputLimits = [2];
+splash.Block.prototype.inputLimits = [{max:1, min:0}];
 splash.ChangeBackgroundBlock.prototype.codeSnippet = function() {
-	this.args.sprite.isVisible = false;
+	splash.BackgroundManager.setCurrentBackground(this.args[0]);
 };
 
 splash.Sprite = function Sprite(parameters) {
