@@ -45,7 +45,7 @@ $(function() {
 	function setTemplateBlock(category, block) {
 		block.htmlElement.draggable({
 			helper: "clone",
-			start: splash.DragDropController.setupTemplateCloneAndDrawDroppables,
+			start: _.partial(splash.DragDropController.setupTemplateCloneAndDrawDroppables, block.constructor.name),
 			stop: splash.DragDropController.cleanupTemplateCloneAndClearDroppables
 		});
 		block.htmlElement.appendTo($(category + " .panel-body"));

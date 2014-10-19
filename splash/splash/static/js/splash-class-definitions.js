@@ -218,12 +218,14 @@ splash.ChangeBackgroundBlock.prototype.codeSnippet = function() {
 };
 
 splash.Sprite = function Sprite(parameters) {
+	splash.Obj.call(this);
 	this.firstLevelBlocks = [];
 	this.x = 0;
 	this.y = 0;
 	this.isVisible = true;
 	splash.Util.parseParameters(this, parameters);
 }
+splash.Util.inherits(splash.Sprite, splash.Obj);
 splash.Sprite.prototype.addFirstLevelBlock = function(block) {
 	this.firstLevelBlocks.push(block);
 }

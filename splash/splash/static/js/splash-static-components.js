@@ -105,14 +105,14 @@ splash.DragDropController = {
 	currentDraggedBlock: {
 		block: undefined,
 		originalOffset: undefined,
-		parentIsCanvas: undefined
+		parentName: undefined
 	},
 
 	resetCurrentDraggedBlock: function() {
 		splash.DragDropController.currentDraggedBlock = {
 			block: undefined,
 			originalOffset: undefined,
-			parentIsCanvas: undefined
+			parentName: undefined
 		}
 	},
 
@@ -144,7 +144,7 @@ splash.DragDropController = {
 		// Record dragged block
 		splash.DragDropController.currentDraggedBlock.block = draggedBlock;
 		splash.DragDropController.currentDraggedBlock.originalOffset = _.clone(draggedBlock.htmlElement.offset());
-		splash.DragDropController.currentDraggedBlock.parentIsCanvas = draggedBlock.htmlElement.parent().is(".canvas");
+		splash.DragDropController.currentDraggedBlock.parentName = (draggedBlock.htmlElement.parent().is(".canvas") ? "canvas" : "nested");
 
 		// Set z-index
 		draggedBlock.htmlElement.css({
@@ -155,11 +155,11 @@ splash.DragDropController = {
 		splash.DragDropController.drawDroppables();
 	},
 
-	setupTemplateCloneAndDrawDroppables: function(event, ui) {
+	setupTemplateCloneAndDrawDroppables: function(blockName, event, ui) {
 		// Record dragged block
-		splash.DragDropController.currentDraggedBlock.block = null; //TODO
+		splash.DragDropController.currentDraggedBlock.block = new splash[blockName]();
 		splash.DragDropController.currentDraggedBlock.originalOffset = _.clone(ui.helper.offset());
-		splash.DragDropController.currentDraggedBlock.parentIsCanvas = false;
+		splash.DragDropController.currentDraggedBlock.parentName = "template";
 
 		// Set z-index
 		ui.helper.css({
@@ -172,7 +172,7 @@ splash.DragDropController = {
 
 	cleanupTemplateCloneAndClearDroppables: function(event, ui) {
 		ui.helper.remove();
-		cleanupAndClearDroppables(splash.DragDropController.currentDraggedBlock.draggedBlock, event, ui);
+		splash.DragDropController.cleanupAndClearDroppables(splash.DragDropController.currentDraggedBlock.block, event, ui);
 	},
 
 	cleanupAndClearDroppables: function(draggedBlock, event, ui) {
@@ -190,15 +190,21 @@ splash.DragDropController = {
 				position: "absolute",
 			});
 
-			if(!splash.DragDropController.currentDraggedBlock.parentIsCanvas) {
+			if(splash.DragDropController.currentDraggedBlock.parentName == "nested") {
 				draggedBlock.htmlElement.css({
 					top: splash.DragDropController.currentDraggedBlock.originalOffset.top + ui.position.top - $(".canvas").offset().top,
 					left: splash.DragDropController.currentDraggedBlock.originalOffset.left + ui.position.left - $(".canvas").offset().left,
 				});
 			}
+			else if(splash.DragDropController.currentDraggedBlock.parentName == "template") {
+				draggedBlock.htmlElement.css({
+					top: ui.offset.top - $(".canvas").offset().top,
+					left: ui.offset.left - $(".canvas").offset().left,
+				});
+			}
 
 			if(draggedBlock.htmlElement.position().left < -draggedBlock.htmlElement.width() + 10
-				|| draggedBlock.htmlElement.position().top < -draggedBlock.htmlElement.height() + 10
+				|| draggedBlock.htmlElement.position().top < -draggedBlock.htmlElement.children(".block-signature").height() + 10
 				|| draggedBlock.htmlElement.position().left > $(".canvas").width() - 10
 				|| draggedBlock.htmlElement.position().top > $(".canvas").height() - 10) { // Block is deleted
 				draggedBlock.htmlElement.remove();
@@ -209,7 +215,7 @@ splash.DragDropController = {
 		}
 
 		// Remove record of dragged block (note not all are cleared)
-		splash.DragDropController.resetCurrentDraggedBlock();
+		//splash.DragDropController.resetCurrentDraggedBlock();
 
 		// Clear droppables
 		$(".chain-snap-area").detach();
