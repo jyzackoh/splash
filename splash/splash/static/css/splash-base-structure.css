@@ -145,4 +145,5 @@
 .overlay button {
 	background: white;
 	color: black;
+	display: none;
 }

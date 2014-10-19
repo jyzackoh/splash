@@ -422,39 +422,73 @@ splash.PageManager = {
 		splash.PageManager.load();
 
 		$("#newButton").on("click", function() {
-			location.replace("/new_program/");
+			location.assign("/new_program/");
 		});
 		$("#saveButton").on("click", function() {
 			splash.PageManager.showMessage("Saving...");
 
 			var saveData = JSON.stringify(splash.Serializer.serializeInitial(splash.SpriteManager.spriteList));
-			$.post("save/", saveData, function(reply) {
-				if(reply.success == "True") {
-					splash.PageManager.showMessage("Saved!", true);
-				}
-				else {
-					splash.PageManager.showMessage(reply.error, true);
-				}
-			}, "text");
+
+			try {
+				$.post("save/", saveData, function(reply) {
+					if(reply.success == true) {
+						splash.PageManager.showMessage("Saved!", true);
+					}
+					else {
+						splash.PageManager.showMessage(reply.error, true);
+					}
+				});
+			}
+			catch(e) {
+				splash.PageManager.showMessage("An error occured while attempting to save the program.", true);
+			}
 		});
 		$("#makePrivateButton").on("click", function() {
-			$.get("perm/PR/", "", function(reply) {
-				console.log(reply);
-			}, "text");
+			try {
+				$.get("perm/PR/", {}, function(reply) {
+					if(reply.success == true) {
+						splash.PageManager.showMessage("Your program has been made private!", true);
+					}
+					else {
+						splash.PageManager.showMessage(reply.error, true);
+					}
+				});
+			}
+			catch(e) {
+				splash.PageManager.showMessage("An error occured while attempting to save the program.", true);
+			}
 		});
 		$("#makePublicButton").on("click", function() {
-			$.get("perm/PU/", "", function(reply) {
-				console.log(reply);
-			}, "text");
+			try {
+				$.get("perm/PU/", {}, function(reply) {
+					if(reply.success == true) {
+						splash.PageManager.showMessage("Your program has been made public!", true);
+					}
+					else {
+						splash.PageManager.showMessage(reply.error, true);
+					}
+				});
+			}
+			catch(e) {
+				splash.PageManager.showMessage("An error occured while attempting to save the program.", true);
+			}
 		});
 	},
 	load: function() {
-		splash.PageManager.hideMessage();
 		try {
-			$.get("load/", "", function(reply) {
+			$.get("load/", {}, function(data) {
+				if(reply.data == "") {
+					console.log("hiii1");
+					splash.PageManager.hideMessage();
+					return;
+				}
+				console.log("ggggg2");
+
 				var loadedObj = splash.Serializer.deserializeInitial(JSON.parse(reply.data));
 				splash.SpriteManager.spriteList = loadedObj;
 				splash.SpriteManager.setCurrentSprite(splash.SpriteManager.spriteList[0]);
+
+				console.log("ggggg3");
 
 				_forEach(splash.SpriteManager.getCurrentSprite().firstLevelBlocks, function(block) {
 					var htmlElement = splash.Renderer.renderBlockChain(block);
@@ -465,8 +499,9 @@ splash.PageManager = {
 					$(".canvas").append(htmlElement);
 				});
 
+				console.log("hiii2");
 				splash.PageManager.hideMessage();
-			}, "text");
+			});
 		}
 		catch(e) {
 			splash.PageManager.showMessage("An error occured while attempting to load the program.", true);
