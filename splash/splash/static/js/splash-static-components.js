@@ -559,3 +559,11 @@ splash.PageManager = {
 		$(".overlay").hide();
 	}
 }
+
+splash.GalleryManager ={
+	initialize: function() {
+		$(".gallerySelection").append($('<img src="/static/images/happy_turtle.png">'))
+		$(".gallerySelection").append($('<img src="/static/images/happy_turtle2.png">'))
+		$(".gallerySelection").append($('<img src="/static/images/sad_turtle.png">'))
+	}
+}
