@@ -30,7 +30,11 @@ splash.Util = {
 };
 
 splash.Interpreter = {
+	stopAll: false,
 	executeBlockChain: function(startingBlock, chainCallback) {
+		if(splash.Interpreter.stopAll)
+			return;
+
 		startingBlock.codeSnippet();
 		//startingBlock.codeSnippet.apply(this, startingBlock.args);
 		
@@ -382,6 +386,7 @@ splash.Serializer = {
 }
 
 splash.StageManager = {
+	isPlaying: false,
 	stageDimension: {
 		width: 10,
 		height: 10
@@ -416,12 +421,24 @@ splash.StageManager = {
 	},
 	initializeButtons: function() {
 		$("#playButton").on("click", function() {
+			if(splash.StageManager.isPlaying) {
+				splash.PageManager.showMessage("You can't play twice! Press Stop then Play again.", true);
+				return;
+			}
+
+			splash.StageManager.isPlaying = true;
+			splash.Interpreter.stopAll = false;
 			_.forEach(splash.SpriteManager.spriteList, function(sprite) {
 				splash.Interpreter.runAllStripeBlocks(sprite);
 			});
 		});
 		$("#stopButton").on("click", function() {
-			;
+			splash.Interpreter.stopAll = true;
+			splash.StageManager.isPlaying = false;
+			setTimeout(function() {
+				splash.SpriteManager.getCurrentSprite().setPosition("x", $(".stageOutput").width() / 2);
+				splash.SpriteManager.getCurrentSprite().setPosition("y", $(".stageOutput").height() / 2);
+			}, 400);
 		});
 	}
 }
@@ -484,20 +501,24 @@ splash.PageManager = {
 		});
 	},
 	load: function() {
+		// splash.PageManager.hideMessage();
+		// return;
 		try {
+			console.log("checkpoint1");
 			$.get("load/", {}, function(data) {
+				console.log("checkpoint2");
 				if(reply.data == "") {
-					console.log("hiii1");
+					console.log("exit1");
 					splash.PageManager.hideMessage();
 					return;
 				}
-				console.log("ggggg2");
+				console.log("checkpoint3");
 
 				var loadedObj = splash.Serializer.deserializeInitial(JSON.parse(reply.data));
 				splash.SpriteManager.spriteList = loadedObj;
 				splash.SpriteManager.setCurrentSprite(splash.SpriteManager.spriteList[0]);
 
-				console.log("ggggg3");
+				console.log("checkpoint4");
 
 				_forEach(splash.SpriteManager.getCurrentSprite().firstLevelBlocks, function(block) {
 					var htmlElement = splash.Renderer.renderBlockChain(block);
@@ -508,7 +529,7 @@ splash.PageManager = {
 					$(".canvas").append(htmlElement);
 				});
 
-				console.log("hiii2");
+				console.log("checkpoint5");
 				splash.PageManager.hideMessage();
 			});
 		}

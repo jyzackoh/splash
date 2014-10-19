@@ -262,6 +262,7 @@ splash.WaitBlock.prototype.codeSnippet = function() {
 splash.RepeatBlock = function RepeatBlock(parameters) {
 	splash.Block.call(this);
 
+	this.currentCycleCount = -1;
 	// this.repeatSubBlocksLink = new splash.BlockLink({parent: this, htmlElementToAttachBlockTo: this.htmlElement.find(".sub-blocks")});
 
 	splash.Util.parseParameters(this, parameters);
@@ -272,7 +273,28 @@ splash.RepeatBlock.prototype.colour = "midnightblue";
 splash.RepeatBlock.prototype.expectedArgsCount = 1;
 splash.RepeatBlock.prototype.inputLimits = [{max:100, min:0}];
 splash.RepeatBlock.prototype.codeSnippet = function() {
-	this.args.sprite.isVisible = false;
+	if(this.nextBlockLink.child != undefined) {
+		return;
+	}
+
+	if(this.currentCycleCount == 0) {
+		this.currentCycleCount = -1;
+		return;
+	}
+
+	if(this.currentCycleCount == -1) {
+		this.currentCycleCount = parseInt(this.args[0]);
+	}
+
+	this.currentCycleCount--;
+
+	var startingBlockToRepeat = this;
+
+	while(startingBlockToRepeat.parentLink != undefined) {
+		startingBlockToRepeat = startingBlockToRepeat.parentLink.parent;
+	}
+
+	splash.Interpreter.executeBlockChain(startingBlockToRepeat);
 };
 // splash.RepeatBlock.prototype.render = function() {
 // 	var htmlElement = splash.Block.prototype.render.call(this);
