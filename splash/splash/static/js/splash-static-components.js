@@ -107,6 +107,15 @@ splash.DragDropController = {
 		originalOffset: undefined,
 		parentIsCanvas: undefined
 	},
+
+	resetCurrentDraggedBlock: function() {
+		splash.DragDropController.currentDraggedBlock = {
+			block: undefined,
+			originalOffset: undefined,
+			parentIsCanvas: undefined
+		}
+	},
+
 	drawDroppables: function() {
 		_.forEach(splash.SpriteManager.currentSprite.firstLevelBlocks, function(startingBlock) {
 			var currentBlock = startingBlock;
@@ -164,7 +173,7 @@ splash.DragDropController = {
 	cleanupTemplateCloneAndClearDroppables: function(event, ui) {
 		ui.helper.remove();
 		cleanupAndClearDroppables(splash.DragDropController.currentDraggedBlock.draggedBlock, event, ui);
-	}
+	},
 
 	cleanupAndClearDroppables: function(draggedBlock, event, ui) {
 		// Note: the drop handler will fire first.
@@ -176,8 +185,6 @@ splash.DragDropController = {
 
 		// Check if block was dropped on a snap area (and hence has a parent)
 		if(draggedBlock.parentLink == undefined) {
-			splash.SpriteManager.currentSprite.addFirstLevelBlock(draggedBlock);
-
 			$(".canvas").append(draggedBlock.htmlElement);
 			draggedBlock.htmlElement.css({
 				position: "absolute",
@@ -189,12 +196,20 @@ splash.DragDropController = {
 					left: splash.DragDropController.currentDraggedBlock.originalOffset.left + ui.position.left - $(".canvas").offset().left,
 				});
 			}
+
+			if(draggedBlock.htmlElement.position().left < -draggedBlock.htmlElement.width() + 10
+				|| draggedBlock.htmlElement.position().top < -draggedBlock.htmlElement.height() + 10
+				|| draggedBlock.htmlElement.position().left > $(".canvas").width() - 10
+				|| draggedBlock.htmlElement.position().top > $(".canvas").height() - 10) { // Block is deleted
+				draggedBlock.htmlElement.remove();
+			}
+			else {
+				splash.SpriteManager.currentSprite.addFirstLevelBlock(draggedBlock);
+			}
 		}
 
-		// Remove record of dragged block
-		splash.DragDropController.currentDraggedBlock.block = undefined;
-		// splash.DragDropController.currentDraggedBlock.originalOffset = undefined;
-
+		// Remove record of dragged block (note not all are cleared)
+		splash.DragDropController.resetCurrentDraggedBlock();
 
 		// Clear droppables
 		$(".chain-snap-area").detach();

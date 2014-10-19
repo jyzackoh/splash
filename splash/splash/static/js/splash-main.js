@@ -46,7 +46,7 @@ $(function() {
 		block.htmlElement.draggable({
 			helper: "clone",
 			start: splash.DragDropController.setupTemplateCloneAndDrawDroppables,
-			stop: $.noop,
+			stop: splash.DragDropController.cleanupTemplateCloneAndClearDroppables
 		});
 		block.htmlElement.appendTo($(category + " .panel-body"));
 	}

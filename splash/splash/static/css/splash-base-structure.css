@@ -109,6 +109,7 @@
 	/*background: #F5F4AE;*/
 	background: lightgrey;
 	position: relative;
+	overflow: hidden;
 }
 
 .stage, .gallery, .palette, .canvas {
