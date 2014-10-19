@@ -14,10 +14,12 @@ def new_program(request):
 def load_page(request, program_code):
 	return utils.get_loaded_program(request, program_code)
 
+@csrf_exempt 
 def toggle_permissions(request, program_code, permission):
 	response = utils.toggle_permissions(request, program_code, permission)
 	return HttpResponse(response, content_type="application/json")
 
+@csrf_exempt 
 def load_program(request, program_code):
 	response = utils.load_serialized_program(request, program_code)
 	return HttpResponse(response, content_type="application/json")
