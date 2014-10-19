@@ -210,7 +210,7 @@ splash.ChangeBackgroundBlock = function(parameters) {
 	splash.Util.parseParameters(this, parameters);
 }
 splash.Util.inherits(splash.ChangeBackgroundBlock, splash.Block);
-splash.ChangeBackgroundBlock.prototype.name = "Repeat for";
+splash.ChangeBackgroundBlock.prototype.name = "Change background to";
 splash.ChangeBackgroundBlock.prototype.colour = "plum";
 splash.ChangeBackgroundBlock.prototype.expectedArgsCount = 1;
 splash.ChangeBackgroundBlock.prototype.codeSnippet = function() {

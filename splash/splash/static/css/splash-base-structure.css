@@ -79,8 +79,10 @@
 }
 
 .palette {
-	min-height: 87.5%;
+	height: 87.5%;
 	background: #A8A8A8;
+	overflow-y: scroll;
+	overflow-x: visible;
 }
 
 #movementPal, #appearancePal, #visibilityPal {
@@ -98,6 +100,8 @@
 
 .panel-body {
 	min-height: 16%;
+	/* text-align: center; */
+	overflow: visible;
 }
 
 .canvas {

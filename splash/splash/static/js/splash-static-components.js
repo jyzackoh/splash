@@ -107,6 +107,21 @@ splash.DragDropController = {
 		originalOffset: undefined,
 		parentIsCanvas: undefined
 	},
+	drawDroppables: function() {
+		_.forEach(splash.SpriteManager.currentSprite.firstLevelBlocks, function(startingBlock) {
+			var currentBlock = startingBlock;
+			while(true) {
+				if(currentBlock.nextBlockLink.child != undefined) {
+					currentBlock = currentBlock.nextBlockLink.child;
+					continue;
+				}
+
+				currentBlock.nextBlockLink.htmlElement.insertAfter(currentBlock.htmlElement.children(".block"));
+				break;
+			}
+		});
+	},
+
 	unchainAndDrawDroppables: function(draggedBlock) {
 		// Unchain
 		if(draggedBlock.parentLink != undefined) {
@@ -128,18 +143,22 @@ splash.DragDropController = {
 		});
 
 		// Draw droppables
-		_.forEach(splash.SpriteManager.currentSprite.firstLevelBlocks, function(startingBlock) {
-			var currentBlock = startingBlock;
-			while(true) {
-				if(currentBlock.nextBlockLink.child != undefined) {
-					currentBlock = currentBlock.nextBlockLink.child;
-					continue;
-				}
+		splash.DragDropController.drawDroppables();
+	},
 
-				currentBlock.nextBlockLink.htmlElement.insertAfter(currentBlock.htmlElement.children(".block"));
-				break;
-			}
+	setupTemplateCloneAndDrawDroppables: function(event, ui) {
+		// Record dragged block
+		// splash.DragDropController.currentDraggedBlock.block = draggedBlock;
+		// splash.DragDropController.currentDraggedBlock.originalOffset = _.clone(draggedBlock.htmlElement.offset());
+		// splash.DragDropController.currentDraggedBlock.parentIsCanvas = draggedBlock.htmlElement.parent().is(".canvas");
+
+		// Set z-index
+		ui.helper.css({
+			"z-index": 1000
 		});
+
+		// Draw droppables
+		splash.DragDropController.drawDroppables();
 	},
 
 	cleanupAndClearDroppables: function(draggedBlock, event, ui) {
