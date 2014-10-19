@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseBadRequest, HttpResponse
 import splash.utils as utils
 import splash.google_utils as google_utils
+from django.views.decorators.csrf import csrf_exempt
 
 
 def index(request):
@@ -21,6 +22,7 @@ def load_program(request, program_code):
 	response = utils.load_serialized_program(request, program_code)
 	return HttpResponse(response, content_type="application/json")
 
+@csrf_exempt 
 def save_program(request, program_code):
 	response = utils.save_program(request, program_code)
 	return HttpResponse(response, content_type="application/json")

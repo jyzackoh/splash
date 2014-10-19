@@ -12,7 +12,8 @@ CLIENT_SECRETS = os.path.join(os.path.dirname(__file__), '..', 'client_secrets.j
 FLOW = flow_from_clientsecrets(
 	CLIENT_SECRETS,
 	scope=['https://www.googleapis.com/auth/plus.profile.emails.read', 'profile'],
-	redirect_uri='http://localhost:8000/oauth2callback')
+	#redirect_uri='http://localhost:8000/oauth2callback')
+	redirect_uri='http://splash.codeofjoy.com/oauth2callback')
 
 def get_stored_credential(request):
 	google_id = None

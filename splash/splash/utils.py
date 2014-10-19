@@ -46,20 +46,20 @@ def get_loaded_program(request, program_code):
 	return generate_new_page(request, program_code)
 
 def save_program(request, program_code):
-	response = {}
-	response['success'] = True
+	if request.method == "POST":
+		serialized_program = str(request.body)
 
-	serialized_program = "{'name': 'abnn'}"
-
-	owner = get_google_id_string(request)
-	if (gateway.program_is_exist(program_code)):
-		program_owner = gateway.get_owner(program_code)
-		if (gateway.program_is_private(program_code)): #gateway is private, check owners
-			if (program_owner != owner):
-				return get_failure_msg('User is unauthorized!')
-	
-	gateway.save_program(program_code, serialized_program)
-	return str(response)
+		owner = get_google_id_string(request)
+		if (gateway.program_is_exist(program_code)):
+			program_owner = gateway.get_owner(program_code)
+			if (gateway.program_is_private(program_code)): #gateway is private, check owners
+				if (program_owner != owner):
+					return get_failure_msg('User is unauthorized!')
+		
+		gateway.save_program(program_code, serialized_program)
+		return get_success_msg('')
+	else:
+		return get_failure_msg('Not a POST Request')
 
 
 def toggle_permissions(request, program_code, permission):
@@ -89,7 +89,7 @@ def load_serialized_program(request, program_code):
 				return get_failure_msg('User is unauthorized!')
 
 	saved_program = gateway.load_program(program_code)
-	return get_success_msg(saved_program.permission + " = " + saved_program.owner + " = " + saved_program.serialized_program)
+	return get_success_msg(saved_program.serialized_program)
 
 
 def get_failure_msg(error):
