@@ -34,7 +34,7 @@ $(function() {
 	        console.log("hi3");
 	    }
 	});
-	var abc4 = new splash.HideBlock({
+	var abc4 = new splash.RepeatBlock({
 	    name: "abc4",
 	    codeSnippet: function() {
 	        console.log("hi4");
@@ -44,16 +44,19 @@ $(function() {
 	abc1.setNextBlockLink(abc2);
 	abc2.setNextBlockLink(abc3);
 
+	//abc4.repeatSubBlocksLink.child = abc3;
+
 	newSprite.addFirstLevelBlock(abc1);
 	newSprite.addFirstLevelBlock(abc4);
 
 	$(".canvas").append(splash.Renderer.renderBlockChain(abc1));
 	$(".canvas").append(splash.Renderer.renderBlockChain(abc4));
 
-	var pppl = JSON.stringify(splash.Serializer.serializeInitial(newSprite));
-	console.log("TEST 2 START");
-	console.log(splash.Serializer.deserializeInitial(JSON.parse(pppl)));
-	console.log("TEST 2 END");
+	// var pppl = JSON.stringify(splash.Serializer.serializeInitial(newSprite));
+	// console.log(pppl);
+	// console.log("TEST 2 START");
+	// console.log(splash.Serializer.deserializeInitial(JSON.parse(pppl)));
+	// console.log("TEST 2 END");
 
 	var MOVEMENT = "#movementPal";
 	var VISIBILITY = "#visibilityPal";

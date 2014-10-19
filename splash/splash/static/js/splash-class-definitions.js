@@ -18,7 +18,8 @@ splash.Obj.prototype.serialize = function(splashObjectId) {
 	};
 
 	_.forOwn(this, function(value, key) {
-		if(key == "htmlElement") return;
+		if(key.match("^htmlElement"))
+			return; // We ignore all jQuery references
 
 		if(key == "serializeId")
 			return;
@@ -44,6 +45,7 @@ splash.BlockLink = function BlockLink(parameters) {
 	splash.Obj.call(this);
 	
 	this.parent = undefined; // this should _not_ change after construction as each blocklink is tied permanently to a link (only child should change)
+	this.htmlElementToAttachBlockTo = undefined;
 	this.child = undefined;
 	
 	splash.Util.parseParameters(this, parameters);
@@ -64,13 +66,13 @@ splash.BlockLink.prototype.render = function() {
 splash.Block = function Block(parameters) {
 	splash.Obj.call(this);
 
-	this.nextBlockLink = new splash.BlockLink({parent: this});
 	this.parentLink = undefined;
 	this.args = [];
 	
 	splash.Util.parseParameters(this, parameters);
 
 	this.htmlElement = this.render();
+	this.nextBlockLink = new splash.BlockLink({parent: this, htmlElementToAttachBlockTo: this.htmlElement});
 }
 splash.Util.inherits(splash.Block, splash.Obj);
 splash.Block.prototype.name = "Block";
@@ -122,14 +124,35 @@ splash.Block.prototype.render = function() {
 splash.Block.prototype.setNextBlockLink = function(nextBlock) {
 	this.nextBlockLink.child = nextBlock;
 	nextBlock.parentLink = this.nextBlockLink; // the blocklink
-}
+};
 splash.Block.prototype.getNextBlockLink = function() {
 	return this.nextBlockLink.child;
-}
+};
 splash.Block.prototype.removeParentLink = function() {
 	this.parentLink.child = undefined;
 	this.parentLink = undefined;
-}
+};
+splash.Block.prototype.serialize = function(splashObjectId) {
+	var returnObject = splash.Obj.prototype.serialize.call(this, splashObjectId);
+
+	if(this.htmlElement.css("position") == "absolute") {
+		returnObject.positionInfo = {
+			left: this.htmlElement.position().left,
+			top: this.htmlElement.position().top
+		};
+	}
+
+	return returnObject;
+};
+splash.Block.prototype.deserialize = function(obj) {
+	var returnObject = splash.Obj.prototype.deserialize.call(this, obj);
+
+	if(obj.positionInfo != undefined) {
+		returnObject.positionInfo = _.clone(obj.positionInfo);
+	}
+
+	return returnObject;
+};
 
 //Set X Block
 splash.SetXBlock = function SetXBlock(parameters) {
@@ -235,6 +258,9 @@ splash.WaitBlock.prototype.codeSnippet = function() {
 //Repeat Block
 splash.RepeatBlock = function RepeatBlock(parameters) {
 	splash.Block.call(this);
+
+	// this.repeatSubBlocksLink = new splash.BlockLink({parent: this, htmlElementToAttachBlockTo: this.htmlElement.find(".sub-blocks")});
+
 	splash.Util.parseParameters(this, parameters);
 }
 splash.Util.inherits(splash.RepeatBlock, splash.Block);
@@ -245,6 +271,19 @@ splash.RepeatBlock.prototype.inputLimits = [20];
 splash.RepeatBlock.prototype.codeSnippet = function() {
 	this.args.sprite.isVisible = false;
 };
+// splash.RepeatBlock.prototype.render = function() {
+// 	var htmlElement = splash.Block.prototype.render.call(this);
+
+// 	htmlElement.find(".sub-blocks").css({
+// 		"min-width": "180px",
+// 		"padding-top": "5px"
+// 	});
+// 	$('<div class="sub-blocks-buffer"></div>').insertAfter(htmlElement.find(".sub-blocks"));
+
+// 	htmlElement.find(".sub-blocks").append(splash.Renderer.renderBlockChain());
+
+// 	return htmlElement;
+// };
 
 //Change Costume Block
 splash.ChangeCostumeBlock = function ChangeCostumeBlock(parameters) {
