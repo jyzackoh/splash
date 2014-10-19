@@ -7,32 +7,32 @@ splash.Obj = function Obj(parameters) {
 }
 
 splash.Obj.prototype.serialize = function() {
-	var returnedCollection = {};
-  _.forEach(this, function(value, key) {
+	// var returnedCollection = {};
+ //  _.forEach(this, function(value, key) {
 
-    if (value instanceof Array) {
-    	returnedCollection[key] = [];
-      for(index in value) {
-      	if (typeof value[index] === 'object') {
-      		// BEWARE! Needs fixing An arr within an arr cannot be serialized!
-      		returnedCollection[key].push(value[index].serialize());
-      	} else {
-      		returnedCollection[key].push(value[index]);
-      	}
-      }
+ //    if (value instanceof Array) {
+ //    	returnedCollection[key] = [];
+ //      for(index in value) {
+ //      	if (typeof value[index] === 'object') {
+ //      		// BEWARE! Needs fixing An arr within an arr cannot be serialized!
+ //      		returnedCollection[key].push(value[index].serialize());
+ //      	} else {
+ //      		returnedCollection[key].push(value[index]);
+ //      	}
+ //      }
 
-    } else if (value instanceof splash.Obj) {
-    	returnedCollection[key] = {
-    		value.constructor.name : value.serialize();
-    	};
+ //    } else if (value instanceof splash.Obj) {
+ //    	returnedCollection[key] = {
+ //    		value.constructor.name : value.serialize();
+ //    	};
     
-    } else {
-    	returnedCollection[key] = value;
+ //    } else {
+ //    	returnedCollection[key] = value;
     
-    }
-  });
+ //    }
+ //  });
  
-  return returnedCollection;
+ //  return returnedCollection;
 };
 
 splash.Obj.prototype.deserialize = function() {};
@@ -72,6 +72,7 @@ splash.Util.inherits(splash.Block, splash.Obj);
 splash.Block.prototype.name = "Block";
 splash.Block.prototype.colour = "default";
 splash.Block.prototype.expectedArgsCount = 0;
+splash.Block.prototype.inputLimits = [];
 splash.Block.prototype.postExecutionDelay = 0;
 splash.Block.prototype.codeSnippet = function() {};
 splash.Block.prototype.render = function() {
@@ -79,7 +80,7 @@ splash.Block.prototype.render = function() {
 	var inputInjector = function() {
 		var returnString = '';
 		for (var i = 0; i < that.expectedArgsCount; i++) {
-			returnString += '<input class="block-arg" maxlength="3">';
+			returnString += '<input class="block-arg" type="number" min="0" max="'+ that.inputLimits[i] +'">';
 		}
     return returnString;
 	};
@@ -90,10 +91,24 @@ splash.Block.prototype.render = function() {
     	stop: _.partial(splash.DragDropController.cleanupAndClearDroppables, this)
   });
 
+  // NOTE: Does not trigger if first input is invalid!
 	htmlElement.on("change", function() {
-  		var listOfArgs = $(this).find('.block-arg');
+  	var listOfArgs = $(this).find('.block-arg');
 		for (var i = 0; i < listOfArgs.length; i++) {
-	  		that.args[i] = $(listOfArgs[i]).val();
+			var inputField = $(listOfArgs[i]);
+			console.log("Change Detected");
+			console.log(inputField.val());
+			console.log(inputField.val().length);
+
+			if (inputField.val() === "") {
+				inputField.val(0);
+			} else {
+				if (inputField.val() > that.inputLimits[i]) {
+					inputField.val(that.inputLimits[i]);
+				}
+			}
+
+	  	that.args[i] = inputField.val();
 		}
 	});
 
@@ -121,6 +136,7 @@ splash.Util.inherits(splash.SetXBlock, splash.Block);
 splash.SetXBlock.prototype.name = "Set X to";
 splash.SetXBlock.prototype.colour = "crimson";
 splash.SetXBlock.prototype.expectedArgsCount = 1;
+splash.SetXBlock.prototype.inputLimits = [20];
 splash.SetXBlock.prototype.codeSnippet = function() {
 	this.args.sprite.x = this.args.point;
 };
@@ -135,6 +151,7 @@ splash.Util.inherits(splash.SetYBlock, splash.Block);
 splash.SetYBlock.prototype.name = "Set Y to";
 splash.SetYBlock.prototype.colour = "crimson";
 splash.SetYBlock.prototype.expectedArgsCount = 1;
+splash.SetYBlock.prototype.inputLimits = [20];
 splash.SetYBlock.prototype.codeSnippet = function() {
 	this.args.sprite.y = this.args.point;
 };
@@ -175,6 +192,7 @@ splash.Util.inherits(splash.MoveXBlock, splash.Block);
 splash.MoveXBlock.prototype.name = "Step along X by";
 splash.MoveXBlock.prototype.colour = "forestgreen";
 splash.MoveXBlock.prototype.expectedArgsCount = 1;
+splash.MoveXBlock.prototype.inputLimits = [10];
 splash.MoveXBlock.prototype.codeSnippet = function() {
 	this.args.sprite.isVisible = false;
 };
@@ -190,6 +208,7 @@ splash.Util.inherits(splash.MoveYBlock, splash.Block);
 splash.MoveYBlock.prototype.name = "Step along Y by";
 splash.MoveYBlock.prototype.colour = "forestgreen";
 splash.MoveYBlock.prototype.expectedArgsCount = 1;
+splash.MoveYBlock.prototype.inputLimits = [10];
 splash.MoveYBlock.prototype.codeSnippet = function() {
 	this.args.sprite.isVisible = false;
 };
@@ -203,6 +222,7 @@ splash.Util.inherits(splash.WaitBlock, splash.Block);
 splash.WaitBlock.prototype.name = "Wait for";
 splash.WaitBlock.prototype.colour = "dodgerblue";
 splash.WaitBlock.prototype.expectedArgsCount = 1;
+splash.WaitBlock.prototype.inputLimits = [30];
 splash.WaitBlock.prototype.codeSnippet = function() {
 	this.args.sprite.isVisible = false;
 };
@@ -217,6 +237,7 @@ splash.Util.inherits(splash.RepeatBlock, splash.Block);
 splash.RepeatBlock.prototype.name = "Repeat for";
 splash.RepeatBlock.prototype.colour = "midnightblue";
 splash.RepeatBlock.prototype.expectedArgsCount = 1;
+splash.RepeatBlock.prototype.inputLimits = [20];
 splash.RepeatBlock.prototype.codeSnippet = function() {
 	this.args.sprite.isVisible = false;
 };
@@ -230,6 +251,7 @@ splash.Util.inherits(splash.ChangeCostumeBlock, splash.Block);
 splash.ChangeCostumeBlock.prototype.name = "Change costume to";
 splash.ChangeCostumeBlock.prototype.colour = "indigo";
 splash.ChangeCostumeBlock.prototype.expectedArgsCount = 1;
+splash.ChangeCostumeBlock.prototype.inputLimits = [2];
 splash.ChangeCostumeBlock.prototype.codeSnippet = function() {
 	this.args.sprite.isVisible = false;
 };
@@ -243,6 +265,7 @@ splash.Util.inherits(splash.ChangeBackgroundBlock, splash.Block);
 splash.ChangeBackgroundBlock.prototype.name = "Change background to";
 splash.ChangeBackgroundBlock.prototype.colour = "plum";
 splash.ChangeBackgroundBlock.prototype.expectedArgsCount = 1;
+splash.Block.prototype.inputLimits = [2];
 splash.ChangeBackgroundBlock.prototype.codeSnippet = function() {
 	this.args.sprite.isVisible = false;
 };
