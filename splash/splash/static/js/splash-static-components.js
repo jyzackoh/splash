@@ -148,9 +148,9 @@ splash.DragDropController = {
 
 	setupTemplateCloneAndDrawDroppables: function(event, ui) {
 		// Record dragged block
-		// splash.DragDropController.currentDraggedBlock.block = draggedBlock;
-		// splash.DragDropController.currentDraggedBlock.originalOffset = _.clone(draggedBlock.htmlElement.offset());
-		// splash.DragDropController.currentDraggedBlock.parentIsCanvas = draggedBlock.htmlElement.parent().is(".canvas");
+		splash.DragDropController.currentDraggedBlock.block = null; //TODO
+		splash.DragDropController.currentDraggedBlock.originalOffset = _.clone(ui.helper.offset());
+		splash.DragDropController.currentDraggedBlock.parentIsCanvas = false;
 
 		// Set z-index
 		ui.helper.css({
@@ -160,6 +160,11 @@ splash.DragDropController = {
 		// Draw droppables
 		splash.DragDropController.drawDroppables();
 	},
+
+	cleanupTemplateCloneAndClearDroppables: function(event, ui) {
+		ui.helper.remove();
+		cleanupAndClearDroppables(splash.DragDropController.currentDraggedBlock.draggedBlock, event, ui);
+	}
 
 	cleanupAndClearDroppables: function(draggedBlock, event, ui) {
 		// Note: the drop handler will fire first.
