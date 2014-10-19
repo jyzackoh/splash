@@ -31,7 +31,8 @@ splash.Util = {
 
 splash.Interpreter = {
 	executeBlockChain: function(startingBlock, chainCallback) {
-		startingBlock.codeSnippet.apply(this, startingBlock.args);
+		startingBlock.codeSnippet();
+		//startingBlock.codeSnippet.apply(this, startingBlock.args);
 		
 		if(startingBlock.nextBlockLink.child != undefined) {
 			setTimeout(
@@ -62,6 +63,10 @@ splash.SpriteManager = {
 	},
 	addSprite: function(sprite) {
 		splash.SpriteManager.spriteList.push(sprite);
+		$(".stageOutput").append(sprite.htmlElement);
+
+		sprite.setPosition("x", $(".stageOutput").width() / 2);
+		sprite.setPosition("y", $(".stageOutput").height() / 2);
 	},
 	removeSprite: function(sprite) {
 		var index = splash.SpriteManager.spriteList.indexOf(sprite);
@@ -73,17 +78,17 @@ splash.SpriteManager = {
 splash.BackgroundManager = {
 	currentBackground: undefined,
 	backgroundList: [],
-	setCurrentBackground: function(backgroundName) {
+	setCurrentBackground: function(i) {
 		var that = splash.BackgroundManager;
-		for(var i in that.backgroundList) {
-			if(that.backgroundList[i].name == backgroundName) {
+		// for(var i in that.backgroundList) {
+		// 	if(that.backgroundList[i].name == backgroundName) {
 				that.currentBackground = that.backgroundList[i];
 				$(".stageOutput").css({
 					"background-image": 'url("/static/images/' + that.currentBackground.url + '")'
 				});
-				break;
-			}
-		}
+		// 		break;
+		// 	}
+		// }
 	},
 	addBackground: function(background) {
 		splash.BackgroundManager.backgroundList.push(background);
@@ -156,7 +161,7 @@ splash.DragDropController = {
 					continue;
 				}
 
-				// console.log(currentBlock.name);
+				// //console.log(currentBlock.name);
 				currentBlock.nextBlockLink.htmlElement.insertAfter(currentBlock.htmlElement.children(".block")); // Relook at the tree traversal
 				break;
 			}
@@ -373,5 +378,41 @@ splash.Serializer = {
 	},
 	deserializeCleanup: function(obj) {
 		splash.Serializer.splashObjectList = [];
+	}
+}
+
+splash.StageManager = {
+	initialize: function() {
+		splash.StageManager.initializeBackgrounds();
+		splash.StageManager.initializeSprites();
+		splash.StageManager.initializeButtons();
+	},
+	initializeBackgrounds: function() {
+		splash.BackgroundManager.addBackground(new splash.Background({
+			name: "beach",
+			url: "background_beach.png"
+		}));
+
+		splash.BackgroundManager.addBackground(new splash.Background({
+			name: "school",
+			url: "background_school.png"
+		}));
+
+		splash.BackgroundManager.setCurrentBackground("beach");
+	},
+	initializeSprites: function() {
+		var newSprite = new splash.Sprite({costumes: ["happy_turtle.png", "happy_turtle2.png", "sad_turtle.png"]});
+		splash.SpriteManager.addSprite(newSprite);
+		splash.SpriteManager.setCurrentSprite(newSprite);
+	},
+	initializeButtons: function() {
+		$("#playButton").on("click", function() {
+			_.forEach(splash.SpriteManager.spriteList, function(sprite) {
+				splash.Interpreter.runAllStripeBlocks(sprite);
+			});
+		});
+		$("#stopButton").on("click", function() {
+			;
+		});
 	}
 }

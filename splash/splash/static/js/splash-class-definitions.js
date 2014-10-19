@@ -88,25 +88,25 @@ splash.Block.prototype.render = function() {
 		var returnString = '';
 		for (var i = 0; i < that.expectedArgsCount; i++) {
 			// returnString += '<input class="block-arg" type="number" maxlength="3" min="0" max="'+ that.inputLimits[i] +'">';
-			returnString += '<input class="block-arg" maxlength="3" min="0" max="'+ that.inputLimits[i] +'">';
+			returnString += '<input type="number" value="0" class="block-arg" maxlength="3" min="0" max="'+ that.inputLimits[i] +'">';
 		}
     return returnString;
 	};
 
-  var htmlElement = $('<div class="block-drag-area"><div class="block block-'+ that.colour +'"><div class="block-signature"><div class="block-name">' + that.name + '</div><div class="block-args">'+ inputInjector() +'</div></div><div class="sub-blocks"></div></div></div>')
-  .draggable({
-    	start: _.partial(splash.DragDropController.unchainAndDrawDroppables, this),
-    	stop: _.partial(splash.DragDropController.cleanupAndClearDroppables, this)
-  });
+	var htmlElement = $('<div class="block-drag-area"><div class="block block-'+ that.colour +'"><div class="block-signature"><div class="block-name">' + that.name + '</div><div class="block-args">'+ inputInjector() +'</div></div><div class="sub-blocks"></div></div></div>')
+	.draggable({
+		start: _.partial(splash.DragDropController.unchainAndDrawDroppables, this),
+		stop: _.partial(splash.DragDropController.cleanupAndClearDroppables, this)
+	});
 
-  // NOTE: Does not trigger if first input is invalid!
+	// NOTE: Does not trigger if first input is invalid!
 	htmlElement.on("change", function() {
-  	var listOfArgs = $(this).find('.block-arg');
+	  	var listOfArgs = $(this).find('.block-arg');
 		for (var i = 0; i < listOfArgs.length; i++) {
 			var inputField = $(listOfArgs[i]);
-			console.log("Change Detected");
-			console.log(inputField.val());
-			console.log(inputField.val().length);
+			//console.log("Change Detected");
+			//console.log(inputField.val());
+			//console.log(inputField.val().length);
 
 			if (isNaN(parseInt(inputField.val()))) {
 				inputField.val(0);
@@ -227,6 +227,7 @@ splash.MoveXBlock.prototype.expectedArgsCount = 1;
 splash.MoveXBlock.prototype.inputLimits = [99];
 splash.MoveXBlock.prototype.postExecutionDelay = 410;
 splash.MoveXBlock.prototype.codeSnippet = function() {
+	//console.log(this);
 	var steps = this.args[0] * this.step;
 	splash.SpriteManager.getCurrentSprite().translate("x", steps);
 };
@@ -338,14 +339,14 @@ splash.Sprite.prototype.removeFirstLevelBlock = function(block) {
 			this.firstLevelBlocks.splice(index, 1);
 }
 splash.Sprite.prototype.render = function() {
-  var htmlElement = $('<img class="sprite" src="'+ this.costumes[0] +'">');
+  var htmlElement = $('<img class="sprite" src="/static/images/'+ this.costumes[0] +'">');
 
   htmlElement.one("load", function(){
   	var yCentreOffset = -htmlElement.prop("naturalHeight")/2;
   	var xCentreOffset = -htmlElement.prop("naturalWidth")/2;
 
     htmlElement.css({
-	  	"margin-bottom": yCentreOffset +"px",
+	  	"margin-bottom": yCentreOffset + "px",
 	  	"margin-left" :  xCentreOffset + "px",
 	  });
   });
@@ -353,25 +354,25 @@ splash.Sprite.prototype.render = function() {
   return htmlElement;
 }
 splash.Sprite.prototype.changeCostume = function(index) {
-	this.htmlElement.attr('src', this.costumes[index]);
+	this.htmlElement.attr('src', "/static/images/" + this.costumes[index]);
 }
 splash.Sprite.prototype.setVisibility = function(visibilityValue) {
 	visibilityValue ? this.htmlElement.show() : this.htmlElement.hide();
 }
 splash.Sprite.prototype.setPosition = function(axis, value) {
 	if (axis == "y") {
-		splash.SpriteManager.getCurrentSprite().htmlElement.css("bottom", value + "px");
+		this.htmlElement.css("bottom", value + "px");
 	} else if (axis == "x") {
-		splash.SpriteManager.getCurrentSprite().htmlElement.css("left", value + "px");
+		this.htmlElement.css("left", value + "px");
 	}
 }
 splash.Sprite.prototype.translate = function(axis, value) {
 	if (axis == "y") {
-		splash.SpriteManager.getCurrentSprite().htmlElement.animate({"bottom": "+=" + value + "px"});
+		this.htmlElement.animate({"bottom": "+=" + value + "px"});
 	} else if (axis == "x") {
-		splash.SpriteManager.getCurrentSprite().htmlElement.animate({"left": "+=" + value + "px"});
+		this.htmlElement.animate({"left": "+=" + value + "px"});
 	}
-}}
+}
 
 splash.Background = function Background(parameters) {
 	splash.Obj.call(this);
