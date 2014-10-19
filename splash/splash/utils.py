@@ -93,9 +93,9 @@ def load_serialized_program(request, program_code):
 
 
 def get_failure_msg(error):
-	response = "{'success':False, 'error':'" + error + "'}"
+	response = '{"success":"False", "error":"' + error + '"}'
 	return response
 
 def get_success_msg(data):
-	response = "{'success':True, 'data':'" + data + "'}"
+	response = '{"success":"True", "data":"' + data + '"}'
 	return response
