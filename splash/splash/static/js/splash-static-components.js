@@ -398,7 +398,7 @@ splash.StageManager = {
 			url: "background_school.png"
 		}));
 
-		splash.BackgroundManager.setCurrentBackground("beach");
+		splash.BackgroundManager.setCurrentBackground(0);
 	},
 	initializeSprites: function() {
 		var newSprite = new splash.Sprite({costumes: ["happy_turtle.png", "happy_turtle2.png", "sad_turtle.png"]});
@@ -414,5 +414,36 @@ splash.StageManager = {
 		$("#stopButton").on("click", function() {
 			;
 		});
+	}
+}
+
+splash.PageManager = {
+	initialize: function() {
+		splash.PageManager.load();
+
+		$("#newButton").on("click", function() {
+			location.replace("/new_program");
+		});
+		$("#saveButton").on("click", function() {
+			var saveData = JSON.stringify(splash.Serializer.serializeInitial(splash.SpriteManager.spriteList));
+			$.post("save", saveData, function(reply) {
+				console.log(reply);
+			}, "text");
+		});
+		$("makePrivateButton").on("click", function() {
+			$.get("perm/pr", "", function(reply) {
+				console.log(reply);
+			}, "text");
+		});
+		$("makePublicButton").on("click", function() {
+			$.get("perm/pu", "", function(reply) {
+				console.log(reply);
+			}, "text");
+		});
+	},
+	load: function() {
+		$.get("load", "", function(reply) {
+			console.log(reply);
+		}, "text");
 	}
 }

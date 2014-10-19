@@ -3,6 +3,7 @@ var splash = splash || {};
 splash.Main = {
 	initializeComponents: function() {
 		splash.StageManager.initialize();
+		splash.PageManager.initialize();
 		splash.Main.initializeTemplates();
 	},
 	initializeTemplates: function() {
@@ -84,7 +85,7 @@ $(function() {
 
 
 
-	// var pppl = JSON.stringify(splash.Serializer.serializeInitial(newSprite));
+	// var pppl = JSON.stringify(splash.Serializer.serializeInitial(splash.SpriteManager.spriteList));
 	// console.log(pppl);
 	// console.log("TEST 2 START");
 	// console.log(splash.Serializer.deserializeInitial(JSON.parse(pppl)));
