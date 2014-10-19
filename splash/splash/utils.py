@@ -1,4 +1,4 @@
-import random, string
+import random, string, json
 from django.shortcuts import render, redirect
 import splash.gateway as gateway
 
@@ -93,9 +93,18 @@ def load_serialized_program(request, program_code):
 
 
 def get_failure_msg(error):
-	response = '{"success":"False", "error":"' + error + '"}'
+	response = {}
+	response['success'] = "False"
+	response['error'] = error
+	response = json.dumps(response)
 	return response
 
 def get_success_msg(data):
-	response = '{"success":"True", "data":"' + data + '"}'
+	response = {}
+	if (data != ''):
+		data = json.loads(data)
+	print(data)
+	response['success'] = "True"
+	response['data'] = data
+	response = json.dumps(response)
 	return response
