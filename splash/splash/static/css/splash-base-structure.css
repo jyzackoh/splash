@@ -1,5 +1,6 @@
 .splashStudio .container {
 	width: 100%;
+	overflow: hidden;
 }
 
 .splashStudio .row {
@@ -47,6 +48,8 @@
 	margin-top: 35px;
 	border-radius: 5px;
 	background-image: url("/static/images/background_default.png");
+	padding: 0px;
+	overflow: hidden;
 }
 
 .gallery {
@@ -116,4 +119,8 @@
 	border: 1px solid grey;
 	border-radius: 5px;
 	font-size: 12px;
+}
+
+.sprite {
+	position: absolute;
 }

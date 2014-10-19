@@ -4,8 +4,18 @@ def add_new_program(program_code, permission, owner):
 	#print(owner)
 	Programs.objects.create(program_code=program_code, serialized_program="", permission=permission, owner=owner)
 
-def update_program(program_code, serialized_program):
-	pass
+def save_program(program_code, serialized_program):
+	program = Programs.objects.get(program_code=program_code)
+	program.serialized_program = serialized_program
+	program.save()
+
+def save_permission(program_code, permission):
+	program = Programs.objects.get(program_code=program_code)
+	program.permission = permission
+	program.save()
+
+def load_program(program_code):
+	return Programs.objects.get(program_code=program_code)
 
 def program_is_exist(program_code):
 	program_obj = None
