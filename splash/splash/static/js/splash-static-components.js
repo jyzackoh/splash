@@ -353,6 +353,8 @@ splash.Serializer = {
 
 		if(obj.type == "splashObject") {
 			var value = splash[obj.class].prototype.deserialize(obj);
+			console.log("main des");
+			console.log(value);
 
 			that.splashObjectList[obj.serializeId] = value;
 			return value;
@@ -453,19 +455,28 @@ splash.PageManager = {
 		$("#saveButton").on("click", function() {
 			splash.PageManager.showMessage("Saving...");
 
+			console.log("save checkpoint1");
+
 			var saveData = JSON.stringify(splash.Serializer.serializeInitial(splash.SpriteManager.spriteList));
 
+			console.log("save checkpoint2");
+
 			try {
+
 				$.post("save/", saveData, function(reply) {
+					console.log("save checkpoint3");
 					if(reply.success == true) {
+						console.log("save checkpoint4");
 						splash.PageManager.showMessage("Saved!", true);
 					}
 					else {
+						console.log("save checkpoint5");
 						splash.PageManager.showMessage(reply.error, true);
 					}
 				});
 			}
 			catch(e) {
+				console.log("save checkpoint6");
 				splash.PageManager.showMessage("An error occured while attempting to save the program.", true);
 			}
 		});
@@ -505,7 +516,7 @@ splash.PageManager = {
 		// return;
 		try {
 			console.log("checkpoint1");
-			$.get("load/", {}, function(data) {
+			$.get("load/", {}, function(reply) {
 				console.log("checkpoint2");
 				if(reply.data == "") {
 					console.log("exit1");
@@ -514,13 +525,20 @@ splash.PageManager = {
 				}
 				console.log("checkpoint3");
 
-				var loadedObj = splash.Serializer.deserializeInitial(JSON.parse(reply.data));
+				console.log(reply.data);
+
+				var loadedObj = splash.Serializer.deserializeInitial(reply.data);
 				splash.SpriteManager.spriteList = loadedObj;
 				splash.SpriteManager.setCurrentSprite(splash.SpriteManager.spriteList[0]);
 
 				console.log("checkpoint4");
+				console.log(loadedObj);
+				console.log(splash.SpriteManager.getCurrentSprite().firstLevelBlocks);
 
-				_forEach(splash.SpriteManager.getCurrentSprite().firstLevelBlocks, function(block) {
+				_.forEach(splash.SpriteManager.getCurrentSprite().firstLevelBlocks, function(block) {
+
+					console.log("checkpoint6");
+
 					var htmlElement = splash.Renderer.renderBlockChain(block);
 					htmlElement.css({
 						top: block.positionInfo.top,

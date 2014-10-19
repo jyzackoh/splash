@@ -341,7 +341,10 @@ splash.ChangeBackgroundBlock.prototype.codeSnippet = function() {
 splash.Sprite = function Sprite(parameters) {
 	splash.Util.parseParameters(this, parameters);
 	splash.Obj.call(this);
-	this.firstLevelBlocks = [];
+
+	if(!this.firstLevelBlocks)
+		this.firstLevelBlocks = [];
+	
 	this.isVisible = true;
 	this.htmlElement = this.render();
 }
