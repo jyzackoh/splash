@@ -37,7 +37,6 @@ splash.Main = {
 
 $(function() {
 	splash.Main.initializeComponents();
-
 	// var abc1 = new splash.SetXBlock({
 	// 	name: "abc1",
 	// 	codeSnippet: function() {

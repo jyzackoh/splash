@@ -5,7 +5,7 @@
 	display: inline-block; /* to make parent wrap child for nesting*/
 	background: #FFF;
 	position: relative;
-	min-width: 180px;
+	min-width: 200px;
 }
 
 .block-default {
@@ -81,7 +81,7 @@
 
 .chain-snap-area {
 	height: 30px;
-	min-width: 180px;
+	min-width: 200px;
 	background: default;
 	border-radius: 5px;
 	background: #FFF;

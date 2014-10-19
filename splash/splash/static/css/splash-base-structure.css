@@ -48,6 +48,8 @@
 	margin-top: 35px;
 	border-radius: 5px;
 	background-image: url("/static/images/background_default.png");
+	background-size: 100% 100%;
+    background-repeat: no-repeat;
 	padding: 0px;
 	overflow: hidden;
 }
