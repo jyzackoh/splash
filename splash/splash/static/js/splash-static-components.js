@@ -422,27 +422,27 @@ splash.PageManager = {
 		splash.PageManager.load();
 
 		$("#newButton").on("click", function() {
-			location.replace("/new_program");
+			location.replace("/new_program/");
 		});
 		$("#saveButton").on("click", function() {
 			var saveData = JSON.stringify(splash.Serializer.serializeInitial(splash.SpriteManager.spriteList));
-			$.post("save", saveData, function(reply) {
+			$.post("save/", saveData, function(reply) {
 				console.log(reply);
 			}, "text");
 		});
-		$("makePrivateButton").on("click", function() {
-			$.get("perm/pr", "", function(reply) {
+		$("#makePrivateButton").on("click", function() {
+			$.get("perm/PR/", "", function(reply) {
 				console.log(reply);
 			}, "text");
 		});
-		$("makePublicButton").on("click", function() {
-			$.get("perm/pu", "", function(reply) {
+		$("#makePublicButton").on("click", function() {
+			$.get("perm/PU/", "", function(reply) {
 				console.log(reply);
 			}, "text");
 		});
 	},
 	load: function() {
-		$.get("load", "", function(reply) {
+		$.get("load/", "", function(reply) {
 			console.log(reply);
 		}, "text");
 	}
