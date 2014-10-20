@@ -483,11 +483,11 @@ splash.PageManager = {
 		$("#makePrivateButton").on("click", function() {
 			try {
 				$.get("perm/PR/", {}, function(reply) {
-					if(reply.success == true) {
+					if(reply.success == "True") {
 						splash.PageManager.showMessage("Your program has been made private!", true);
 					}
 					else {
-						splash.PageManager.showMessage(reply.error, true);
+						splash.PageManager.showMessage(reply.data, true);
 					}
 				});
 			}
@@ -498,11 +498,11 @@ splash.PageManager = {
 		$("#makePublicButton").on("click", function() {
 			try {
 				$.get("perm/PU/", {}, function(reply) {
-					if(reply.success == true) {
+					if(reply.success == "True") {
 						splash.PageManager.showMessage("Your program has been made public!", true);
 					}
 					else {
-						splash.PageManager.showMessage(reply.error, true);
+						splash.PageManager.showMessage(reply.data, true);
 					}
 				});
 			}
