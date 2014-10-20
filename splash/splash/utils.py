@@ -103,7 +103,6 @@ def get_success_msg(data):
 	response = {}
 	if (data != ''):
 		data = json.loads(data)
-	print(data)
 	response['success'] = "True"
 	response['data'] = data
 	response = json.dumps(response)
