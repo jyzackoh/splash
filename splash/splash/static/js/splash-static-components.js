@@ -1,5 +1,4 @@
 var splash = splash || {};
-
 splash.Util = {
 	partial: function() {
 		var fn = arguments[0];
@@ -277,7 +276,8 @@ splash.DragDropController = {
 		dropAreaLink.child = splash.DragDropController.currentDraggedBlock.block;
 		splash.DragDropController.currentDraggedBlock.block.parentLink = dropAreaLink;
 
-		dropAreaLink.htmlElementToAttachBlockTo.append(splash.DragDropController.currentDraggedBlock.block.htmlElement);
+		dropAreaLink.parent.htmlElement.append(splash.DragDropController.currentDraggedBlock.block.htmlElement);
+		//dropAreaLink.htmlElementToAttachBlockTo.append(splash.DragDropController.currentDraggedBlock.block.htmlElement);
 		splash.DragDropController.currentDraggedBlock.block.htmlElement.css({
 			position: "relative",
 			top: "auto",
@@ -288,6 +288,7 @@ splash.DragDropController = {
 
 splash.Serializer = {
 	splashObjectList: [],
+	splashObjectDereferenceList: [],
 	splashObjectSerializeId: 1,
 	serializeInitial: function(obj) {
 		var that = splash.Serializer;
@@ -352,15 +353,20 @@ splash.Serializer = {
 		var returnObject;
 
 		if(obj.type == "splashObject") {
-			var value = splash[obj.class].prototype.deserialize(obj);
-			console.log("main des");
-			console.log(value);
-
+			var value = new splash[obj.class](); // We create a default object first, so we get the reference first.
 			that.splashObjectList[obj.serializeId] = value;
+
+			splash[obj.class].prototype.deserialize.call(value, obj);
+			
 			return value;
 		}
 		else if(obj.type == "splashObjectReference") {
-			return that.splashObjectList[obj.value];
+			if(that.splashObjectList[obj.serializeId] == undefined) {
+				console.warning("Object Reference Failed!!")
+				console.warning(obj);
+				return;
+			}
+			return that.splashObjectList[obj.serializeId];
 		}
 		else if(obj.type == "plainObject") {
 			var value = {};
@@ -438,6 +444,8 @@ splash.StageManager = {
 			splash.Interpreter.stopAll = true;
 			splash.StageManager.isPlaying = false;
 			setTimeout(function() {
+				splash.BackgroundManager.setCurrentBackground(0);
+				splash.SpriteManager.getCurrentSprite().changeCostume(0);
 				splash.SpriteManager.getCurrentSprite().setPosition("x", $(".stageOutput").width() / 2);
 				splash.SpriteManager.getCurrentSprite().setPosition("y", $(".stageOutput").height() / 2);
 			}, 400);
@@ -455,28 +463,20 @@ splash.PageManager = {
 		$("#saveButton").on("click", function() {
 			splash.PageManager.showMessage("Saving...");
 
-			console.log("save checkpoint1");
-
-			var saveData = JSON.stringify(splash.Serializer.serializeInitial(splash.SpriteManager.spriteList));
-
-			console.log("save checkpoint2");
+			var saveData = JSON.stringify(splash.Serializer.serializeInitial(splash.SpriteManager.currentSprite.firstLevelBlocks));
 
 			try {
 
 				$.post("save/", saveData, function(reply) {
-					console.log("save checkpoint3");
-					if(reply.success == true) {
-						console.log("save checkpoint4");
+					if(reply.success == "True") {
 						splash.PageManager.showMessage("Saved!", true);
 					}
 					else {
-						console.log("save checkpoint5");
-						splash.PageManager.showMessage(reply.error, true);
+						splash.PageManager.showMessage(reply.data, true);
 					}
 				});
 			}
 			catch(e) {
-				console.log("save checkpoint6");
 				splash.PageManager.showMessage("An error occured while attempting to save the program.", true);
 			}
 		});
@@ -515,29 +515,28 @@ splash.PageManager = {
 		// splash.PageManager.hideMessage();
 		// return;
 		try {
-			console.log("checkpoint1");
+			// console.log("checkpoint1");
 			$.get("load/", {}, function(reply) {
-				console.log("checkpoint2");
+				// console.log("checkpoint2");
 				if(reply.data == "") {
-					console.log("exit1");
+					// console.log("exit1");
 					splash.PageManager.hideMessage();
 					return;
 				}
-				console.log("checkpoint3");
+				// console.log("checkpoint3");
 
-				console.log(reply.data);
+				// console.log(reply.data);
 
 				var loadedObj = splash.Serializer.deserializeInitial(reply.data);
-				splash.SpriteManager.spriteList = loadedObj;
-				splash.SpriteManager.setCurrentSprite(splash.SpriteManager.spriteList[0]);
+				splash.SpriteManager.currentSprite.firstLevelBlocks = loadedObj;
 
-				console.log("checkpoint4");
-				console.log(loadedObj);
-				console.log(splash.SpriteManager.getCurrentSprite().firstLevelBlocks);
+				// console.log("checkpoint4");
+				// console.log(loadedObj);
+				// console.log(splash.SpriteManager.getCurrentSprite().firstLevelBlocks);
 
-				_.forEach(splash.SpriteManager.getCurrentSprite().firstLevelBlocks, function(block) {
+				_.forEach(splash.SpriteManager.currentSprite.firstLevelBlocks, function(block) {
 
-					console.log("checkpoint6");
+					// console.log("checkpoint6");
 
 					var htmlElement = splash.Renderer.renderBlockChain(block);
 					htmlElement.css({
@@ -547,7 +546,7 @@ splash.PageManager = {
 					$(".canvas").append(htmlElement);
 				});
 
-				console.log("checkpoint5");
+				// console.log("checkpoint5");
 				splash.PageManager.hideMessage();
 			});
 		}

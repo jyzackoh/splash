@@ -23,6 +23,7 @@ splash.Obj.prototype.serialize = function(splashObjectId) {
 
 		if(key == "serializeId")
 			return;
+		
 		returnObject.value[key] = splash.Serializer.serialize(value);
 	});
 
@@ -36,9 +37,7 @@ splash.Obj.prototype.deserialize = function(obj) {
 		parameters[i] = splash.Serializer.deserialize(obj.value[i]);
 	}
 
-	var returnObject = new splash[obj.class](parameters);
-
-	return returnObject;
+	splash.Util.parseParameters(this, parameters);
 };
 
 splash.BlockLink = function BlockLink(parameters) {
@@ -143,17 +142,25 @@ splash.Block.prototype.serialize = function(splashObjectId) {
 			top: this.htmlElement.position().top
 		};
 	}
+	
+	returnObject.blockArgValues = [];
+
+	for (var i = 0; i < this.expectedArgsCount; i++) {
+		returnObject.blockArgValues.push(this.htmlElement.find(".block-arg").eq(i).val());
+	}
 
 	return returnObject;
 };
 splash.Block.prototype.deserialize = function(obj) {
-	var returnObject = splash.Obj.prototype.deserialize.call(this, obj);
+	splash.Obj.prototype.deserialize.call(this, obj);
 
 	if(obj.positionInfo != undefined) {
-		returnObject.positionInfo = _.clone(obj.positionInfo);
+		this.positionInfo = _.clone(obj.positionInfo);
 	}
 
-	return returnObject;
+	for (var i = 0; i < this.expectedArgsCount; i++) {
+		this.htmlElement.find(".block-arg").eq(i).val(obj.blockArgValues[i]);
+	}
 };
 
 //Set X Block

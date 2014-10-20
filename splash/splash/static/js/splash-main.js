@@ -3,8 +3,8 @@ var splash = splash || {};
 splash.Main = {
 	initializeComponents: function() {
 		splash.StageManager.initialize();
-		splash.PageManager.initialize();
 		splash.GalleryManager.initialize();
+		splash.PageManager.initialize();
 		splash.Main.initializeTemplates();
 	},
 	initializeTemplates: function() {
