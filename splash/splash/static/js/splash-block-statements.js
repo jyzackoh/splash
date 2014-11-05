@@ -12,13 +12,8 @@ splash.StatementBlock = function StatementBlock(parameters) {
 	this.nextBlockLink = new splash.BlockLink({parent: this, htmlElementToAttachBlockTo: this.htmlElement});
 }
 splash.Util.inherits(splash.StatementBlock, splash.Block);
-splash.StatementBlock.prototype.name = "StatementBlock";
-splash.StatementBlock.prototype.colour = "default";
 splash.StatementBlock.prototype.step = 5;
-splash.StatementBlock.prototype.expectedArgsCount = 0;
 splash.StatementBlock.prototype.inputLimits = [];
-splash.StatementBlock.prototype.postExecutionDelay = 0;
-splash.StatementBlock.prototype.codeSnippet = function() {};
 splash.StatementBlock.prototype.render = function() {
 	var that = this;
 	var inputInjector = function() {
@@ -30,13 +25,12 @@ splash.StatementBlock.prototype.render = function() {
     return returnString;
 	};
 
-	var htmlElement = $('<div class="block-drag-area"><div class=" block block-statement block-'+ that.colour +'"><div class="block-signature"><div class="block-name">' + that.name + '</div><div class="block-args">'+ inputInjector() +'</div></div><div class="sub-blocks"></div></div></div>')
+	var htmlElement = $('<div class="block-drag-area"><div class=" block block-statement block-'+ that.colour +'"><div class="block-signature"><div class="block-name block-text">' + that.name + '</div><div class="block-args">'+ inputInjector() +'</div></div><div class="sub-blocks"></div></div></div>')
 	.draggable({
 		start: _.partial(splash.DragDropController.unchainAndDrawDroppables, this),
 		stop: _.partial(splash.DragDropController.cleanupAndClearDroppables, this)
 	});
 
-	// NOTE: Does not trigger if first input is invalid!
 	htmlElement.children(".block-statement").on("change", function() {
 	  var listOfArgs = $(this).find('.block-arg');
 		for (var i = 0; i < listOfArgs.length; i++) {
@@ -59,48 +53,48 @@ splash.StatementBlock.prototype.render = function() {
 
   return htmlElement;
 };
-// Sub-classes should not overwrite the following functions (i.e. "final methods")
-splash.StatementBlock.prototype.setNextBlockLink = function(nextBlock) {
-	this.nextBlockLink.child = nextBlock;
-	nextBlock.parentLink = this.nextBlockLink; // the blocklink
-};
-splash.StatementBlock.prototype.getNextBlockLink = function() {
-	return this.nextBlockLink.child;
-};
-splash.StatementBlock.prototype.removeParentLink = function() {
-	this.parentLink.child = undefined;
-	this.parentLink = undefined;
-};
-splash.StatementBlock.prototype.serialize = function(splashObjectId) {
-	var returnObject = splash.Obj.prototype.serialize.call(this, splashObjectId);
+// // Sub-classes should not overwrite the following functions (i.e. "final methods")
+// splash.StatementBlock.prototype.setNextBlockLink = function(nextBlock) {
+// 	this.nextBlockLink.child = nextBlock;
+// 	nextBlock.parentLink = this.nextBlockLink; // the blocklink
+// };
+// splash.StatementBlock.prototype.getNextBlockLink = function() {
+// 	return this.nextBlockLink.child;
+// };
+// splash.StatementBlock.prototype.removeParentLink = function() {
+// 	this.parentLink.child = undefined;
+// 	this.parentLink = undefined;
+// };
+// splash.StatementBlock.prototype.serialize = function(splashObjectId) {
+// 	var returnObject = splash.Obj.prototype.serialize.call(this, splashObjectId);
 
-	if(this.htmlElement.css("position") == "absolute") {
-		returnObject.positionInfo = {
-			left: this.htmlElement.position().left,
-			top: this.htmlElement.position().top
-		};
-	}
-	
-	returnObject.blockArgValues = [];
-
-	for (var i = 0; i < this.expectedArgsCount; i++) {
-		returnObject.blockArgValues.push(this.htmlElement.find(".block-arg").eq(i).val());
-	}
-
-	return returnObject;
-};
-
-// splash.StatementBlock.prototype.deserialize = function(obj) {
-// 	splash.Obj.prototype.deserialize.call(this, obj);
-
-// 	if(obj.positionInfo != undefined) {
-// 		this.positionInfo = _.clone(obj.positionInfo);
+// 	if(this.htmlElement.css("position") == "absolute") {
+// 		returnObject.positionInfo = {
+// 			left: this.htmlElement.position().left,
+// 			top: this.htmlElement.position().top
+// 		};
 // 	}
+	
+// 	returnObject.blockArgValues = [];
 
 // 	for (var i = 0; i < this.expectedArgsCount; i++) {
-// 		this.htmlElement.find(".block-arg").eq(i).val(obj.blockArgValues[i]);
+// 		returnObject.blockArgValues.push(this.htmlElement.find(".block-arg").eq(i).val());
 // 	}
+
+// 	return returnObject;
 // };
+
+// // splash.StatementBlock.prototype.deserialize = function(obj) {
+// // 	splash.Obj.prototype.deserialize.call(this, obj);
+
+// // 	if(obj.positionInfo != undefined) {
+// // 		this.positionInfo = _.clone(obj.positionInfo);
+// // 	}
+
+// // 	for (var i = 0; i < this.expectedArgsCount; i++) {
+// // 		this.htmlElement.find(".block-arg").eq(i).val(obj.blockArgValues[i]);
+// // 	}
+// // };
 
 //Set X Block
 splash.SetXBlock = function SetXBlock(parameters) {

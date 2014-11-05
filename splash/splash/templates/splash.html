@@ -18,7 +18,7 @@
 </head>
 
 <body>
-    <div class="overlay"><span><h3>Loading...</h3><button>Okay</button></span></div>
+    <!-- <div class="overlay"><span><h3>Loading...</h3><button>Okay</button></span></div> -->
 	<nav class="navbar navbar-default navbar-fixed-top navbar-inverse" role="navigation">
         <div class="container">
             <ul class="nav navbar-nav">
@@ -59,10 +59,14 @@
                     </div>
                     <div class="gallery">
                         <ul class="nav nav-tabs galleryTabs" role="tablist">
-                            <li class="active"><a href="#">Costumes</a></li>
-                            <!-- <li><a href="#">Backgrounds</a></li> -->
+                            <li class="active"><a href="#costumes" data-toggle="tab">Costumes</a></li>
+                            <li><a href="#backgrounds" data-toggle="tab">Backgrounds</a></li>
                         </ul>
-                        <div class="gallerySelection col-md-12"></div>
+                        <div class="tab-content">
+                            <div class="tab-pane active gallerySelection col-md-12" id="costumes"></div>
+                            <div class="tab-pane gallerySelection col-md-12" id="backgrounds"></div>
+                        </div>
+                        
                             <!-- <div class="galleryAdd col-md-2">
                                 <button type="button" class="btn btn-default btn-sm galleryBtn">
                                     <span class="glyphicon glyphicon-plus"></span> Add

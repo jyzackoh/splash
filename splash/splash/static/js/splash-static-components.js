@@ -579,8 +579,11 @@ splash.PageManager = {
 
 splash.GalleryManager ={
 	initialize: function() {
-		$(".gallerySelection").append($('<img src="/static/images/happy_turtle.png">'))
-		$(".gallerySelection").append($('<img src="/static/images/happy_turtle2.png">'))
-		$(".gallerySelection").append($('<img src="/static/images/sad_turtle.png">'))
+		$("#costumes").append($('<img src="/static/images/happy_turtle.png">'))
+		$("#costumes").append($('<img src="/static/images/happy_turtle2.png">'))
+		$("#costumes").append($('<img src="/static/images/sad_turtle.png">'))
+
+		$("#backgrounds").append($('<img src="/static/images/background_beach.png">'))
+		$("#backgrounds").append($('<img src="/static/images/background_school.png">'))
 	}
 }

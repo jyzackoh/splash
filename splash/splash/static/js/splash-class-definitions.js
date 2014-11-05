@@ -175,6 +175,14 @@ splash.Sprite.prototype.setPosition = function(axis, value) {
 		this.htmlElement.css("left", value + "px");
 	}
 }
+splash.Sprite.prototype.getPosition = function() {
+	var defaultPosition = this.htmlElement.position();
+	var position = {
+		x: defaultPosition.left,
+		y: (StageManager.stageDimension.height - defaultPosition.top),
+	}
+	return position;
+}
 splash.Sprite.prototype.translate = function(axis, value) {
 	if (axis == "y") {
 		this.htmlElement.animate({"bottom": "+=" + value + "px"});

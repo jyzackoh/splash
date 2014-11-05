@@ -12,6 +12,22 @@
 	min-width: 200px;
 }
 
+.block-operator {
+	border: 2px solid;
+	padding: 2px;
+	display: inline-block; /* to make parent wrap child for nesting*/
+	background: #FFF;
+	position: relative;
+}
+
+.block-variable {
+	border: 2px solid;
+	padding: 2px;
+	display: inline-block; /* to make parent wrap child for nesting*/
+	background: #FFF;
+	position: relative;
+}
+
 .block-default {
 	background-color: none;
 }
@@ -54,9 +70,12 @@
 }
 
 .block-name {
-	float:left;
 	margin-top: 3px; /*manually pushing block name down to align with inputs :(*/
 	margin-right: 5px;
+	float: left;
+}
+
+.block-text {
 	color: white;
 	text-shadow: 	0px 0px 1px #000, 
 					0px 0px 1px #000, 
