@@ -16,7 +16,9 @@ splash.Main = {
 			block.htmlElement.draggable({
 				helper: "clone",
 				start: _.partial(splash.DragDropController.setupTemplateCloneAndDrawDroppables, block.constructor.name),
-				stop: splash.DragDropController.cleanupTemplateCloneAndClearDroppables
+				stop: splash.DragDropController.cleanupTemplateCloneAndClearDroppables,
+				zIndex: 1000,
+				refreshPositions: true
 			});
 			block.htmlElement.appendTo($(category + " .panel-body"));
 		}

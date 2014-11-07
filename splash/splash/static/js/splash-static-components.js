@@ -132,49 +132,43 @@ splash.Renderer = {
 
 splash.DragDropController = {
 	currentDraggedBlock: {
-		block: undefined,
-		originalOffset: undefined,
-		parentName: undefined
+		block: undefined
 	},
 
 	resetCurrentDraggedBlock: function() {
 		splash.DragDropController.currentDraggedBlock = {
-			block: undefined,
-			originalOffset: undefined,
-			parentName: undefined
+			block: undefined
 		}
 	},
 
 	drawDroppables: function() {
-		var drawDroppable = function(startingBlock) {
-			var currentBlock = startingBlock;
-			while(true) {
-				// if(currentBlock instanceof splash.RepeatBlock) {
-				// 	if(currentBlock.repeatSubBlocksLink.child == undefined) {
-				// 		currentBlock.htmlElement.find(".sub-blocks").append(currentBlock.repeatSubBlocksLink.htmlElement);
-				// 	}
-				// 	else {
-
-				// 		drawDroppable(currentBlock.repeatSubBlocksLink.child);
-				// 	}
-				// }
-
-				if(currentBlock.nextBlockLink.child != undefined) {
-					currentBlock = currentBlock.nextBlockLink.child;
-					continue;
-				}
-
-				// //console.log(currentBlock.name);
-				currentBlock.nextBlockLink.htmlElement.insertAfter(currentBlock.htmlElement.children(".block")); // Relook at the tree traversal
-				break;
-			}
-		}
-
-		_.forEach(splash.SpriteManager.currentSprite.firstLevelBlocks, drawDroppable);
+		_.forEach(splash.SpriteManager.currentSprite.firstLevelBlocks, splash.DragDropController.drawDroppable);
 	},
 
-	drawRepeatDroppables: function() {
+	drawDroppable: function(startingBlock) {
+		var currentBlock = startingBlock;
+		while(true) {
+			if(currentBlock instanceof splash.RepeatBlock) {
+				splash.DragDropController.drawRepeatDroppables(currentBlock);
+			}
 
+			if(currentBlock.nextBlockLink.child != undefined) {
+				currentBlock = currentBlock.nextBlockLink.child;
+				continue;
+			}
+
+			currentBlock.nextBlockLink.getAttachHtmlElement().append(currentBlock.nextBlockLink.htmlElement);
+			break;
+		}
+	},
+
+	drawRepeatDroppables: function(currentBlock) {
+		if(currentBlock.repeatSubBlocksLink.child == undefined) {
+			currentBlock.repeatSubBlocksLink.getAttachHtmlElement().append(currentBlock.repeatSubBlocksLink.htmlElement);
+		}
+		else {
+			splash.DragDropController.drawDroppable(currentBlock.repeatSubBlocksLink.child);
+		}
 	},
 
 	unchainAndDrawDroppables: function(draggedBlock) {
@@ -187,15 +181,10 @@ splash.DragDropController = {
 			splash.SpriteManager.currentSprite.removeFirstLevelBlock(draggedBlock);
 		}
 
+		draggedBlock.htmlElement.hide();
+
 		// Record dragged block
 		splash.DragDropController.currentDraggedBlock.block = draggedBlock;
-		splash.DragDropController.currentDraggedBlock.originalOffset = _.clone(draggedBlock.htmlElement.offset());
-		splash.DragDropController.currentDraggedBlock.parentName = (draggedBlock.htmlElement.parent().is(".canvas") ? "canvas" : "nested");
-
-		// Set z-index
-		draggedBlock.htmlElement.css({
-			"z-index": 1000
-		});
 
 		// Draw droppables
 		splash.DragDropController.drawDroppables();
@@ -204,35 +193,20 @@ splash.DragDropController = {
 	cleanupAndClearDroppables: function(draggedBlock, event, ui) {
 		// Note: the drop handler will fire first.
 
-		// Set z-index
-		draggedBlock.htmlElement.css({
-			"z-index": "auto"
-		});
-
 		// Check if block was dropped on a snap area (and hence has a parent)
 		if(draggedBlock.parentLink == undefined) {
 			$(".canvas").append(draggedBlock.htmlElement);
+			draggedBlock.htmlElement.show();
 			draggedBlock.htmlElement.css({
 				position: "absolute",
+				top: ui.offset.top - $(".canvas").offset().top,
+				left: ui.offset.left - $(".canvas").offset().left
 			});
 
-			if(splash.DragDropController.currentDraggedBlock.parentName == "nested") {
-				draggedBlock.htmlElement.css({
-					top: splash.DragDropController.currentDraggedBlock.originalOffset.top + ui.position.top - $(".canvas").offset().top,
-					left: splash.DragDropController.currentDraggedBlock.originalOffset.left + ui.position.left - $(".canvas").offset().left,
-				});
-			}
-			else if(splash.DragDropController.currentDraggedBlock.parentName == "template") {
-				draggedBlock.htmlElement.css({
-					top: ui.offset.top - $(".canvas").offset().top,
-					left: ui.offset.left - $(".canvas").offset().left,
-				});
-			}
-
-			if(draggedBlock.htmlElement.position().left < -draggedBlock.htmlElement.width() + 10
-				|| draggedBlock.htmlElement.position().top < -draggedBlock.htmlElement.children(".block-signature").height() + 10
-				|| draggedBlock.htmlElement.position().left > $(".canvas").width() - 10
-				|| draggedBlock.htmlElement.position().top > $(".canvas").height() - 10) { // Block is deleted
+			if(draggedBlock.htmlElement.position().left + draggedBlock.htmlElement.width() < 10
+				|| draggedBlock.htmlElement.position().top + draggedBlock.htmlElement.find(".block-signature").height() < 10
+				|| $(".canvas").width() - draggedBlock.htmlElement.position().left < 10
+				|| $(".canvas").height() - draggedBlock.htmlElement.position().top < 10) { // Block is deleted
 				draggedBlock.htmlElement.remove();
 			}
 			else {
@@ -247,17 +221,9 @@ splash.DragDropController = {
 		$(".chain-snap-area").detach();
 	},
 
-
 	setupTemplateCloneAndDrawDroppables: function(blockName, event, ui) {
 		// Record dragged block
 		splash.DragDropController.currentDraggedBlock.block = new splash[blockName]();
-		splash.DragDropController.currentDraggedBlock.originalOffset = _.clone(ui.helper.offset());
-		splash.DragDropController.currentDraggedBlock.parentName = "template";
-
-		// Set z-index
-		ui.helper.css({
-			"z-index": 1000
-		});
 
 		// Draw droppables
 		splash.DragDropController.drawDroppables();
@@ -273,11 +239,12 @@ splash.DragDropController = {
 		if(splash.DragDropController.currentDraggedBlock.block.parentLink != undefined) {
 			return;
 		}
+
 		dropAreaLink.child = splash.DragDropController.currentDraggedBlock.block;
 		splash.DragDropController.currentDraggedBlock.block.parentLink = dropAreaLink;
 
-		dropAreaLink.parent.htmlElement.append(splash.DragDropController.currentDraggedBlock.block.htmlElement);
-		//dropAreaLink.htmlElementToAttachBlockTo.append(splash.DragDropController.currentDraggedBlock.block.htmlElement);
+		dropAreaLink.getAttachHtmlElement().append(splash.DragDropController.currentDraggedBlock.block.htmlElement);
+		splash.DragDropController.currentDraggedBlock.block.htmlElement.show();
 		splash.DragDropController.currentDraggedBlock.block.htmlElement.css({
 			position: "relative",
 			top: "auto",
@@ -512,8 +479,8 @@ splash.PageManager = {
 		});
 	},
 	load: function() {
-		// splash.PageManager.hideMessage();
-		// return;
+		splash.PageManager.hideMessage();
+		return;
 		try {
 			// console.log("checkpoint1");
 			$.get("load/", {}, function(reply) {

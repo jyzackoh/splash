@@ -43,8 +43,8 @@ splash.Obj.prototype.deserialize = function(obj) {
 splash.BlockLink = function BlockLink(parameters) {
 	splash.Obj.call(this);
 	
-	this.parent = undefined; // this should _not_ change after construction as each blocklink is tied permanently to a link (only child should change)
-	this.htmlElementToAttachBlockTo = undefined;
+	this.parent = undefined; // this should _not_ change after construction as each blocklink is tied permanently to a link (only child should changeoa	this.attachPath = undefined;
+	this.attachPath = "";
 	this.child = undefined;
 	
 	splash.Util.parseParameters(this, parameters);
@@ -53,6 +53,27 @@ splash.BlockLink = function BlockLink(parameters) {
 }
 splash.Util.inherits(splash.BlockLink, splash.Obj);
 splash.BlockLink.prototype.render = function() {
+	return $("<div></div>");
+}
+splash.BlockLink.prototype.getAttachHtmlElement = function() {
+	if(this.attachPath == "")
+		return this.parent.htmlElement;
+	return this.parent.htmlElement.find(this.attachPath);
+}
+
+splash.StatementBlockLink = function StatementBlockLink(parameters) {
+	splash.BlockLink.call(this);
+
+	this.parent = undefined; // this should _not_ change after construction as each blocklink is tied permanently to a link (only child should change)
+	this.attachPath = "";
+	this.child = undefined;
+
+	splash.Util.parseParameters(this, parameters);
+
+	this.htmlElement = this.render();
+}
+splash.Util.inherits(splash.StatementBlockLink, splash.BlockLink);
+splash.StatementBlockLink.prototype.render = function() {
 	var htmlElement = $('<div class="chain-snap-area"></div>')
 		.droppable({
 			hoverClass: "drag-hover",
@@ -71,7 +92,7 @@ splash.Block = function Block(parameters) {
 	splash.Util.parseParameters(this, parameters);
 
 	this.htmlElement = this.render();
-	this.nextBlockLink = new splash.BlockLink({parent: this, htmlElementToAttachBlockTo: this.htmlElement});
+	this.nextBlockLink = new splash.StatementBlockLink({parent: this});
 }
 splash.Util.inherits(splash.Block, splash.Obj);
 splash.Block.prototype.name = "Block";
@@ -95,7 +116,11 @@ splash.Block.prototype.render = function() {
 	var htmlElement = $('<div class="block-drag-area"><div class="block block-'+ that.colour +'"><div class="block-signature"><div class="block-name">' + that.name + '</div><div class="block-args">'+ inputInjector() +'</div></div><div class="sub-blocks"></div></div></div>')
 	.draggable({
 		start: _.partial(splash.DragDropController.unchainAndDrawDroppables, this),
-		stop: _.partial(splash.DragDropController.cleanupAndClearDroppables, this)
+		stop: _.partial(splash.DragDropController.cleanupAndClearDroppables, this),
+		zIndex: 1000,
+		refreshPositions: true,
+		helper: "clone",
+		appendTo: ".canvas"
 	});
 
 		// NOTE: Does not trigger if first input is invalid!
@@ -257,7 +282,7 @@ splash.WaitBlock = function WaitBlock(parameters) {
 }
 splash.Util.inherits(splash.WaitBlock, splash.Block);
 splash.WaitBlock.prototype.name = "Wait for";
-splash.WaitBlock.prototype.colour = "dodgerblue";
+splash.WaitBlock.prototype.colour = "midnightblue";
 splash.WaitBlock.prototype.expectedArgsCount = 1;
 splash.WaitBlock.prototype.postExecutionDelay = 0;
 splash.WaitBlock.prototype.inputLimits = [{max:100, min:0}];
@@ -270,13 +295,13 @@ splash.RepeatBlock = function RepeatBlock(parameters) {
 	splash.Block.call(this);
 
 	this.currentCycleCount = -1;
-	// this.repeatSubBlocksLink = new splash.BlockLink({parent: this, htmlElementToAttachBlockTo: this.htmlElement.find(".sub-blocks")});
+	this.repeatSubBlocksLink = new splash.StatementBlockLink({parent: this, attachPath: "> .block > .sub-blocks"});
 
 	splash.Util.parseParameters(this, parameters);
 }
 splash.Util.inherits(splash.RepeatBlock, splash.Block);
 splash.RepeatBlock.prototype.name = "Repeat for";
-splash.RepeatBlock.prototype.colour = "midnightblue";
+splash.RepeatBlock.prototype.colour = "dodgerblue";
 splash.RepeatBlock.prototype.expectedArgsCount = 1;
 splash.RepeatBlock.prototype.inputLimits = [{max:100, min:0}];
 splash.RepeatBlock.prototype.codeSnippet = function() {
