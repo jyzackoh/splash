@@ -109,9 +109,13 @@
 	border-radius: 5px;
 	background: #FFF;
 	opacity: 0.5;
-	position: absolute;
+	position: relative;
 }
 
 .drag-hover {
 	background: #FFFF00;
+}
+
+.block-drag-area {
+	text-align: center;
 }
