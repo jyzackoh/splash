@@ -19,12 +19,12 @@ splash.StatementBlock.prototype.render = function() {
 	var inputInjector = function() {
 		var returnString = '';
 		for (var i = 0; i < that.expectedArgsCount; i++) {
-			returnString += '<input type="number" value="0" class="block-arg" maxlength="3" min="'+ that.inputLimits[i].min +'" max="'+ that.inputLimits[i].max +'">';
+			returnString += '<div class="block-arg-wrapper float-right"><div class="block-arg-drop-area"></div><input class="block-arg" type="number" value="0" maxlength="3" min="'+ that.inputLimits[i].min +'" max="'+ that.inputLimits[i].max +'"></div>';
 		}
     return returnString;
 	};
 
-	var htmlElement = $('<div class="block-drag-area"><div class="block block-statement block-'+ that.colour +'"><div class="block-signature"><div class="block-name block-text">' + that.name + '</div><div class="block-args">'+ inputInjector() +'</div></div><div class="sub-blocks"></div></div></div>')
+	var htmlElement = $('<div class="block-drag-area"><div class=" block-statement block-'+ that.colour +'"><div class="block-signature"><div class="block-name block-text-outline">' + that.name + '</div>'+ inputInjector() +'</div><div class="sub-blocks"></div></div></div>')
 	.draggable({
 		start: _.partial(splash.DragDropController.unchainAndDrawDroppables, this),
 		stop: _.partial(splash.DragDropController.cleanupAndClearDroppables, this),
@@ -35,7 +35,7 @@ splash.StatementBlock.prototype.render = function() {
 	});
 
 	htmlElement.children(".block-statement").on("change", function() {
-	  var listOfArgs = $(this).find('.block-arg');
+	  var listOfArgs = $(this).find('> .block-signature > .block-arg-wrapper > .block-arg');
 		for (var i = 0; i < listOfArgs.length; i++) {
 			var inputField = $(listOfArgs[i]);
 
