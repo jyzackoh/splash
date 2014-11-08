@@ -54,8 +54,8 @@ splash.Util.inherits(splash.AdditionBlock, splash.OperatorBlock);
 splash.AdditionBlock.prototype.name = "+";
 splash.AdditionBlock.prototype.colour = "default";
 splash.AdditionBlock.prototype.codeSnippet = function() {
-	return splash.Interpreter.evaluateExpression(this.args[0]) + 
-		splash.Interpreter.evaluateExpression(this.args[1]);
+	return splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0]) + 
+		splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1]);
 };
 
 splash.SubtractionBlock = function SubtractionBlock(parameters){
@@ -66,8 +66,8 @@ splash.Util.inherits(splash.SubtractionBlock, splash.OperatorBlock);
 splash.SubtractionBlock.prototype.name = "-";
 splash.SubtractionBlock.prototype.colour = "default";
 splash.SubtractionBlock.prototype.codeSnippet = function() {
-	return splash.Interpreter.evaluateExpression(this.args[0]) - 
-		splash.Interpreter.evaluateExpression(this.args[1]);
+	return splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0]) - 
+		splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1]);
 };
 
 splash.MultiplicationBlock = function MultiplicationBlock(parameters){
@@ -78,8 +78,8 @@ splash.Util.inherits(splash.MultiplicationBlock, splash.OperatorBlock);
 splash.MultiplicationBlock.prototype.name = "&#215";
 splash.MultiplicationBlock.prototype.colour = "default";
 splash.MultiplicationBlock.prototype.codeSnippet = function() {
-	return splash.Interpreter.evaluateExpression(this.args[0]) * 
-		splash.Interpreter.evaluateExpression(this.args[1]);
+	return splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0]) * 
+		splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1]);
 };
 
 splash.DivisionBlock = function DivisionBlock(parameters){
@@ -90,8 +90,8 @@ splash.Util.inherits(splash.DivisionBlock, splash.OperatorBlock);
 splash.DivisionBlock.prototype.name = "&#247";
 splash.DivisionBlock.prototype.colour = "default";
 splash.DivisionBlock.prototype.codeSnippet = function() {
-	return splash.Interpreter.evaluateExpression(this.args[0]) /
-		splash.Interpreter.evaluateExpression(this.args[1]);
+	return splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0]) /
+		splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1]);
 };
 
 splash.ModuloBlock = function ModuloBlock(parameters){
@@ -102,8 +102,8 @@ splash.Util.inherits(splash.ModuloBlock, splash.OperatorBlock);
 splash.ModuloBlock.prototype.name = "%";
 splash.ModuloBlock.prototype.colour = "default";
 splash.ModuloBlock.prototype.codeSnippet = function() {
-	return splash.Interpreter.evaluateExpression(this.args[0]) % 
-		splash.Interpreter.evaluateExpression(this.args[1]);
+	return splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0]) % 
+		splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1]);
 };
 
 // Boolean Operator Blocks
@@ -116,8 +116,8 @@ splash.Util.inherits(splash.EqualBlock, splash.OperatorBlock);
 splash.EqualBlock.prototype.name = "=";
 splash.EqualBlock.prototype.colour = "default";
 splash.EqualBlock.prototype.codeSnippet = function() {
-	return (splash.Interpreter.evaluateExpression(this.args[0]) ==
-		splash.Interpreter.evaluateExpression(this.args[1])) ? 1 : 0;
+	return (splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0]) ==
+		splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1])) ? 1 : 0;
 };
 
 splash.GreaterBlock = function GreaterBlock(parameters){
@@ -128,8 +128,8 @@ splash.Util.inherits(splash.GreaterBlock, splash.OperatorBlock);
 splash.GreaterBlock.prototype.name = ">";
 splash.GreaterBlock.prototype.colour = "default";
 splash.GreaterBlock.prototype.codeSnippet = function() {
-	return (splash.Interpreter.evaluateExpression(this.args[0]) >
-		splash.Interpreter.evaluateExpression(this.args[1])) ? 1 : 0;
+	return (splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0]) >
+		splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1])) ? 1 : 0;
 };
 
 splash.LesserBlock = function LesserBlock(parameters){
@@ -140,6 +140,6 @@ splash.Util.inherits(splash.LesserBlock, splash.OperatorBlock);
 splash.LesserBlock.prototype.name = "<";
 splash.LesserBlock.prototype.colour = "default";
 splash.LesserBlock.prototype.codeSnippet = function() {
-	return (splash.Interpreter.evaluateExpression(this.args[0]) <
-		splash.Interpreter.evaluateExpression(this.args[1])) ? 1 : 0;
+	return (splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0]) <
+		splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1])) ? 1 : 0;
 };

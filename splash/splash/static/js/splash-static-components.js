@@ -72,7 +72,15 @@ splash.Interpreter = {
 	getPostExecutionFollowUpDelayTicketNumber: function() {
 		return splash.Interpreter.postExecutionFollowUpDelayTicketNumberCounter++;
 	},
-	evaluateExpression: function(expression) {
+	evaluateExpression: function(value, blockLink) {
+		if(blockLink.child != undefined) {
+			// We use the block
+			var expression = blockLink.child;
+		}
+		else {
+			var expression = value;
+		}
+
 		if(expression instanceof splash.OperatorBlock || expression instanceof splash.VariableBlock) {
 			return expression.codeSnippet();
 		}
@@ -310,7 +318,7 @@ splash.DragDropController = {
 		function drawTheDroppablesWithinBlock(thisBlock) {
 			var pathToWrapper = (((thisBlock instanceof splash.ExpressionBlock) ? "" : "> .block-statement") + "> .block-signature > .block-arg-wrapper");
 			for(var i = 0; i < thisBlock.expectedArgsCount; i++) {
-				if(thisBlock.args[i] != splash.constants.USE_EXPRESSION_BLOCK) {
+				if(thisBlock.expressionBlockLinks[i].child == undefined) {
 					var argWrapper = $(thisBlock.htmlElement.find(pathToWrapper)[i]);
 
 					argWrapper
