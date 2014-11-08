@@ -206,7 +206,6 @@ splash.WaitBlock.prototype.codeSnippet = function() {
 splash.RepeatBlock = function RepeatBlock(parameters) {
 	splash.StatementBlock.call(this);
 
-	this.currentCycleCount = -1;
 	this.repeatSubBlocksLink = new splash.StatementBlockLink({parent: this, attachPath: "> .block > .sub-blocks"});
 
 	splash.Util.parseParameters(this, parameters);
@@ -248,6 +247,40 @@ splash.RepeatBlock.prototype.codeSnippet = function() {
 	return postExecutionFollowUpDelayTicketNumber;
 };
 
+//Repeat-Forever Block
+splash.RepeatForeverBlock = function RepeatForeverBlock(parameters) {
+	splash.StatementBlock.call(this);
+
+	this.repeatSubBlocksLink = new splash.StatementBlockLink({parent: this, attachPath: "> .block > .sub-blocks"});
+
+	splash.Util.parseParameters(this, parameters);
+}
+splash.Util.inherits(splash.RepeatForeverBlock, splash.StatementBlock);
+splash.RepeatForeverBlock.prototype.name = "Repeat Forever";
+splash.RepeatForeverBlock.prototype.colour = "pureblue";
+splash.RepeatForeverBlock.prototype.expectedArgsCount = 1;
+splash.RepeatForeverBlock.prototype.inputLimits = [{max:100, min:0}];
+splash.RepeatForeverBlock.prototype.codeSnippet = function() {
+	if(this.repeatSubBlocksLink.child == undefined) //Nothing to repeat, continue
+		return;
+
+	var postExecutionFollowUpDelayTicketNumber = splash.Interpreter.getPostExecutionFollowUpDelayTicketNumber(); // We get a ticket anyway, although we don't use it, to tell the Interpreter that you don't need
+
+	var repeatCallbackFunction = function(thisRepeatBlock) {
+		splash.Interpreter.executeBlockChain(
+			thisRepeatBlock.repeatSubBlocksLink.child, 
+			_.partial(repeatCallbackFunction, thisRepeatBlock)
+		);
+	};
+
+	splash.Interpreter.executeBlockChain(
+		this.repeatSubBlocksLink.child,
+		_.partial(repeatCallbackFunction, this)
+	);
+
+	return postExecutionFollowUpDelayTicketNumber;
+};
+
 //Change Costume Block
 splash.ChangeCostumeBlock = function ChangeCostumeBlock(parameters) {
 	splash.StatementBlock.call(this);
@@ -274,4 +307,22 @@ splash.ChangeBackgroundBlock.prototype.expectedArgsCount = 1;
 splash.StatementBlock.prototype.inputLimits = [{max:1, min:0}];
 splash.ChangeBackgroundBlock.prototype.codeSnippet = function() {
 	splash.BackgroundManager.setCurrentBackground(this.args[0]);
+};
+
+//If-Else Block
+splash.IfElseBlock = function IfElseBlock(parameters) {
+	this.inputLimits = [{max: 1, min:0}];
+	splash.StatementBlock.call(this);
+
+	this.ifSubBlocksLink = new splash.StatementBlockLink({parent: this, attachPath: "> .block > .if-sub-blocks"});
+	this.elseSubBlocksLink = new splash.StatementBlockLink({parent: this, attachPath: "> .block > .else-sub-blocks"});
+
+	splash.Util.parseParameters(this, parameters);
+}
+splash.Util.inherits(splash.IfElseBlock, splash.StatementBlock);
+splash.IfElseBlock.prototype.name = "If";
+splash.IfElseBlock.prototype.colour = "crimson";
+splash.IfElseBlock.prototype.expectedArgsCount = 1;
+splash.IfElseBlock.prototype.codeSnippet = function() {
+	;
 };

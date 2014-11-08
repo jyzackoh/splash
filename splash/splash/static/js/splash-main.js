@@ -35,8 +35,9 @@ splash.Main = {
 		setTemplateBlock(APPEARANCE, new splash.ChangeBackgroundBlock());
 		setTemplateBlock(APPEARANCE, new splash.ChangeCostumeBlock());
 		
-		setTemplateBlock(LOOP_AND_WAIT, new splash.RepeatBlock());
 		setTemplateBlock(LOOP_AND_WAIT, new splash.WaitBlock());
+		setTemplateBlock(LOOP_AND_WAIT, new splash.RepeatBlock());
+		setTemplateBlock(LOOP_AND_WAIT, new splash.RepeatForeverBlock());
 	}
 }
 

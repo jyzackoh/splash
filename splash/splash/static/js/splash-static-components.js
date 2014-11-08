@@ -176,6 +176,10 @@ splash.DragDropController = {
 			if(currentBlock instanceof splash.RepeatBlock) {
 				splash.DragDropController.drawRepeatDroppables(currentBlock);
 			}
+			else if(currentBlock instanceof splash.RepeatForeverBlock) {
+				splash.DragDropController.drawRepeatDroppables(currentBlock);
+				break;	
+			}
 
 			if(currentBlock.nextBlockLink.child != undefined) {
 				currentBlock = currentBlock.nextBlockLink.child;
