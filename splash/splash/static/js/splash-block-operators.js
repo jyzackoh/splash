@@ -19,7 +19,7 @@ splash.OperatorBlock.prototype.render = function() {
 	var htmlElement = splash.ExpressionBlock.prototype.render.call(this)
 	.addClass("block-operator")
 	.addClass("block-gold")
-	.append($('<div class="block-signature">'+ inputField +'<div class="block-text-outline block-text-operator">'+ that.name +'</div>'+ inputField +'</div>'));
+	.append($('<div class="block-signature">'+ inputField +'<div class="block-text-outline block-text-operator">&nbsp;'+ that.name +'&nbsp;</div>'+ inputField +'</div>'));
 	
 	htmlElement.children(".block-operator").on("change", function() {
 	  var listOfArgs = $(this).find('> .block-signature > .block-arg-wrapper > .block-arg');
