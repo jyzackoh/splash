@@ -11,12 +11,11 @@
 
   <div class="block block-statement">
     <div class="block-signature">
-      <div class="block-name block-text">Statement Block</div>
-      <form class="block-args">
-	      <input class="block-arg" placeholder="arg1" maxlength="3">
-	      <label>and</label>
-	      <input class="block-arg" placeholder="arg2" maxlength="3">
-      </form>
+      <div class="block-name block-text-outline">Statement Block</div>
+      <div class="block-arg-wrapper">
+        <div class="block-arg-snap"></div>
+        <input class="block-arg" placeholder="arg1" maxlength="3">
+      </div>
     </div>
     <div class="block-chain">
       <!-- nested blocks here -->
@@ -25,17 +24,32 @@
 
   <div class="block block-operator">
     <div class="block-signature">
-      <form class="block-args">
-        <div style="display: inline-block"></div><input class="block-arg" placeholder="arg1" maxlength="3">
-        <label class="block-text">&#247</label>
-        <div style="display: inline-block"></div><input class="block-arg" placeholder="arg2" maxlength="3">
-      </form>
+      <div class="block-arg-wrapper">
+        <div class="block-arg-snap"></div>
+        <input class="block-arg" placeholder="arg1" maxlength="3">
+      </div>
+      <div class="block-text-outline block-text-operator">+</div>
+      <div class="block-arg-wrapper">
+        <div class="block-arg-snap"></div>
+        <input class="block-arg" placeholder="arg2" maxlength="3">
+      </div>
     </div>
   </div>
 
   <div class="block block-variable">
     <div class="block-signature">
       <div class="block-name block-text">Variable Block</div>
+    </div>
+  </div>
+
+  <div class="block-drag-area">
+    <div class=" block block-statement block-'+ that.colour +'">
+      <div class="block-signature">
+        <div class="block-name block-text">' + that.name + '</div>
+        <div class="block-args">'+ inputInjector() +'</div>
+      </div>
+      <div class="sub-blocks">
+      </div>
     </div>
   </div>
 
