@@ -18,8 +18,10 @@ splash.Main = {
 				start: _.partial(splash.DragDropController.setupTemplateCloneAndDrawDroppables, block.constructor.name),
 				stop: splash.DragDropController.cleanupTemplateCloneAndClearDroppables,
 				zIndex: 1000,
-				refreshPositions: true
+				refreshPositions: true,
+				appendTo: "body"
 			});
+			block.htmlElement.addClass("template-block");
 			block.htmlElement.appendTo($(category + " .panel-body"));
 		}
 		setTemplateBlock(MOVEMENT, new splash.SetXBlock());

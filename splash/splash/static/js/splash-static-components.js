@@ -30,13 +30,32 @@ splash.Util = {
 
 splash.Interpreter = {
 	stopAll: false,
+	postExecutionFollowUpDelayTicketNumberCounter: 0,
+	postExecutionFollowUpDelayStorage: {},
 	executeBlockChain: function(startingBlock, chainCallback) {
 		if(splash.Interpreter.stopAll)
 			return;
 
-		startingBlock.codeSnippet();
-		//startingBlock.codeSnippet.apply(this, startingBlock.args);
+		var postExecutionFollowUpDelayTicketNumber = startingBlock.codeSnippet();
+
 		
+		if(postExecutionFollowUpDelayTicketNumber != undefined) {
+			splash.Interpreter.postExecutionFollowUpDelayStorage[postExecutionFollowUpDelayTicketNumber] = {};
+			splash.Interpreter.postExecutionFollowUpDelayStorage[postExecutionFollowUpDelayTicketNumber].startingBlock = startingBlock;
+			splash.Interpreter.postExecutionFollowUpDelayStorage[postExecutionFollowUpDelayTicketNumber].chainCallback = chainCallback;
+		}
+		else {
+			splash.Interpreter.runPostBlockExecutionFollowUp(-1, startingBlock, chainCallback);
+		}
+	},
+	runPostBlockExecutionFollowUp: function(ticketNumber, startingBlock, chainCallback) {
+		// console.log("c", ticketNumber);
+		if(ticketNumber != -1) {
+			startingBlock = splash.Interpreter.postExecutionFollowUpDelayStorage[ticketNumber].startingBlock;
+			chainCallback = splash.Interpreter.postExecutionFollowUpDelayStorage[ticketNumber].chainCallback;
+			splash.Interpreter.postExecutionFollowUpDelayStorage[ticketNumber] = undefined;
+		}
+
 		if(startingBlock.nextBlockLink.child != undefined) {
 			setTimeout(
 				splash.Util.partial(splash.Interpreter.executeBlockChain, startingBlock.nextBlockLink.child, chainCallback),
@@ -44,9 +63,15 @@ splash.Interpreter = {
 			);
 		}
 		else if(chainCallback != undefined) {
-			chainCallback();
+			setTimeout(
+				chainCallback,
+				startingBlock.postExecutionDelay
+			);
 		}
 		//else do nothing... end of chain with no chain-callback defined.
+	},
+	getPostExecutionFollowUpDelayTicketNumber: function() {
+		return splash.Interpreter.postExecutionFollowUpDelayTicketNumberCounter++;
 	},
 	runAllStripeBlocks: function(stripe) {
 		_.forEach(stripe.firstLevelBlocks, function(startingBlock) {

@@ -9,7 +9,7 @@ splash.StatementBlock = function StatementBlock(parameters) {
 	splash.Util.parseParameters(this, parameters);
 
 	this.htmlElement = this.render();
-	this.nextBlockLink = new splash.BlockLink({parent: this, htmlElementToAttachBlockTo: this.htmlElement});
+	this.nextBlockLink = new splash.StatementBlockLink({parent: this});
 }
 splash.Util.inherits(splash.StatementBlock, splash.Block);
 splash.StatementBlock.prototype.step = 5;
@@ -28,7 +28,11 @@ splash.StatementBlock.prototype.render = function() {
 	var htmlElement = $('<div class="block-drag-area"><div class=" block block-statement block-'+ that.colour +'"><div class="block-signature"><div class="block-name block-text">' + that.name + '</div><div class="block-args">'+ inputInjector() +'</div></div><div class="sub-blocks"></div></div></div>')
 	.draggable({
 		start: _.partial(splash.DragDropController.unchainAndDrawDroppables, this),
-		stop: _.partial(splash.DragDropController.cleanupAndClearDroppables, this)
+		stop: _.partial(splash.DragDropController.cleanupAndClearDroppables, this),
+		zIndex: 1000,
+		refreshPositions: true,
+		helper: "clone",
+		appendTo: ".canvas"
 	});
 
 	htmlElement.children(".block-statement").on("change", function() {
@@ -53,48 +57,48 @@ splash.StatementBlock.prototype.render = function() {
 
   return htmlElement;
 };
-// // Sub-classes should not overwrite the following functions (i.e. "final methods")
-// splash.StatementBlock.prototype.setNextBlockLink = function(nextBlock) {
-// 	this.nextBlockLink.child = nextBlock;
-// 	nextBlock.parentLink = this.nextBlockLink; // the blocklink
-// };
-// splash.StatementBlock.prototype.getNextBlockLink = function() {
-// 	return this.nextBlockLink.child;
-// };
-// splash.StatementBlock.prototype.removeParentLink = function() {
-// 	this.parentLink.child = undefined;
-// 	this.parentLink = undefined;
-// };
-// splash.StatementBlock.prototype.serialize = function(splashObjectId) {
-// 	var returnObject = splash.Obj.prototype.serialize.call(this, splashObjectId);
+// Sub-classes should not overwrite the following functions (i.e. "final methods")
+splash.StatementBlock.prototype.setNextBlockLink = function(nextBlock) {
+	this.nextBlockLink.child = nextBlock;
+	nextBlock.parentLink = this.nextBlockLink; // the blocklink
+};
+splash.StatementBlock.prototype.getNextBlockLink = function() {
+	return this.nextBlockLink.child;
+};
+splash.StatementBlock.prototype.removeParentLink = function() {
+	this.parentLink.child = undefined;
+	this.parentLink = undefined;
+};
+splash.StatementBlock.prototype.serialize = function(splashObjectId) {
+	var returnObject = splash.Obj.prototype.serialize.call(this, splashObjectId);
 
-// 	if(this.htmlElement.css("position") == "absolute") {
-// 		returnObject.positionInfo = {
-// 			left: this.htmlElement.position().left,
-// 			top: this.htmlElement.position().top
-// 		};
-// 	}
+	if(this.htmlElement.css("position") == "absolute") {
+		returnObject.positionInfo = {
+			left: this.htmlElement.position().left,
+			top: this.htmlElement.position().top
+		};
+	}
 	
-// 	returnObject.blockArgValues = [];
+	returnObject.blockArgValues = [];
 
-// 	for (var i = 0; i < this.expectedArgsCount; i++) {
-// 		returnObject.blockArgValues.push(this.htmlElement.find(".block-arg").eq(i).val());
-// 	}
+	for (var i = 0; i < this.expectedArgsCount; i++) {
+		returnObject.blockArgValues.push(this.htmlElement.find(".block-arg").eq(i).val());
+	}
 
-// 	return returnObject;
-// };
+	return returnObject;
+};
 
-// // splash.StatementBlock.prototype.deserialize = function(obj) {
-// // 	splash.Obj.prototype.deserialize.call(this, obj);
+splash.StatementBlock.prototype.deserialize = function(obj) {
+	splash.Obj.prototype.deserialize.call(this, obj);
 
-// // 	if(obj.positionInfo != undefined) {
-// // 		this.positionInfo = _.clone(obj.positionInfo);
-// // 	}
+	if(obj.positionInfo != undefined) {
+		this.positionInfo = _.clone(obj.positionInfo);
+	}
 
-// // 	for (var i = 0; i < this.expectedArgsCount; i++) {
-// // 		this.htmlElement.find(".block-arg").eq(i).val(obj.blockArgValues[i]);
-// // 	}
-// // };
+	for (var i = 0; i < this.expectedArgsCount; i++) {
+		this.htmlElement.find(".block-arg").eq(i).val(obj.blockArgValues[i]);
+	}
+};
 
 //Set X Block
 splash.SetXBlock = function SetXBlock(parameters) {
@@ -190,7 +194,7 @@ splash.WaitBlock = function WaitBlock(parameters) {
 }
 splash.Util.inherits(splash.WaitBlock, splash.StatementBlock);
 splash.WaitBlock.prototype.name = "Wait for";
-splash.WaitBlock.prototype.colour = "dodgerblue";
+splash.WaitBlock.prototype.colour = "midnightblue";
 splash.WaitBlock.prototype.expectedArgsCount = 1;
 splash.WaitBlock.prototype.postExecutionDelay = 0;
 splash.WaitBlock.prototype.inputLimits = [{max:100, min:0}];
@@ -203,52 +207,46 @@ splash.RepeatBlock = function RepeatBlock(parameters) {
 	splash.StatementBlock.call(this);
 
 	this.currentCycleCount = -1;
-	// this.repeatSubBlocksLink = new splash.BlockLink({parent: this, htmlElementToAttachBlockTo: this.htmlElement.find(".sub-blocks")});
+	this.repeatSubBlocksLink = new splash.StatementBlockLink({parent: this, attachPath: "> .block > .sub-blocks"});
 
 	splash.Util.parseParameters(this, parameters);
 }
 splash.Util.inherits(splash.RepeatBlock, splash.StatementBlock);
 splash.RepeatBlock.prototype.name = "Repeat for";
-splash.RepeatBlock.prototype.colour = "midnightblue";
+splash.RepeatBlock.prototype.colour = "dodgerblue";
 splash.RepeatBlock.prototype.expectedArgsCount = 1;
 splash.RepeatBlock.prototype.inputLimits = [{max:100, min:0}];
 splash.RepeatBlock.prototype.codeSnippet = function() {
-	if(this.nextBlockLink.child != undefined) {
+	if(this.repeatSubBlocksLink.child == undefined) //Nothing to repeat, continue
 		return;
-	}
 
-	if(this.currentCycleCount == 0) {
-		this.currentCycleCount = -1;
-		return;
-	}
+	var postExecutionFollowUpDelayTicketNumber = splash.Interpreter.getPostExecutionFollowUpDelayTicketNumber();
 
-	if(this.currentCycleCount == -1) {
-		this.currentCycleCount = parseInt(this.args[0]);
-	}
+	// console.log("a", postExecutionFollowUpDelayTicketNumber);
 
-	this.currentCycleCount--;
+	var repeatCallbackFunction = function(repeatsLeft, thisRepeatBlock, nextBlock, ticketNumber) {
+		// console.log(thisRepeatBlock.htmlElement, repeatsLeft);
+		if(repeatsLeft == 0) {
+			// console.log("b", postExecutionFollowUpDelayTicketNumber);
+			splash.Interpreter.runPostBlockExecutionFollowUp(ticketNumber);
+			return;
+		}
 
-	var startingBlockToRepeat = this;
+		repeatsLeft--;
 
-	while(startingBlockToRepeat.parentLink != undefined) {
-		startingBlockToRepeat = startingBlockToRepeat.parentLink.parent;
-	}
+		splash.Interpreter.executeBlockChain(
+			thisRepeatBlock.repeatSubBlocksLink.child, 
+			_.partial(repeatCallbackFunction, repeatsLeft, thisRepeatBlock, nextBlock, ticketNumber)
+		);
+	};
 
-	splash.Interpreter.executeBlockChain(startingBlockToRepeat);
+	splash.Interpreter.executeBlockChain(
+		this.repeatSubBlocksLink.child,
+		_.partial(repeatCallbackFunction, parseInt(this.args[0]), this, this.nextBlockLink.child, postExecutionFollowUpDelayTicketNumber)
+	);
+
+	return postExecutionFollowUpDelayTicketNumber;
 };
-// splash.RepeatBlock.prototype.render = function() {
-// 	var htmlElement = splash.StatementBlock.prototype.render.call(this);
-
-// 	htmlElement.find(".sub-blocks").css({
-// 		"min-width": "180px",
-// 		"padding-top": "5px"
-// 	});
-// 	$('<div class="sub-blocks-buffer"></div>').insertAfter(htmlElement.find(".sub-blocks"));
-
-// 	htmlElement.find(".sub-blocks").append(splash.Renderer.renderBlockChain());
-
-// 	return htmlElement;
-// };
 
 //Change Costume Block
 splash.ChangeCostumeBlock = function ChangeCostumeBlock(parameters) {

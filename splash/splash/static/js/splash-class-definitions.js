@@ -43,8 +43,8 @@ splash.Obj.prototype.deserialize = function(obj) {
 splash.BlockLink = function BlockLink(parameters) {
 	splash.Obj.call(this);
 	
-	this.parent = undefined; // this should _not_ change after construction as each blocklink is tied permanently to a link (only child should change)
-	this.htmlElementToAttachBlockTo = undefined;
+	this.parent = undefined; // this should _not_ change after construction as each blocklink is tied permanently to a link (only child should changeoa	this.attachPath = undefined;
+	this.attachPath = "";
 	this.child = undefined;
 	
 	splash.Util.parseParameters(this, parameters);
@@ -53,6 +53,27 @@ splash.BlockLink = function BlockLink(parameters) {
 }
 splash.Util.inherits(splash.BlockLink, splash.Obj);
 splash.BlockLink.prototype.render = function() {
+	return $("<div></div>");
+}
+splash.BlockLink.prototype.getAttachHtmlElement = function() {
+	if(this.attachPath == "")
+		return this.parent.htmlElement;
+	return this.parent.htmlElement.find(this.attachPath);
+}
+
+splash.StatementBlockLink = function StatementBlockLink(parameters) {
+	splash.BlockLink.call(this);
+
+	this.parent = undefined; // this should _not_ change after construction as each blocklink is tied permanently to a link (only child should change)
+	this.attachPath = "";
+	this.child = undefined;
+
+	splash.Util.parseParameters(this, parameters);
+
+	this.htmlElement = this.render();
+}
+splash.Util.inherits(splash.StatementBlockLink, splash.BlockLink);
+splash.StatementBlockLink.prototype.render = function() {
 	var htmlElement = $('<div class="chain-snap-area"></div>')
 		.droppable({
 			hoverClass: "drag-hover",
