@@ -14,12 +14,12 @@ splash.OperatorBlock.prototype.expectedArgsCount = 2;
 splash.OperatorBlock.prototype.render = function(){
 	var that = this;
 
-	var inputField = '<div class="block-arg-wrapper"><div class="block-arg-drag-area"></div><input class="block-arg" type="number" value="0" maxlength="3"></div>';
+	var inputField = '<div class="block-arg-wrapper"><div class="block-arg-drop-area"></div><input class="block-arg" type="number" value="0" maxlength="3"></div>';
 
-	var htmlElement = $('<div class="block block-operator"><div class="block-signature">'+ inputField +'<div class="block-text-outline block-text-operator">'+ that.name +'</div>'+ inputField +'</div></div>');
+	var htmlElement = $('<div class="block-operator"><div class="block-signature">'+ inputField +'<div class="block-text-outline block-text-operator">'+ that.name +'</div>'+ inputField +'</div></div>');
 
 	htmlElement.children(".block-operator").on("change", function() {
-	  var listOfArgs = $(this).find('.block-arg');
+	  var listOfArgs = $(this).children('> .block-signature > .block-arg-wrapper > .block-arg');
 		for (var i = 0; i < listOfArgs.length; i++) {
 			var inputField = $(listOfArgs[i]);
 

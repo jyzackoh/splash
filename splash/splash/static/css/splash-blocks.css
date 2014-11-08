@@ -1,7 +1,3 @@
-.block {
-
-}
-
 .block-statement {
 	border: 2px solid;
 	padding: 5px;
@@ -68,13 +64,13 @@
 .block-signature {
     position: relative;
     margin: 0;
-	height: 26px;
+	height: 23px;
     /*overflow: auto;*/
 }
 
 .block-name {
 	margin-top: 3px; /*manually pushing block name down to align with inputs :(*/
-	margin-right: 5px;
+	display: inline-block;
 	float: left;
 }
 
@@ -94,9 +90,13 @@
 	font-size: 18px;
 }
 
+.float-right {
+	float: right;
+}
+
 .block-arg-wrapper {
 	width: 40px;
-	height: 26px;
+	height: 23px;
 	display: inline-block;
 	position: relative;
 }
@@ -108,10 +108,7 @@
 	left: 0px;
 }
 
-.block-arg-drag-area {
-	width: 40px;
-	height: 26px;
-	background-color: red;
+.block-arg-drop-area {
 	position: absolute;
 	top: 0px;
 	left: 0px;
