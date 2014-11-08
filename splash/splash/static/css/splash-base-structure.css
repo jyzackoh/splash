@@ -100,12 +100,8 @@
 	overflow-x: visible;
 }
 
-#movementPal, #appearancePal, #visibilityPal {
+.panel {
 	margin-bottom: 7px;
-}
-
-#loopPal {
-	margin-bottom: 6px;
 }
 
 .panel-heading {
@@ -115,7 +111,6 @@
 
 .panel-body {
 	min-height: 16%;
-	/* text-align: center; */
 	overflow: visible;
 }
 

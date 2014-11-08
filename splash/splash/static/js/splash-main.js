@@ -9,9 +9,10 @@ splash.Main = {
 	},
 	initializeTemplates: function() {
 		var MOVEMENT = "#movementPal";
-		var VISIBILITY = "#visibilityPal";
+		var CONTROL = "#controlPal";
 		var APPEARANCE = "#appearancePal";
-		var LOOP_AND_WAIT = "#loopPal";
+		var OPERATOR = "#operatorPal";
+		var VARIABLE = "variablePal";
 		function setTemplateBlock(category, block) {
 			block.htmlElement.draggable({
 				helper: "clone",
@@ -24,32 +25,34 @@ splash.Main = {
 			block.htmlElement.addClass("template-block");
 			$(category + " .panel-body")
 				.append(block.htmlElement)
-				.append("<br>");
-		}
-		setTemplateBlock(MOVEMENT, new splash.AdditionBlock());
-		setTemplateBlock(MOVEMENT, new splash.SubtractionBlock());
-		setTemplateBlock(MOVEMENT, new splash.MultiplicationBlock());
-		setTemplateBlock(MOVEMENT, new splash.DivisionBlock());
-		setTemplateBlock(MOVEMENT, new splash.ModuloBlock());
-		setTemplateBlock(MOVEMENT, new splash.EqualBlock());
-		setTemplateBlock(MOVEMENT, new splash.GreaterBlock());
-		setTemplateBlock(MOVEMENT, new splash.LesserBlock());
 
+			if(block instanceof splash.ExpressionBlock)
+				$(category + " .panel-body")
+					.append("<br>");
+		}
 		setTemplateBlock(MOVEMENT, new splash.SetXBlock());
 		setTemplateBlock(MOVEMENT, new splash.SetYBlock());
 		setTemplateBlock(MOVEMENT, new splash.MoveXBlock());
 		setTemplateBlock(MOVEMENT, new splash.MoveYBlock());
 
-		setTemplateBlock(VISIBILITY, new splash.ShowBlock());
-		setTemplateBlock(VISIBILITY, new splash.HideBlock());
-		
+		setTemplateBlock(APPEARANCE, new splash.ShowBlock());
+		setTemplateBlock(APPEARANCE, new splash.HideBlock());
 		setTemplateBlock(APPEARANCE, new splash.ChangeBackgroundBlock());
 		setTemplateBlock(APPEARANCE, new splash.ChangeCostumeBlock());
 		
-		setTemplateBlock(LOOP_AND_WAIT, new splash.WaitBlock());
-		setTemplateBlock(LOOP_AND_WAIT, new splash.RepeatBlock());
-		setTemplateBlock(LOOP_AND_WAIT, new splash.RepeatForeverBlock());
-		setTemplateBlock(LOOP_AND_WAIT, new splash.IfElseBlock());
+		setTemplateBlock(CONTROL, new splash.RepeatBlock());
+		setTemplateBlock(CONTROL, new splash.RepeatForeverBlock());
+		setTemplateBlock(CONTROL, new splash.IfElseBlock());
+		setTemplateBlock(CONTROL, new splash.WaitBlock());
+
+		setTemplateBlock(OPERATOR, new splash.AdditionBlock());
+		setTemplateBlock(OPERATOR, new splash.SubtractionBlock());
+		setTemplateBlock(OPERATOR, new splash.MultiplicationBlock());
+		setTemplateBlock(OPERATOR, new splash.DivisionBlock());
+		setTemplateBlock(OPERATOR, new splash.ModuloBlock());
+		setTemplateBlock(OPERATOR, new splash.EqualBlock());
+		setTemplateBlock(OPERATOR, new splash.GreaterBlock());
+		setTemplateBlock(OPERATOR, new splash.LesserBlock());
 	}
 }
 
