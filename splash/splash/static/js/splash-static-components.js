@@ -187,6 +187,9 @@ splash.DragDropController = {
 				splash.DragDropController.drawRepeatDroppables(currentBlock);
 				break;	
 			}
+			else if(currentBlock instanceof splash.IfElseBlock) {
+				splash.DragDropController.drawIfElseDroppables(currentBlock);
+			}
 
 			if(currentBlock.nextBlockLink.child != undefined) {
 				currentBlock = currentBlock.nextBlockLink.child;
@@ -204,6 +207,22 @@ splash.DragDropController = {
 		}
 		else {
 			splash.DragDropController.drawDroppable(currentBlock.repeatSubBlocksLink.child);
+		}
+	},
+
+	drawIfElseDroppables: function(currentBlock) {
+		if(currentBlock.ifSubBlocksLink.child == undefined) {
+			currentBlock.ifSubBlocksLink.getAttachHtmlElement().append(currentBlock.ifSubBlocksLink.htmlElement);
+		}
+		else {
+			splash.DragDropController.drawDroppable(currentBlock.ifSubBlocksLink.child);
+		}
+
+		if(currentBlock.elseSubBlocksLink.child == undefined) {
+			currentBlock.elseSubBlocksLink.getAttachHtmlElement().append(currentBlock.elseSubBlocksLink.htmlElement);
+		}
+		else {
+			splash.DragDropController.drawDroppable(currentBlock.elseSubBlocksLink.child);
 		}
 	},
 

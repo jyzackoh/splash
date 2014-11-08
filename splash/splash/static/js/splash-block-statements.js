@@ -19,13 +19,12 @@ splash.StatementBlock.prototype.render = function() {
 	var inputInjector = function() {
 		var returnString = '';
 		for (var i = 0; i < that.expectedArgsCount; i++) {
-			// returnString += '<input class="block-arg" type="number" maxlength="3" min="0" max="'+ that.inputLimits[i] +'">';
 			returnString += '<input type="number" value="0" class="block-arg" maxlength="3" min="'+ that.inputLimits[i].min +'" max="'+ that.inputLimits[i].max +'">';
 		}
     return returnString;
 	};
 
-	var htmlElement = $('<div class="block-drag-area"><div class=" block block-statement block-'+ that.colour +'"><div class="block-signature"><div class="block-name block-text">' + that.name + '</div><div class="block-args">'+ inputInjector() +'</div></div><div class="sub-blocks"></div></div></div>')
+	var htmlElement = $('<div class="block-drag-area"><div class="block block-statement block-'+ that.colour +'"><div class="block-signature"><div class="block-name block-text">' + that.name + '</div><div class="block-args">'+ inputInjector() +'</div></div><div class="sub-blocks"></div></div></div>')
 	.draggable({
 		start: _.partial(splash.DragDropController.unchainAndDrawDroppables, this),
 		stop: _.partial(splash.DragDropController.cleanupAndClearDroppables, this),
@@ -206,7 +205,7 @@ splash.WaitBlock.prototype.codeSnippet = function() {
 splash.RepeatBlock = function RepeatBlock(parameters) {
 	splash.StatementBlock.call(this);
 
-	this.repeatSubBlocksLink = new splash.StatementBlockLink({parent: this, attachPath: "> .block > .sub-blocks"});
+	this.repeatSubBlocksLink = new splash.StatementBlockLink({parent: this, attachPath: "> .block-statement > .sub-blocks"});
 
 	splash.Util.parseParameters(this, parameters);
 }
@@ -251,15 +250,14 @@ splash.RepeatBlock.prototype.codeSnippet = function() {
 splash.RepeatForeverBlock = function RepeatForeverBlock(parameters) {
 	splash.StatementBlock.call(this);
 
-	this.repeatSubBlocksLink = new splash.StatementBlockLink({parent: this, attachPath: "> .block > .sub-blocks"});
+	this.repeatSubBlocksLink = new splash.StatementBlockLink({parent: this, attachPath: "> .block-statement > .sub-blocks"});
 
 	splash.Util.parseParameters(this, parameters);
 }
 splash.Util.inherits(splash.RepeatForeverBlock, splash.StatementBlock);
 splash.RepeatForeverBlock.prototype.name = "Repeat Forever";
 splash.RepeatForeverBlock.prototype.colour = "pureblue";
-splash.RepeatForeverBlock.prototype.expectedArgsCount = 1;
-splash.RepeatForeverBlock.prototype.inputLimits = [{max:100, min:0}];
+splash.RepeatForeverBlock.prototype.expectedArgsCount = 0;
 splash.RepeatForeverBlock.prototype.codeSnippet = function() {
 	if(this.repeatSubBlocksLink.child == undefined) //Nothing to repeat, continue
 		return;
@@ -311,11 +309,11 @@ splash.ChangeBackgroundBlock.prototype.codeSnippet = function() {
 
 //If-Else Block
 splash.IfElseBlock = function IfElseBlock(parameters) {
-	this.inputLimits = [{max: 1, min:0}];
+	this.inputLimits = [{max: 1, min: 0}];
 	splash.StatementBlock.call(this);
 
-	this.ifSubBlocksLink = new splash.StatementBlockLink({parent: this, attachPath: "> .block > .if-sub-blocks"});
-	this.elseSubBlocksLink = new splash.StatementBlockLink({parent: this, attachPath: "> .block > .else-sub-blocks"});
+	this.ifSubBlocksLink = new splash.StatementBlockLink({parent: this, attachPath: "> .block-statement > .if-sub-blocks"});
+	this.elseSubBlocksLink = new splash.StatementBlockLink({parent: this, attachPath: "> .block-statement > .else-sub-blocks"});
 
 	splash.Util.parseParameters(this, parameters);
 }
@@ -326,3 +324,22 @@ splash.IfElseBlock.prototype.expectedArgsCount = 1;
 splash.IfElseBlock.prototype.codeSnippet = function() {
 	;
 };
+splash.IfElseBlock.prototype.render = function() {
+	var htmlElement = splash.StatementBlock.prototype.render.call(this);
+
+	htmlElement.find("> .block-statement > .sub-blocks").remove();
+
+	htmlElement.find("> .block-statement").append(
+		$('<div class="if-sub-blocks"></div>')
+	);
+
+	htmlElement.find("> .block-statement").append(
+		$('<div class="block-signature"><div class="block-name block-text">Else</div></div>')
+	);
+
+	htmlElement.find("> .block-statement").append(
+		$('<div class="else-sub-blocks"></div>')
+	);
+
+	return htmlElement;
+}
