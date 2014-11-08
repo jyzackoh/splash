@@ -16,6 +16,16 @@
 	position: relative;
 }
 
+.block-event {
+	border: 2px solid;
+	padding: 5px;
+	border-radius: 5px 5px 0 0;
+	display: inline-block; /* to make parent wrap child for nesting*/
+	background: #FFF;
+	position: relative;
+	min-width: 200px;
+}
+
 .block-default {
 	background-color: none;
 }
