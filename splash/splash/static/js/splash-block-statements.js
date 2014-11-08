@@ -322,7 +322,29 @@ splash.IfElseBlock.prototype.name = "If";
 splash.IfElseBlock.prototype.colour = "crimson";
 splash.IfElseBlock.prototype.expectedArgsCount = 1;
 splash.IfElseBlock.prototype.codeSnippet = function() {
-	;
+	if(splash.Interpreter.evaluateExpression(this.args[0])) {
+		var innerBlockChainToExecute = this.ifSubBlocksLink.child;
+	}
+	else {
+		var innerBlockChainToExecute = this.elseSubBlocksLink.child;
+	}
+
+
+	if(innerBlockChainToExecute == undefined) //Nothing in sub-block, continue
+		return;
+
+	var postExecutionFollowUpDelayTicketNumber = splash.Interpreter.getPostExecutionFollowUpDelayTicketNumber();
+
+	var ifElseCallbackFunction = function(ticketNumber) {
+		splash.Interpreter.runPostBlockExecutionFollowUp(ticketNumber);
+	};
+
+	splash.Interpreter.executeBlockChain(
+		innerBlockChainToExecute,
+		_.partial(ifElseCallbackFunction, postExecutionFollowUpDelayTicketNumber)
+	);
+
+	return postExecutionFollowUpDelayTicketNumber;
 };
 splash.IfElseBlock.prototype.render = function() {
 	var htmlElement = splash.StatementBlock.prototype.render.call(this);

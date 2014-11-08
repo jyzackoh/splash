@@ -11,7 +11,7 @@ splash.VariableBlock.prototype.expectedArgsCount = 1;
 splash.VariableBlock.prototype.render = function(){
 	var that = this;
 
-	var htmlElement = $('stub');
+	var htmlElement = $('stub')
 	.draggable({
 		start: _.partial(splash.DragDropController.unchainAndDrawDroppables, this),
 		stop: _.partial(splash.DragDropController.cleanupAndClearDroppables, this)

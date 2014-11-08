@@ -77,7 +77,7 @@ splash.Interpreter = {
 			return expression.codeSnippet();
 		}
 		else {
-			return expression;
+			return parseFloat(expression);
 		}
 	},
 	runAllStripeBlocks: function(stripe) {
@@ -428,8 +428,9 @@ splash.StageManager = {
 		splash.StageManager.initializeButtons();
 	},
 	initializeDimensions: function() {
-		splash.StageManager.stageDimension.width = $(".stageOutput").width();
-		splash.StageManager.stageDimension.height = $(".stageOutput").height();
+		splash.StageManager.setStageDimensions();
+
+		$(window).on("resize", splash.StageManager.setStageDimensions);
 	},
 	initializeBackgrounds: function() {
 		splash.BackgroundManager.addBackground(new splash.Background({
@@ -472,6 +473,12 @@ splash.StageManager = {
 				splash.SpriteManager.getCurrentSprite().setPosition("y", $(".stageOutput").height() / 2);
 			}, 400);
 		});
+	},
+	setStageDimensions: function() {
+		$(".stageOutput").height( $(".stageOutput").width() );
+
+		splash.StageManager.stageDimension.width = $(".stageOutput").width();
+		splash.StageManager.stageDimension.height = $(".stageOutput").height();
 	}
 }
 
