@@ -334,7 +334,7 @@ splash.IfElseBlock.prototype.render = function() {
 	);
 
 	htmlElement.find("> .block-statement").append(
-		$('<div class="block-signature"><div class="block-name block-text">Else</div></div>')
+		$('<div class="block-signature"><div class="block-name block-text-outline">Else</div></div>')
 	);
 
 	htmlElement.find("> .block-statement").append(
