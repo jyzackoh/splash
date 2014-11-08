@@ -179,7 +179,6 @@ splash.MoveXBlock.prototype.name = "Step along X by";
 splash.MoveXBlock.prototype.colour = "forestgreen";
 splash.MoveXBlock.prototype.expectedArgsCount = 1;
 splash.MoveXBlock.prototype.inputLimits = [{max:50, min:-50}];
-splash.MoveXBlock.prototype.postExecutionDelay = 410;
 splash.MoveXBlock.prototype.codeSnippet = function() {
 	this.argumentValidityCheck();
 	//console.log(this);
@@ -197,7 +196,6 @@ splash.MoveYBlock.prototype.name = "Step along Y by";
 splash.MoveYBlock.prototype.colour = "forestgreen";
 splash.MoveYBlock.prototype.expectedArgsCount = 1;
 splash.MoveYBlock.prototype.inputLimits = [{max:50, min:-50}];
-splash.MoveYBlock.prototype.postExecutionDelay = 410;
 splash.MoveYBlock.prototype.codeSnippet = function() {
 	this.argumentValidityCheck();
 	var steps = this.args[0] * splash.StageManager.pixelsPerStep;
@@ -380,7 +378,7 @@ splash.IfElseBlock.prototype.render = function() {
 	);
 
 	htmlElement.find("> .block-statement").append(
-		$('<div class="block-signature"><div class="block-name block-text-outline">Else</div></div>')
+		$('</div><div class="block-signature"><div class="block-name block-text-outline">Else</div></div>')
 	);
 
 	htmlElement.find("> .block-statement").append(
