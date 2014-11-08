@@ -29,21 +29,22 @@ def generate_new_page(request, program_code):
 
 	return redirect('/'+program_code)
 
-def get_loaded_program(request, program_code):
+def get_loaded_program(request, program_code, html_template):
 	owner = get_google_id_string(request)
 	if (gateway.program_is_exist(program_code)):
 		if (gateway.program_is_private(program_code)):
 			if (owner == ''):
 				return render(request, 'unauthorized.html', {"program_code":program_code})
 			elif (gateway.get_owner(program_code)==owner):
-				return render(request, 'splash.html', {"privacy_status": 'private', "program_code": program_code})
+				return render(request, html_template, {"privacy_status": 'private', "program_code": program_code})
 			else:
 				return render(request, 'unauthorized.html', {"program_code":program_code})
 		else:
 			#load the current data
-			return render(request, 'splash.html', {"privacy_status": 'public', "program_code": program_code})
+			return render(request, html_template, {"privacy_status": 'public', "program_code": program_code})
 
 	return generate_new_page(request, program_code)
+
 
 def save_program(request, program_code):
 	if request.method == "POST":
