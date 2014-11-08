@@ -101,23 +101,12 @@
 }
 
 .block-arg-wrapper {
-	width: 40px;
 	height: 23px;
 	display: inline-block;
-	position: relative;
 }
 
 .block-arg {
 	width: 40px;
-	position: absolute;
-	top: 0px;
-	left: 0px;
-}
-
-.block-arg-drop-area {
-	position: absolute;
-	top: 0px;
-	left: 0px;
 }
 
 .sub-blocks {
