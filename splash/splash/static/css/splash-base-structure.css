@@ -24,6 +24,13 @@
 	font-size: 14px;
 }
 
+.stage-container {
+	width:41.66666667%;
+	padding-left:15px;
+	padding-right:15px;
+	margin: 0 auto;
+}
+
 .stage {
 	margin-bottom: 10px;
 	min-height: 53%;

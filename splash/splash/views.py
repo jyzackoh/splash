@@ -12,7 +12,10 @@ def new_program(request):
 	return utils.generate_new_page(request, utils.generate_program_code())
 
 def load_page(request, program_code):
-	return utils.get_loaded_program(request, program_code)
+	return utils.get_loaded_program(request, program_code, 'splash.html')
+
+def share_page(request, program_code):
+	return utils.get_loaded_program(request, program_code, 'splash-share.html')
 
 @csrf_exempt 
 def toggle_permissions(request, program_code, permission):
