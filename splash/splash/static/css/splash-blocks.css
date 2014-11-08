@@ -68,7 +68,6 @@
 .block-signature {
     position: relative;
     margin: 0;
-	height: 23px;
     /*overflow: auto;*/
 }
 
@@ -101,7 +100,6 @@
 }
 
 .block-arg-wrapper {
-	height: 23px;
 	display: inline-block;
 }
 
