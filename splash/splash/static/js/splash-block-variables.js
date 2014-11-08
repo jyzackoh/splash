@@ -1,23 +1,21 @@
 var splash = splash || {};
 
 splash.VariableBlock = function VariableBlock(parameters) {
-	splash.Block.call(this);
+	splash.ExpressionBlock.call(this);
 	this.args = [];
 
 	splash.Util.parseParameters(this, parameters);
 }
-splash.Util.inherits(splash.VariableBlock, splash.Block);
-splash.VariableBlock.prototype.expectedArgsCount = 1;
+splash.Util.inherits(splash.VariableBlock, splash.ExpressionBlock);
+splash.VariableBlock.prototype.expectedArgsCount = 0;
 splash.VariableBlock.prototype.render = function(){
 	var that = this;
 
-	var htmlElement = $('stub')
-	.draggable({
-		start: _.partial(splash.DragDropController.unchainAndDrawDroppables, this),
-		stop: _.partial(splash.DragDropController.cleanupAndClearDroppables, this)
-	});
+	var htmlElement = splash.ExpressionBlock.prototype.render.call(this)
+	// .addClass("block-variable")
+	// .append($("..."));
 
-  return htmlElement;
+	return htmlElement;
 }
 
 splash.SpritePositionBlock = function SpritePositionBlock(parameters){

@@ -136,6 +136,15 @@
 	position: relative;
 }
 
+.expression-snap-area {
+	height: 23px;
+	min-width: 50px;
+	background: default;
+	background: #FFF;
+	opacity: 0.5;
+	position: relative;
+}
+
 .drag-hover {
 	background: #FFFF00;
 }

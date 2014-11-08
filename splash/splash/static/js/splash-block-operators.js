@@ -1,7 +1,7 @@
 var splash = splash || {};
 
 splash.OperatorBlock = function OperatorBlock(parameters) {
-	splash.Block.call(this);
+	splash.ExpressionBlock.call(this);
 
 	this.args = [];
 
@@ -9,17 +9,20 @@ splash.OperatorBlock = function OperatorBlock(parameters) {
 
 	this.htmlElement = this.render();
 }
-splash.Util.inherits(splash.OperatorBlock, splash.Block);
+splash.Util.inherits(splash.OperatorBlock, splash.ExpressionBlock);
 splash.OperatorBlock.prototype.expectedArgsCount = 2;
 splash.OperatorBlock.prototype.render = function() {
 	var that = this;
 
 	var inputField = '<div class="block-arg-wrapper"><div class="block-arg-drop-area"></div><input class="block-arg" type="number" value="0" maxlength="3"></div>';
 
-	var htmlElement = $('<div class="block-operator"><div class="block-signature">'+ inputField +'<div class="block-text-outline block-text-operator">'+ that.name +'</div>'+ inputField +'</div></div>');
-
+	var htmlElement = splash.ExpressionBlock.prototype.render.call(this)
+	.addClass("block-operator")
+	.addClass("block-gold")
+	.append($('<div class="block-signature">'+ inputField +'<div class="block-text-outline block-text-operator">'+ that.name +'</div>'+ inputField +'</div>'));
+	
 	htmlElement.children(".block-operator").on("change", function() {
-	  var listOfArgs = $(this).children('> .block-signature > .block-arg-wrapper > .block-arg');
+	  var listOfArgs = $(this).find('> .block-signature > .block-arg-wrapper > .block-arg');
 		for (var i = 0; i < listOfArgs.length; i++) {
 			var inputField = $(listOfArgs[i]);
 

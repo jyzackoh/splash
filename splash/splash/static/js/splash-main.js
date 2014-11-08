@@ -22,8 +22,19 @@ splash.Main = {
 				appendTo: "body"
 			});
 			block.htmlElement.addClass("template-block");
-			block.htmlElement.appendTo($(category + " .panel-body"));
+			$(category + " .panel-body")
+				.append(block.htmlElement)
+				.append("<br>");
 		}
+		setTemplateBlock(MOVEMENT, new splash.AdditionBlock());
+		setTemplateBlock(MOVEMENT, new splash.SubtractionBlock());
+		setTemplateBlock(MOVEMENT, new splash.MultiplicationBlock());
+		setTemplateBlock(MOVEMENT, new splash.DivisionBlock());
+		setTemplateBlock(MOVEMENT, new splash.ModuloBlock());
+		setTemplateBlock(MOVEMENT, new splash.EqualBlock());
+		setTemplateBlock(MOVEMENT, new splash.GreaterBlock());
+		setTemplateBlock(MOVEMENT, new splash.LesserBlock());
+
 		setTemplateBlock(MOVEMENT, new splash.SetXBlock());
 		setTemplateBlock(MOVEMENT, new splash.SetYBlock());
 		setTemplateBlock(MOVEMENT, new splash.MoveXBlock());
