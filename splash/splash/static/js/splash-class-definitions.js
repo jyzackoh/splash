@@ -89,18 +89,18 @@ splash.Sprite.prototype.setPosition = function(axis, value) {
 	}
 }
 splash.Sprite.prototype.getPosition = function() {
-	var defaultPosition = this.htmlElement.position();
 	var position = {
-		x: defaultPosition.left,
-		y: (StageManager.stageDimension.height - defaultPosition.top),
+		x: parseInt(this.htmlElement.css("left")),
+		y: parseInt(this.htmlElement.css("bottom")),
 	}
 	return position;
 }
 splash.Sprite.prototype.translate = function(axis, value) {
+	var position = this.getPosition();
 	if (axis == "y") {
-		this.htmlElement.animate({"bottom": "+=" + value + "px"});
+		this.htmlElement.css("bottom", (position.y+value) + "px");
 	} else if (axis == "x") {
-		this.htmlElement.animate({"left": "+=" + value + "px"});
+		this.htmlElement.css("left", (position.x+value) + "px");
 	}
 }
 
