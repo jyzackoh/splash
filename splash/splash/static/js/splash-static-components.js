@@ -476,10 +476,19 @@ splash.StageManager = {
 		});
 	},
 	setStageDimensions: function() {
+
+		
+
 		$(".stageOutput").height( $(".stageOutput").width() );
+		$(".stage").height( $(".stageOutput").height()+38);
+		var calcedMargin = ($(".stage").width() - $(".stageOutput").width())/2
+		if (calcedMargin > 1) {
+			$(".stageOutput").css({"margin-left":calcedMargin});
+		}
 
 		splash.StageManager.stageDimension.width = $(".stageOutput").width();
 		splash.StageManager.stageDimension.height = $(".stageOutput").height();
+
 		splash.StageManager.pixelsPerStep = splash.StageManager.stageDimension.width/100.0;
 	}
 }
