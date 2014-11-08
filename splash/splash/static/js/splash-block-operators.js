@@ -16,7 +16,7 @@ splash.OperatorBlock.prototype.render = function() {
 
 	var inputField = '<div class="block-arg-wrapper"><div class="block-arg-drop-area"></div><input class="block-arg" type="number" value="0" maxlength="3"></div>';
 
-	var htmlElement = $('<div class="block-operator"><div class="block-signature">'+ inputField +'<div class="block-text-outline block-text-operator">'+ that.name +'</div>'+ inputField +'</div></div>');
+	var htmlElement = $('<div class="block-operator"><div class="block-signature">'+ inputField +'<div class="block-text-outline block-text-operator">&nbsp;'+ that.name +'&nbsp;</div>'+ inputField +'</div></div>');
 
 	htmlElement.children(".block-operator").on("change", function() {
 	  var listOfArgs = $(this).children('> .block-signature > .block-arg-wrapper > .block-arg');
