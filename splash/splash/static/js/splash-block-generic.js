@@ -17,7 +17,6 @@ splash.Block = function Block(parameters) {
 splash.Util.inherits(splash.Block, splash.Obj);
 splash.Block.prototype.name = "Block";
 splash.Block.prototype.colour = "default";
-splash.Block.prototype.step = 5;
 splash.Block.prototype.expectedArgsCount = 0;
 splash.Block.prototype.inputLimits = [];
 splash.Block.prototype.postExecutionDelay = 0;
