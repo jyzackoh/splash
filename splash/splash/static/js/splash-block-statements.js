@@ -12,7 +12,6 @@ splash.StatementBlock = function StatementBlock(parameters) {
 	this.nextBlockLink = new splash.StatementBlockLink({parent: this});
 }
 splash.Util.inherits(splash.StatementBlock, splash.Block);
-splash.StatementBlock.prototype.step = 5;
 splash.StatementBlock.prototype.inputLimits = [];
 splash.StatementBlock.prototype.render = function() {
 	var that = this;
@@ -56,6 +55,19 @@ splash.StatementBlock.prototype.render = function() {
 
   return htmlElement;
 };
+splash.StatementBlock.prototype.argumentValidityCheck = function() {
+	for (var i = 0; i < this.args.length; i++) {
+		var argument = this.args[i];
+		if (argument > this.inputLimits[i].max) {
+			argument = (this.inputLimits[i].max);
+		}
+		if (argument < this.inputLimits[i].min) {
+			argment = (this.inputLimits[i].min);
+		}
+			this.args[i] = argument;
+	}
+}
+
 // Sub-classes should not overwrite the following functions (i.e. "final methods")
 splash.StatementBlock.prototype.setNextBlockLink = function(nextBlock) {
 	this.nextBlockLink.child = nextBlock;
@@ -101,7 +113,7 @@ splash.StatementBlock.prototype.deserialize = function(obj) {
 
 //Set X Block
 splash.SetXBlock = function SetXBlock(parameters) {
-	this.inputLimits = [{max: Math.floor(splash.StageManager.stageDimension.width/this.step), min:0}];
+	this.inputLimits = [{max: 100, min:0}];
 	splash.StatementBlock.call(this);
 	splash.Util.parseParameters(this, parameters);
 }
@@ -110,13 +122,14 @@ splash.SetXBlock.prototype.name = "Set X to";
 splash.SetXBlock.prototype.colour = "crimson";
 splash.SetXBlock.prototype.expectedArgsCount = 1;
 splash.SetXBlock.prototype.codeSnippet = function() {
-	var steps = this.args[0] * this.step;
+	this.argumentValidityCheck();
+	var steps = this.args[0] * splash.StageManager.pixelsPerStep;
 	splash.SpriteManager.getCurrentSprite().setPosition("x", steps);
 };
 
 //Set Y Block
 splash.SetYBlock = function SetYBlock(parameters) {
-	this.inputLimits = [{max: Math.floor(splash.StageManager.stageDimension.height/this.step), min:0}];
+	this.inputLimits = [{max: 100, min:0}];
 	splash.StatementBlock.call(this);
 	splash.Util.parseParameters(this, parameters);
 }
@@ -125,7 +138,8 @@ splash.SetYBlock.prototype.name = "Set Y to";
 splash.SetYBlock.prototype.colour = "crimson";
 splash.SetYBlock.prototype.expectedArgsCount = 1;
 splash.SetYBlock.prototype.codeSnippet = function() {
-	var steps = this.args[0] * this.step;
+	this.argumentValidityCheck();
+	var steps = this.args[0] * splash.StageManager.pixelsPerStep;
 	splash.SpriteManager.getCurrentSprite().setPosition("y", steps);
 };
 
@@ -138,6 +152,7 @@ splash.Util.inherits(splash.ShowBlock, splash.StatementBlock);
 splash.ShowBlock.prototype.name = "Show";
 splash.ShowBlock.prototype.colour = "goldenrod";
 splash.ShowBlock.prototype.codeSnippet = function() {
+	this.argumentValidityCheck();
 	splash.SpriteManager.getCurrentSprite().setVisibility(true);
 };
 
@@ -150,6 +165,7 @@ splash.Util.inherits(splash.HideBlock, splash.StatementBlock);
 splash.HideBlock.prototype.name = "Hide";
 splash.HideBlock.prototype.colour = "gold";
 splash.HideBlock.prototype.codeSnippet = function() {
+	this.argumentValidityCheck();
 	splash.SpriteManager.getCurrentSprite().setVisibility(false);
 };
 
@@ -165,8 +181,9 @@ splash.MoveXBlock.prototype.expectedArgsCount = 1;
 splash.MoveXBlock.prototype.inputLimits = [{max:50, min:-50}];
 splash.MoveXBlock.prototype.postExecutionDelay = 410;
 splash.MoveXBlock.prototype.codeSnippet = function() {
+	this.argumentValidityCheck();
 	//console.log(this);
-	var steps = this.args[0] * this.step;
+	var steps = this.args[0] * splash.StageManager.pixelsPerStep;
 	splash.SpriteManager.getCurrentSprite().translate("x", steps);
 };
 
@@ -182,7 +199,8 @@ splash.MoveYBlock.prototype.expectedArgsCount = 1;
 splash.MoveYBlock.prototype.inputLimits = [{max:50, min:-50}];
 splash.MoveYBlock.prototype.postExecutionDelay = 410;
 splash.MoveYBlock.prototype.codeSnippet = function() {
-	var steps = this.args[0] * this.step;
+	this.argumentValidityCheck();
+	var steps = this.args[0] * splash.StageManager.pixelsPerStep;
 	splash.SpriteManager.getCurrentSprite().translate("y", steps);
 };
 
@@ -198,6 +216,7 @@ splash.WaitBlock.prototype.expectedArgsCount = 1;
 splash.WaitBlock.prototype.postExecutionDelay = 0;
 splash.WaitBlock.prototype.inputLimits = [{max:100, min:0}];
 splash.WaitBlock.prototype.codeSnippet = function() {
+	this.argumentValidityCheck();
 	this.postExecutionDelay = this.args[0] * 1000; // to seconds
 };
 
@@ -215,6 +234,7 @@ splash.RepeatBlock.prototype.colour = "dodgerblue";
 splash.RepeatBlock.prototype.expectedArgsCount = 1;
 splash.RepeatBlock.prototype.inputLimits = [{max:100, min:0}];
 splash.RepeatBlock.prototype.codeSnippet = function() {
+	this.argumentValidityCheck();
 	if(this.repeatSubBlocksLink.child == undefined) //Nothing to repeat, continue
 		return;
 
@@ -259,6 +279,7 @@ splash.RepeatForeverBlock.prototype.name = "Repeat Forever";
 splash.RepeatForeverBlock.prototype.colour = "pureblue";
 splash.RepeatForeverBlock.prototype.expectedArgsCount = 0;
 splash.RepeatForeverBlock.prototype.codeSnippet = function() {
+	this.argumentValidityCheck();
 	if(this.repeatSubBlocksLink.child == undefined) //Nothing to repeat, continue
 		return;
 
@@ -290,6 +311,7 @@ splash.ChangeCostumeBlock.prototype.colour = "indigo";
 splash.ChangeCostumeBlock.prototype.expectedArgsCount = 1;
 splash.ChangeCostumeBlock.prototype.inputLimits = [{max:2, min:0}];
 splash.ChangeCostumeBlock.prototype.codeSnippet = function() {
+	this.argumentValidityCheck();
 	splash.SpriteManager.getCurrentSprite().changeCostume(this.args[0]);
 };
 
@@ -304,6 +326,7 @@ splash.ChangeBackgroundBlock.prototype.colour = "plum";
 splash.ChangeBackgroundBlock.prototype.expectedArgsCount = 1;
 splash.StatementBlock.prototype.inputLimits = [{max:1, min:0}];
 splash.ChangeBackgroundBlock.prototype.codeSnippet = function() {
+	this.argumentValidityCheck();
 	splash.BackgroundManager.setCurrentBackground(this.args[0]);
 };
 
@@ -322,6 +345,7 @@ splash.IfElseBlock.prototype.name = "If";
 splash.IfElseBlock.prototype.colour = "crimson";
 splash.IfElseBlock.prototype.expectedArgsCount = 1;
 splash.IfElseBlock.prototype.codeSnippet = function() {
+	this.argumentValidityCheck();
 	if(splash.Interpreter.evaluateExpression(this.args[0])) {
 		var innerBlockChainToExecute = this.ifSubBlocksLink.child;
 	}
