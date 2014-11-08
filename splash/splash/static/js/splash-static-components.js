@@ -37,7 +37,6 @@ splash.Interpreter = {
 			return;
 
 		var postExecutionFollowUpDelayTicketNumber = startingBlock.codeSnippet();
-
 		
 		if(postExecutionFollowUpDelayTicketNumber != undefined) {
 			splash.Interpreter.postExecutionFollowUpDelayStorage[postExecutionFollowUpDelayTicketNumber] = {};
@@ -72,6 +71,14 @@ splash.Interpreter = {
 	},
 	getPostExecutionFollowUpDelayTicketNumber: function() {
 		return splash.Interpreter.postExecutionFollowUpDelayTicketNumberCounter++;
+	},
+	evaluateExpression: function(expression) {
+		if(expression instanceof splash.OperatorBlock || expression instanceof splash.VariableBlock) {
+			return expression.codeSnippet();
+		}
+		else {
+			return expression;
+		}
 	},
 	runAllStripeBlocks: function(stripe) {
 		_.forEach(stripe.firstLevelBlocks, function(startingBlock) {
