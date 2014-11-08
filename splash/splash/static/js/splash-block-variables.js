@@ -8,25 +8,26 @@ splash.VariableBlock = function VariableBlock(parameters) {
 }
 splash.Util.inherits(splash.VariableBlock, splash.ExpressionBlock);
 splash.VariableBlock.prototype.expectedArgsCount = 0;
-splash.VariableBlock.prototype.render = function(){
+splash.VariableBlock.prototype.render = function() {
 	var that = this;
 
 	var htmlElement = splash.ExpressionBlock.prototype.render.call(this)
-	// .addClass("block-variable")
-	// .append($("..."));
+	.addClass("block-variable")
+	.addClass("block-plum")
+	.append($('<div class="block-signature"><div class="block-name block-text-outline">'+ that.name +'</div></div>'));
 
 	return htmlElement;
 }
 
-splash.SpriteXPositionBlock = function SpriteXPositionBlock(parameters){
+splash.SpriteXPositionBlock = function SpriteXPositionBlock(parameters) {
 	splash.VariableBlock.call(this);
 	splash.Util.parseParameters(this, parameters);
 }
 splash.Util.inherits(splash.SpriteXPositionBlock, splash.VariableBlock);
 splash.SpriteXPositionBlock.prototype.name = "Sprite X Position";
 splash.SpriteXPositionBlock.prototype.colour = "default";
-splash.SpriteXPositionBlock.prototype.codeSnippet = function(){
-	//Should return value relative to SPLASH!'s coordinate system (0-100 units)
+splash.SpriteXPositionBlock.prototype.codeSnippet = function() {
+	// Should return value relative to SPLASH!'s coordinate system (0-100 units)
 	return (splash.SpriteManager.getCurrentSprite().getPosition().x/splash.StageManager.pixelsPerStep);
 };
 

@@ -12,7 +12,7 @@ splash.Main = {
 		var CONTROL = "#controlPal";
 		var APPEARANCE = "#appearancePal";
 		var OPERATOR = "#operatorPal";
-		var VARIABLE = "variablePal";
+		var VARIABLE = "#variablePal";
 		function setTemplateBlock(category, block) {
 			block.htmlElement.draggable({
 				helper: "clone",
@@ -53,6 +53,13 @@ splash.Main = {
 		setTemplateBlock(OPERATOR, new splash.EqualBlock());
 		setTemplateBlock(OPERATOR, new splash.GreaterBlock());
 		setTemplateBlock(OPERATOR, new splash.LesserBlock());
+
+		setTemplateBlock(VARIABLE, new splash.SpriteXPositionBlock());
+		setTemplateBlock(VARIABLE, new splash.SpriteYPositionBlock());
+		setTemplateBlock(VARIABLE, new splash.StageTopBlock());
+		setTemplateBlock(VARIABLE, new splash.StageBottomBlock());
+		setTemplateBlock(VARIABLE, new splash.StageLeftBlock());
+		setTemplateBlock(VARIABLE, new splash.StageRightBlock());
 	}
 }
 
