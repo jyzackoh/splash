@@ -421,6 +421,7 @@ splash.StageManager = {
 		width: 10,
 		height: 10
 	},
+	pixelsPerStep: 1,
 	initialize: function() {
 		splash.StageManager.initializeDimensions();
 		splash.StageManager.initializeBackgrounds();
@@ -479,6 +480,7 @@ splash.StageManager = {
 
 		splash.StageManager.stageDimension.width = $(".stageOutput").width();
 		splash.StageManager.stageDimension.height = $(".stageOutput").height();
+		splash.StageManager.pixelsPerStep = splash.StageManager.stageDimension.width/100.0;
 	}
 }
 
