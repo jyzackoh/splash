@@ -17,11 +17,11 @@ splash.OperatorBlock.prototype.render = function() {
 	var inputField = '<div class="block-arg-wrapper"><div class="block-arg-drop-area"></div><input class="block-arg" type="number" value="0" maxlength="3"></div>';
 
 	var htmlElement = splash.ExpressionBlock.prototype.render.call(this)
-	.addClass("block-operator")
+	.addClass("block-expression")
 	.addClass("block-gold")
 	.append($('<div class="block-signature">'+ inputField +'<div class="block-text-outline block-text-operator">&nbsp;'+ that.name +'&nbsp;</div>'+ inputField +'</div>'));
 	
-	htmlElement.children(".block-operator").on("change", function() {
+	htmlElement.children(".block-expression").on("change", function() {
 	  var listOfArgs = $(this).find('> .block-signature > .block-arg-wrapper > .block-arg');
 		for (var i = 0; i < listOfArgs.length; i++) {
 			var inputField = $(listOfArgs[i]);
