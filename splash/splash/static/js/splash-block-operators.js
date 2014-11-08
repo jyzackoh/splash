@@ -17,7 +17,6 @@ splash.OperatorBlock.prototype.render = function() {
 	var inputField = '<div class="block-arg-wrapper"><div class="block-arg-drop-area"></div><input class="block-arg" type="number" value="0" maxlength="3"></div>';
 
 	var htmlElement = splash.ExpressionBlock.prototype.render.call(this)
-	.addClass("block-expression")
 	.addClass("block-gold")
 	.append($('<div class="block-signature">'+ inputField +'<div class="block-text-outline block-text-operator">&nbsp;'+ that.name +'&nbsp;</div>'+ inputField +'</div>'));
 	

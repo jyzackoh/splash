@@ -77,6 +77,7 @@ splash.ExpressionBlock = function ExpressionBlock(parameters) {
 splash.Util.inherits(splash.ExpressionBlock, splash.Block);
 splash.ExpressionBlock.prototype.render = function() {
 	var htmlElement = $("<div></div>")
+	.addClass("block-expression")
 	.draggable({
 		start: _.partial(splash.DragDropController.unchainAndDrawExpressionDroppables, this),
 		stop: _.partial(splash.DragDropController.cleanupAndClearExpressionDroppables, this),

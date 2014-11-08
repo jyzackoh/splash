@@ -12,10 +12,8 @@ splash.VariableBlock.prototype.render = function() {
 	var that = this;
 
 	var htmlElement = splash.ExpressionBlock.prototype.render.call(this)
-	.addClass("block-variable")
 	.addClass("block-plum")
-	.append($('<div class="block-signature"><div class="block-name block-text-outline">'+ that.name +'</div></div>'));
-
+	.append($('<div class="block-signature"><div class="block-name block-text-outline">&nbsp;'+ that.name +'&nbsp;</div></div>'));
 	return htmlElement;
 }
 
