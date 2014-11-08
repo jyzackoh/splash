@@ -14,11 +14,9 @@ splash.OperatorBlock.prototype.expectedArgsCount = 2;
 splash.OperatorBlock.prototype.render = function(){
 	var that = this;
 
-	var htmlElement = $('stub');
-	.draggable({
-		start: _.partial(splash.DragDropController.unchainAndDrawDroppables, this),
-		stop: _.partial(splash.DragDropController.cleanupAndClearDroppables, this)
-	});
+	var inputField = '<div class="block-arg-wrapper"><div class="block-arg-drag-area"></div><input class="block-arg" type="number" value="0" maxlength="3"></div>';
+
+	var htmlElement = $('<div class="block block-operator"><div class="block-signature">'+ inputField +'<div class="block-text-outline block-text-operator">'+ that.name +'</div>'+ inputField +'</div></div>');
 
 	htmlElement.children(".block-operator").on("change", function() {
 	  var listOfArgs = $(this).find('.block-arg');

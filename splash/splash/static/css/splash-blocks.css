@@ -18,6 +18,7 @@
 	display: inline-block; /* to make parent wrap child for nesting*/
 	background: #FFF;
 	position: relative;
+	min-width: 100px;
 }
 
 .block-variable {
@@ -66,7 +67,9 @@
 
 .block-signature {
     position: relative;
-    overflow: auto;
+    margin: 0;
+	height: 26px;
+    /*overflow: auto;*/
 }
 
 .block-name {
@@ -75,7 +78,7 @@
 	float: left;
 }
 
-.block-text {
+.block-text-outline {
 	color: white;
 	text-shadow: 	0px 0px 1px #000, 
 					0px 0px 1px #000, 
@@ -83,15 +86,35 @@
 					0px 0px 1px #000,
 					0px 0px 1px #000, 
 					0px 0px 1px #000;
+	display: inline-block;
 }
 
-.block-args {
-	margin: 0;
-	float: right;
+.block-text-operator {
+	height: 18px;
+	font-size: 18px;
+}
+
+.block-arg-wrapper {
+	width: 40px;
+	height: 26px;
+	display: inline-block;
+	position: relative;
 }
 
 .block-arg {
 	width: 40px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
+.block-arg-drag-area {
+	width: 40px;
+	height: 26px;
+	background-color: red;
+	position: absolute;
+	top: 0px;
+	left: 0px;
 }
 
 .sub-blocks {
