@@ -34,6 +34,27 @@ splash.OperatorBlock.prototype.render = function() {
 
   return htmlElement;
 }
+splash.OperatorBlock.prototype.serialize = function(splashObjectId) {
+	var returnObject = splash.ExpressionBlock.prototype.serialize.call(this, splashObjectId);
+
+	returnObject.blockArgValues = [];
+
+	for (var i = 0; i < this.expectedArgsCount; i++) {
+		returnObject.blockArgValues.push(
+			this.htmlElement.find('> .block-signature > .block-arg-wrapper > .block-arg').eq(i).val()
+		);
+	}
+
+	return returnObject;
+};
+
+splash.OperatorBlock.prototype.deserialize = function(obj) {
+	splash.ExpressionBlock.prototype.deserialize.call(this, obj);
+
+	for (var i = 0; i < this.expectedArgsCount; i++) {
+		this.htmlElement.find('> .block-signature > .block-arg-wrapper > .block-arg').eq(i).val(obj.blockArgValues[i]);
+	}
+};
 
 // Mathematical Operator Blocks
 

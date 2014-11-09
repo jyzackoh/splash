@@ -103,6 +103,7 @@ splash.ChainableBlock = function ChainableBlock(parameters) {
 	this.subBlocksLinks = [];
 }
 splash.Util.inherits(splash.ChainableBlock, splash.Block);
+splash.ChainableBlock.prototype.allowChildrenBlocks = true;
 splash.ChainableBlock.prototype.render = function() {
 	var that = this;
 
@@ -118,7 +119,27 @@ splash.ChainableBlock.prototype.render = function() {
 
 	return htmlElement;
 }
-splash.ChainableBlock.prototype.allowChildrenBlocks = true;
+splash.ChainableBlock.prototype.serialize = function(splashObjectId) {
+	var returnObject = splash.Block.prototype.serialize.call(this, splashObjectId);
+
+	returnObject.blockArgValues = [];
+
+	for (var i = 0; i < this.expectedArgsCount; i++) {
+		returnObject.blockArgValues.push(
+			this.htmlElement.find('> .block-statement > .block-signature > .block-arg-wrapper > .block-arg').eq(i).val()
+		);
+	}
+
+	return returnObject;
+};
+
+splash.ChainableBlock.prototype.deserialize = function(obj) {
+	splash.Block.prototype.deserialize.call(this, obj);
+
+	for (var i = 0; i < this.expectedArgsCount; i++) {
+		this.htmlElement.find('> .block-statement > .block-signature > .block-arg-wrapper > .block-arg').eq(i).val(obj.blockArgValues[i]);
+	}
+};
 
 
 

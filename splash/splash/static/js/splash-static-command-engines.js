@@ -70,10 +70,10 @@ splash.Interpreter = {
 splash.Renderer = {
 	renderBlock: function(block) {
 		if(block instanceof splash.ChainableBlock) {
-			splash.Renderer.renderChainableBlock(block);
+			return splash.Renderer.renderChainableBlock(block);
 		}
 		else if(block instanceof splash.ExpressionBlock) {
-			splash.Renderer.renderExpressionBlock(block);
+			return splash.Renderer.renderExpressionBlock(block);
 		}
 	},
 	
@@ -113,7 +113,9 @@ splash.Renderer = {
 							position: "relative"
 						});
 
-						currentBlock.subBlocksLinks[i].find(currentBlock.subBlocksLinks[i].attachPath).append(subBlocks);
+						currentBlock.htmlElement.find(
+							currentBlock.subBlocksLinks[i].attachPath
+						).append(subBlocks);
 					}
 				}
 			}

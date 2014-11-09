@@ -262,8 +262,8 @@ splash.PageManager = {
 		});
 	},
 	load: function() {
-		splash.PageManager.hideMessage();
-		return;
+		// splash.PageManager.hideMessage();
+		// return;
 		try {
 			// console.log("checkpoint1");
 			$.get("load/", {}, function(reply) {
