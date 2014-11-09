@@ -85,7 +85,7 @@ splash.MultiplicationBlock = function MultiplicationBlock(parameters){
 	splash.Util.parseParameters(this, parameters);
 }
 splash.Util.inherits(splash.MultiplicationBlock, splash.OperatorBlock);
-splash.MultiplicationBlock.prototype.name = "&#215";
+splash.MultiplicationBlock.prototype.name = "&#215;";
 splash.MultiplicationBlock.prototype.codeSnippet = function() {
 	return parseFloat(splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0])) * 
 		parseFloat(splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1]));
@@ -96,7 +96,7 @@ splash.DivisionBlock = function DivisionBlock(parameters){
 	splash.Util.parseParameters(this, parameters);
 }
 splash.Util.inherits(splash.DivisionBlock, splash.OperatorBlock);
-splash.DivisionBlock.prototype.name = "&#247";
+splash.DivisionBlock.prototype.name = "&#247;";
 splash.DivisionBlock.prototype.codeSnippet = function() {
 	var value = parseFloat(splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0])) /
 		parseFloat(splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1]));
@@ -132,12 +132,23 @@ splash.EqualBlock.prototype.codeSnippet = function() {
 		parseFloat(splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1]))) ? 1 : 0;
 };
 
+splash.NotEqualBlock = function NotEqualBlock(parameters){
+	splash.OperatorBlock.call(this);
+	splash.Util.parseParameters(this, parameters);
+}
+splash.Util.inherits(splash.NotEqualBlock, splash.OperatorBlock);
+splash.NotEqualBlock.prototype.name = "&ne;";
+splash.NotEqualBlock.prototype.codeSnippet = function() {
+	return (parseFloat(splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0])) !=
+		parseFloat(splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1]))) ? 1 : 0;
+};
+
 splash.GreaterBlock = function GreaterBlock(parameters){
 	splash.OperatorBlock.call(this);
 	splash.Util.parseParameters(this, parameters);
 }
 splash.Util.inherits(splash.GreaterBlock, splash.OperatorBlock);
-splash.GreaterBlock.prototype.name = ">";
+splash.GreaterBlock.prototype.name = "&gt;";
 splash.GreaterBlock.prototype.codeSnippet = function() {
 	return (parseFloat(splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0])) >
 		parseFloat(splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1]))) ? 1 : 0;
@@ -148,8 +159,30 @@ splash.LesserBlock = function LesserBlock(parameters){
 	splash.Util.parseParameters(this, parameters);
 }
 splash.Util.inherits(splash.LesserBlock, splash.OperatorBlock);
-splash.LesserBlock.prototype.name = "<";
+splash.LesserBlock.prototype.name = "&lt;";
 splash.LesserBlock.prototype.codeSnippet = function() {
 	return (parseFloat(splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0])) <
+		parseFloat(splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1]))) ? 1 : 0;
+};
+
+splash.GreaterEqualBlock = function GreaterEqualBlock(parameters){
+	splash.OperatorBlock.call(this);
+	splash.Util.parseParameters(this, parameters);
+}
+splash.Util.inherits(splash.GreaterEqualBlock, splash.OperatorBlock);
+splash.GreaterEqualBlock.prototype.name = "&ge;";
+splash.GreaterEqualBlock.prototype.codeSnippet = function() {
+	return (parseFloat(splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0])) >=
+		parseFloat(splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1]))) ? 1 : 0;
+};
+
+splash.LesserEqualBlock = function LesserEqualBlock(parameters){
+	splash.OperatorBlock.call(this);
+	splash.Util.parseParameters(this, parameters);
+}
+splash.Util.inherits(splash.LesserEqualBlock, splash.OperatorBlock);
+splash.LesserEqualBlock.prototype.name = "&le;";
+splash.LesserEqualBlock.prototype.codeSnippet = function() {
+	return (parseFloat(splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0])) <=
 		parseFloat(splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1]))) ? 1 : 0;
 };

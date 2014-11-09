@@ -22,7 +22,7 @@ splash.OnSpaceBlock.prototype.allowChildrenBlocks = false;
 splash.OnSpaceBlock.prototype.codeSnippet = function() {
 	var that = this;
 
-	$("body").on("keypress", function(event) {
+	$("body").on("keypress.splashEvents", function(event) {
 		if(event.which == 32) {
 			splash.Interpreter.executeBlockChain(that.subBlocksLinks[0].child);
 		}
