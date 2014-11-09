@@ -60,6 +60,13 @@ splash.Block.prototype.deserialize = function(obj) {
 	}
 };
 
+
+
+
+
+
+
+
 splash.ExpressionBlock = function ExpressionBlock(parameters) {
 	splash.Block.call(this);
 
@@ -90,6 +97,55 @@ splash.ExpressionBlock.prototype.render = function() {
 	return htmlElement;
 }
 
+
+
+
+
+
+
+splash.ChainableBlock = function ChainableBlock(parameters) {
+	splash.Block.call(this);
+
+	splash.Util.parseParameters(this, parameters);
+
+	this.nextBlockLink = new splash.ChainableBlockLink({parent: this});
+
+	this.subBlocksLinks = [];
+}
+splash.Util.inherits(splash.ChainableBlock, splash.Block);
+splash.ChainableBlock.prototype.render = function() {
+	var that = this;
+
+	var htmlElement = $('<div class="block-drag-area"><div class="block-statement block-'+ that.colour +'"><div class="block-signature"><div class="block-name block-text-outline">' + that.name + '</div></div><div class="sub-blocks"></div></div></div>')
+	.draggable({
+		start: _.partial(splash.DragDropController.unchainAndDrawDroppables, this),
+		stop: _.partial(splash.DragDropController.cleanupAndClearDroppables, this),
+		zIndex: 1000,
+		refreshPositions: true,
+		helper: "clone",
+		appendTo: ".canvas"
+	});
+
+	return htmlElement;
+}
+splash.ChainableBlock.prototype.allowChildrenBlocks = true;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ======================================================== BlockLinks ======================================================
+
 splash.BlockLink = function BlockLink(parameters) {
 	splash.Obj.call(this);
 	
@@ -111,7 +167,15 @@ splash.BlockLink.prototype.getAttachHtmlElement = function() {
 	return this.parent.htmlElement.find(this.attachPath);
 }
 
-splash.StatementBlockLink = function StatementBlockLink(parameters) {
+
+
+
+
+
+
+
+
+splash.ChainableBlockLink = function ChainableBlockLink(parameters) {
 	splash.BlockLink.call(this);
 
 	this.parent = undefined; // this should _not_ change after construction as each blocklink is tied permanently to a link (only child should change)
@@ -122,8 +186,8 @@ splash.StatementBlockLink = function StatementBlockLink(parameters) {
 
 	this.htmlElement = this.render();
 }
-splash.Util.inherits(splash.StatementBlockLink, splash.BlockLink);
-splash.StatementBlockLink.prototype.render = function() {
+splash.Util.inherits(splash.ChainableBlockLink, splash.BlockLink);
+splash.ChainableBlockLink.prototype.render = function() {
 	var htmlElement = $('<div class="chain-snap-area"></div>')
 		.droppable({
 			hoverClass: "drag-hover",
@@ -132,6 +196,14 @@ splash.StatementBlockLink.prototype.render = function() {
 		});
     return htmlElement;
 }
+
+
+
+
+
+
+
+
 
 splash.ExpressionBlockLink = function ExpressionBlockLink(parameters) {
 	splash.BlockLink.call(this);

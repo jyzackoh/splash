@@ -1,17 +1,11 @@
 var splash = splash || {};
 
 splash.StatementBlock = function StatementBlock(parameters) {
-	splash.Block.call(this);
-
-	this.parentLink = undefined;
-	this.args = [];
+	splash.ChainableBlock.call(this);
 	
 	splash.Util.parseParameters(this, parameters);
-
-	this.htmlElement = this.render();
-	this.nextBlockLink = new splash.StatementBlockLink({parent: this});
 }
-splash.Util.inherits(splash.StatementBlock, splash.Block);
+splash.Util.inherits(splash.StatementBlock, splash.ChainableBlock);
 splash.StatementBlock.prototype.setNextBlockLink = function(nextBlock) {
 	this.nextBlockLink.child = nextBlock;
 	nextBlock.parentLink = this.nextBlockLink; // the blocklink
@@ -30,15 +24,12 @@ splash.StatementBlock.prototype.render = function() {
     return returnString;
 	};
 
-	var htmlElement = $('<div class="block-drag-area"><div class=" block-statement block-'+ that.colour +'"><div class="block-signature"><div class="block-name block-text-outline">' + that.name + '</div>'+ inputInjector() +'</div><div class="sub-blocks"></div></div></div>')
-	.draggable({
-		start: _.partial(splash.DragDropController.unchainAndDrawDroppables, this),
-		stop: _.partial(splash.DragDropController.cleanupAndClearDroppables, this),
-		zIndex: 1000,
-		refreshPositions: true,
-		helper: "clone",
-		appendTo: ".canvas"
-	});
+	var htmlElement = splash.ChainableBlock.prototype.render.call(this);
+
+	htmlElement
+		.find("> .block-statement > .block-signature")
+		.append($(inputInjector()));
+	//var htmlElement = $('<div class="block-drag-area"><div class=" block-statement block-'+ that.colour +'"><div class="block-signature"><div class="block-name block-text-outline">' + that.name + '</div>'+ inputInjector() +'</div><div class="sub-blocks"></div></div></div>')
 
 	htmlElement.children(".block-statement").on("change", function() {
 	  var listOfArgs = $(this).find('> .block-signature > .block-arg-wrapper > .block-arg');
@@ -230,7 +221,7 @@ splash.WaitBlock.prototype.codeSnippet = function() {
 splash.RepeatBlock = function RepeatBlock(parameters) {
 	splash.StatementBlock.call(this);
 
-	this.repeatSubBlocksLink = new splash.StatementBlockLink({parent: this, attachPath: "> .block-statement > .sub-blocks"});
+	this.subBlocksLinks[0] = new splash.ChainableBlockLink({parent: this, attachPath: "> .block-statement > .sub-blocks"});
 
 	splash.Util.parseParameters(this, parameters);
 }
@@ -242,7 +233,7 @@ splash.RepeatBlock.prototype.inputLimits = [{max:100, min:0}];
 splash.RepeatBlock.prototype.codeSnippet = function() {
 	this.argumentValidityCheck();
 
-	if(this.repeatSubBlocksLink.child == undefined) //Nothing to repeat, continue
+	if(this.subBlocksLinks[0].child == undefined) //Nothing to repeat, continue
 		return;
 
 	var postExecutionFollowUpDelayTicketNumber = splash.Interpreter.getPostExecutionFollowUpDelayTicketNumber();
@@ -256,13 +247,13 @@ splash.RepeatBlock.prototype.codeSnippet = function() {
 		repeatsLeft--;
 
 		splash.Interpreter.executeBlockChain(
-			thisRepeatBlock.repeatSubBlocksLink.child, 
+			thisRepeatBlock.subBlocksLinks[0].child, 
 			_.partial(repeatCallbackFunction, repeatsLeft, thisRepeatBlock, nextBlock, ticketNumber)
 		);
 	};
 
 	splash.Interpreter.executeBlockChain(
-		this.repeatSubBlocksLink.child,
+		this.subBlocksLinks[0].child,
 		_.partial(repeatCallbackFunction, parseInt(this.args[0]), this, this.nextBlockLink.child, postExecutionFollowUpDelayTicketNumber)
 	);
 
@@ -273,7 +264,7 @@ splash.RepeatBlock.prototype.codeSnippet = function() {
 splash.RepeatForeverBlock = function RepeatForeverBlock(parameters) {
 	splash.StatementBlock.call(this);
 
-	this.repeatSubBlocksLink = new splash.StatementBlockLink({parent: this, attachPath: "> .block-statement > .sub-blocks"});
+	this.subBlocksLinks[0] = new splash.ChainableBlockLink({parent: this, attachPath: "> .block-statement > .sub-blocks"});
 
 	splash.Util.parseParameters(this, parameters);
 }
@@ -281,22 +272,23 @@ splash.Util.inherits(splash.RepeatForeverBlock, splash.StatementBlock);
 splash.RepeatForeverBlock.prototype.name = "Repeat Forever";
 splash.RepeatForeverBlock.prototype.colour = "pureblue";
 splash.RepeatForeverBlock.prototype.expectedArgsCount = 0;
+splash.RepeatForeverBlock.prototype.allowChildrenBlocks = false;
 splash.RepeatForeverBlock.prototype.codeSnippet = function() {
 	this.argumentValidityCheck();
-	if(this.repeatSubBlocksLink.child == undefined) //Nothing to repeat, continue
+	if(this.subBlocksLinks[0].child == undefined) //Nothing to repeat, continue
 		return;
 
 	var postExecutionFollowUpDelayTicketNumber = splash.Interpreter.getPostExecutionFollowUpDelayTicketNumber(); // We get a ticket anyway, although we don't use it, to tell the Interpreter that you don't need
 
 	var repeatCallbackFunction = function(thisRepeatBlock) {
 		splash.Interpreter.executeBlockChain(
-			thisRepeatBlock.repeatSubBlocksLink.child, 
+			thisRepeatBlock.subBlocksLinks[0].child, 
 			_.partial(repeatCallbackFunction, thisRepeatBlock)
 		);
 	};
 
 	splash.Interpreter.executeBlockChain(
-		this.repeatSubBlocksLink.child,
+		this.subBlocksLinks[0].child,
 		_.partial(repeatCallbackFunction, this)
 	);
 
@@ -338,8 +330,8 @@ splash.IfElseBlock = function IfElseBlock(parameters) {
 	this.inputLimits = [{max: 1, min: 0}];
 	splash.StatementBlock.call(this);
 
-	this.ifSubBlocksLink = new splash.StatementBlockLink({parent: this, attachPath: "> .block-statement > .if-sub-blocks"});
-	this.elseSubBlocksLink = new splash.StatementBlockLink({parent: this, attachPath: "> .block-statement > .else-sub-blocks"});
+	this.subBlocksLinks[0] = new splash.ChainableBlockLink({parent: this, attachPath: "> .block-statement > .if-sub-blocks"});
+	this.subBlocksLinks[1] = new splash.ChainableBlockLink({parent: this, attachPath: "> .block-statement > .else-sub-blocks"});
 
 	splash.Util.parseParameters(this, parameters);
 }
@@ -349,13 +341,13 @@ splash.IfElseBlock.prototype.colour = "maroon";
 splash.IfElseBlock.prototype.expectedArgsCount = 1;
 splash.IfElseBlock.prototype.codeSnippet = function() {
 	this.argumentValidityCheck();
-	if(splash.Interpreter.evaluateExpression(this.args[0])) {
-		var innerBlockChainToExecute = this.ifSubBlocksLink.child;
+
+	if(parseFloat(this.args[0])) {
+		var innerBlockChainToExecute = this.subBlocksLinks[0].child;
 	}
 	else {
-		var innerBlockChainToExecute = this.elseSubBlocksLink.child;
+		var innerBlockChainToExecute = this.subBlocksLinks[1].child;
 	}
-
 
 	if(innerBlockChainToExecute == undefined) //Nothing in sub-block, continue
 		return;

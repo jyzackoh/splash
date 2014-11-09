@@ -27,20 +27,16 @@ splash.DragDropController = {
 	drawDroppable: function(startingBlock) {
 		var currentBlock = startingBlock;
 
-		if(currentBlock instanceof splash.ExpressionBlock)
+		if(!(currentBlock instanceof splash.ChainableBlock))
 			return;
 
 		while(true) {
-			if(currentBlock instanceof splash.RepeatBlock) {
-				splash.DragDropController.drawRepeatDroppables(currentBlock);
+			if(currentBlock.subBlocksLinks.length != 0) {
+				splash.DragDropController.drawSubBlocksDroppables(currentBlock);
 			}
-			else if(currentBlock instanceof splash.RepeatForeverBlock) {
-				splash.DragDropController.drawRepeatDroppables(currentBlock);
-				break;	
-			}
-			else if(currentBlock instanceof splash.IfElseBlock) {
-				splash.DragDropController.drawIfElseDroppables(currentBlock);
-			}
+
+			if(!currentBlock.allowChildrenBlocks)
+				break;
 
 			if(currentBlock.nextBlockLink.child != undefined) {
 				currentBlock = currentBlock.nextBlockLink.child;
@@ -52,28 +48,14 @@ splash.DragDropController = {
 		}
 	},
 
-	drawRepeatDroppables: function(currentBlock) {
-		if(currentBlock.repeatSubBlocksLink.child == undefined) {
-			currentBlock.repeatSubBlocksLink.getAttachHtmlElement().append(currentBlock.repeatSubBlocksLink.htmlElement);
-		}
-		else {
-			splash.DragDropController.drawDroppable(currentBlock.repeatSubBlocksLink.child);
-		}
-	},
-
-	drawIfElseDroppables: function(currentBlock) {
-		if(currentBlock.ifSubBlocksLink.child == undefined) {
-			currentBlock.ifSubBlocksLink.getAttachHtmlElement().append(currentBlock.ifSubBlocksLink.htmlElement);
-		}
-		else {
-			splash.DragDropController.drawDroppable(currentBlock.ifSubBlocksLink.child);
-		}
-
-		if(currentBlock.elseSubBlocksLink.child == undefined) {
-			currentBlock.elseSubBlocksLink.getAttachHtmlElement().append(currentBlock.elseSubBlocksLink.htmlElement);
-		}
-		else {
-			splash.DragDropController.drawDroppable(currentBlock.elseSubBlocksLink.child);
+	drawSubBlocksDroppables: function(currentBlock) {
+		for(var i = 0; i < currentBlock.subBlocksLinks.length; i++) {
+			if(currentBlock.subBlocksLinks[i].child == undefined) {
+				currentBlock.subBlocksLinks[i].getAttachHtmlElement().append(currentBlock.subBlocksLinks[i].htmlElement);
+			}
+			else {
+				splash.DragDropController.drawDroppable(currentBlock.subBlocksLinks[i].child);
+			}
 		}
 	},
 
@@ -187,20 +169,14 @@ splash.DragDropController = {
 		}
 
 		while(true) {
-			if(currentBlock instanceof splash.RepeatBlock || currentBlock instanceof splash.RepeatForeverBlock) {
-				if(currentBlock.repeatSubBlocksLink.child != undefined) {
-					splash.DragDropController.drawExpressionDroppable(currentBlock.repeatSubBlocksLink.child);
+			if(currentBlock.subBlocksLinks.length != 0) {
+				for(var i = 0; i < currentBlock.subBlocksLinks.length; i++) {
+					if(currentBlock.subBlocksLinks[i].child != undefined) {
+						splash.DragDropController.drawExpressionDroppable(currentBlock.subBlocksLinks[i].child);
+					}
 				}
 			}
-			else if(currentBlock instanceof splash.IfElseBlock) {
-				if(currentBlock.ifSubBlocksLink.child != undefined) {
-					splash.DragDropController.drawExpressionDroppable(currentBlock.ifSubBlocksLink.child);
-				}
-				if(currentBlock.elseSubBlocksLink.child != undefined) {
-					splash.DragDropController.drawExpressionDroppable(currentBlock.elseSubBlocksLink.child);
-				}
-			}
-
+			
 			drawTheDroppablesWithinBlock(currentBlock);
 
 			if(currentBlock.nextBlockLink.child != undefined) {

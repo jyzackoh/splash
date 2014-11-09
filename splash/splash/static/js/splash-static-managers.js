@@ -57,6 +57,8 @@ splash.TemplateManager = {
 		setTemplateBlock(CONTROL, new splash.IfElseBlock());
 		setTemplateBlock(CONTROL, new splash.WaitBlock());
 
+		setTemplateBlock(CONTROL, new splash.OnSpaceBlock());
+
 		setTemplateBlock(OPERATOR, new splash.AdditionBlock());
 		setTemplateBlock(OPERATOR, new splash.SubtractionBlock());
 		setTemplateBlock(OPERATOR, new splash.MultiplicationBlock());

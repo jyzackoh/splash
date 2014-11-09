@@ -44,6 +44,8 @@ splash.Interpreter = {
 		return splash.Interpreter.postExecutionFollowUpDelayTicketNumberCounter++;
 	},
 	evaluateExpression: function(value, blockLink) {
+		console.log(value, blockLink);
+
 		if(blockLink.child != undefined) {
 			// We use the block
 			var expression = blockLink.child;
@@ -52,7 +54,7 @@ splash.Interpreter = {
 			var expression = value;
 		}
 
-		if(expression instanceof splash.OperatorBlock || expression instanceof splash.VariableBlock) {
+		if(expression instanceof splash.ExpressionBlock) {
 			return expression.codeSnippet();
 		}
 		else {
