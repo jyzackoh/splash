@@ -3,9 +3,11 @@ var splash = splash || {};
 splash.TemplateManager = {
 	initialize: function() {
 		var MOVEMENT = "#movementPal";
-		var CONTROL = "#controlPal";
 		var APPEARANCE = "#appearancePal";
+		var CONTROL = "#controlPal";
+		var EVENT = "#eventPal";
 		var OPERATOR = "#operatorPal";
+		var BOOLEAN = "#booleanPal"
 		var VARIABLE = "#variablePal";
 		function setTemplateBlock(category, block) {
 			if(block instanceof splash.ExpressionBlock) {
@@ -53,23 +55,25 @@ splash.TemplateManager = {
 		setTemplateBlock(APPEARANCE, new splash.ChangeCostumeBlock());
 		
 		setTemplateBlock(CONTROL, new splash.RepeatBlock());
+		setTemplateBlock(CONTROL, new splash.WhileBlock());
 		setTemplateBlock(CONTROL, new splash.RepeatForeverBlock());
 		setTemplateBlock(CONTROL, new splash.IfElseBlock());
 		setTemplateBlock(CONTROL, new splash.WaitBlock());
 
-		setTemplateBlock(CONTROL, new splash.OnSpaceBlock());
+		setTemplateBlock(EVENT, new splash.OnSpaceBlock());
 
 		setTemplateBlock(OPERATOR, new splash.AdditionBlock());
 		setTemplateBlock(OPERATOR, new splash.SubtractionBlock());
 		setTemplateBlock(OPERATOR, new splash.MultiplicationBlock());
 		setTemplateBlock(OPERATOR, new splash.DivisionBlock());
 		setTemplateBlock(OPERATOR, new splash.ModuloBlock());
-		setTemplateBlock(OPERATOR, new splash.EqualBlock());
-		setTemplateBlock(OPERATOR, new splash.NotEqualBlock());
-		setTemplateBlock(OPERATOR, new splash.GreaterBlock());
-		setTemplateBlock(OPERATOR, new splash.LesserBlock());
-		setTemplateBlock(OPERATOR, new splash.GreaterEqualBlock());
-		setTemplateBlock(OPERATOR, new splash.LesserEqualBlock());
+		
+		setTemplateBlock(BOOLEAN, new splash.EqualBlock());
+		setTemplateBlock(BOOLEAN, new splash.NotEqualBlock());
+		setTemplateBlock(BOOLEAN, new splash.GreaterBlock());
+		setTemplateBlock(BOOLEAN, new splash.LesserBlock());
+		setTemplateBlock(BOOLEAN, new splash.GreaterEqualBlock());
+		setTemplateBlock(BOOLEAN, new splash.LesserEqualBlock());
 
 		setTemplateBlock(VARIABLE, new splash.SpriteXPositionBlock());
 		setTemplateBlock(VARIABLE, new splash.SpriteYPositionBlock());
@@ -172,26 +176,27 @@ splash.StageManager = {
 			}
 
 			splash.StageManager.isPlaying = true;
-			splash.Interpreter.stopAll = false;
 			_.forEach(splash.SpriteManager.spriteList, function(sprite) {
 				splash.Interpreter.runAllStripeBlocks(sprite);
 			});
 		});
 		$("#stopButton").on("click", function() {
-			splash.Interpreter.stopAll = true;
 			splash.StageManager.isPlaying = false;
-			setTimeout(function() {
-				splash.BackgroundManager.setCurrentBackground(0);
-				splash.SpriteManager.getCurrentSprite().changeCostume(0);
-				splash.SpriteManager.getCurrentSprite().setPosition("x", $(".stageOutput").width() / 2);
-				splash.SpriteManager.getCurrentSprite().setPosition("y", $(".stageOutput").height() / 2);
-			}, 400);
+
+			var id = window.setTimeout(function() {}, 0);
+			while (id--) {
+				clearTimeout(id);
+			}
+
+			$("body").off(".splashEvents");
+
+			splash.BackgroundManager.setCurrentBackground(0);
+			splash.SpriteManager.getCurrentSprite().changeCostume(0);
+			splash.SpriteManager.getCurrentSprite().setPosition("x", $(".stageOutput").width() / 2);
+			splash.SpriteManager.getCurrentSprite().setPosition("y", $(".stageOutput").height() / 2);
 		});
 	},
 	setStageDimensions: function() {
-
-		
-
 		$(".stageOutput").height( $(".stageOutput").width() );
 		$(".stage").height( $(".stageOutput").height()+38);
 		var calcedMargin = ($(".stage").width() - $(".stageOutput").width())/2
@@ -268,29 +273,16 @@ splash.PageManager = {
 		// splash.PageManager.hideMessage();
 		// return;
 		try {
-			// console.log("checkpoint1");
 			$.get("load/", {}, function(reply) {
-				// console.log("checkpoint2");
 				if(reply.data == "") {
-					// console.log("exit1");
 					splash.PageManager.hideMessage();
 					return;
 				}
-				// console.log("checkpoint3");
-
-				// console.log(reply.data);
 
 				var loadedObj = splash.Serializer.deserializeInitial(reply.data);
 				splash.SpriteManager.currentSprite.firstLevelBlocks = loadedObj;
 
-				// console.log("checkpoint4");
-				// console.log(loadedObj);
-				// console.log(splash.SpriteManager.getCurrentSprite().firstLevelBlocks);
-
 				_.forEach(splash.SpriteManager.currentSprite.firstLevelBlocks, function(block) {
-
-					// console.log("checkpoint6");
-
 					var htmlElement = splash.Renderer.renderBlock(block);
 					htmlElement.css({
 						top: block.positionInfo.top,
@@ -299,7 +291,6 @@ splash.PageManager = {
 					$(".canvas").append(htmlElement);
 				});
 
-				// console.log("checkpoint5");
 				splash.PageManager.hideMessage();
 			});
 		}

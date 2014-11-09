@@ -182,6 +182,13 @@ splash.WaitBlock.prototype.colour = "midnightblue";
 splash.WaitBlock.prototype.expectedArgsCount = 1;
 splash.WaitBlock.prototype.postExecutionDelay = 0;
 splash.WaitBlock.prototype.inputLimits = [{max:100, min:0}];
+splash.WaitBlock.prototype.render = function() {
+	var htmlElement = splash.StatementBlock.prototype.render.call(this);
+
+	htmlElement.find("> .block-statement > .block-signature > .block-arg-wrapper > .block-arg").attr("step", "0.1");
+
+	return htmlElement;
+}
 splash.WaitBlock.prototype.codeSnippet = function() {
 	this.argumentValidityCheck();
 	this.postExecutionDelay = this.args[0] * 1000; // to seconds
@@ -260,6 +267,48 @@ splash.RepeatForeverBlock.prototype.codeSnippet = function() {
 	splash.Interpreter.executeBlockChain(
 		this.subBlocksLinks[0].child,
 		_.partial(repeatCallbackFunction, this)
+	);
+
+	return postExecutionFollowUpDelayTicketNumber;
+};
+
+
+//Repeat Block
+splash.WhileBlock = function WhileBlock(parameters) {
+	splash.StatementBlock.call(this);
+
+	this.subBlocksLinks[0] = new splash.ChainableBlockLink({parent: this, attachPath: "> .block-statement > .sub-blocks"});
+
+	splash.Util.parseParameters(this, parameters);
+}
+splash.Util.inherits(splash.WhileBlock, splash.StatementBlock);
+splash.WhileBlock.prototype.name = "While";
+splash.WhileBlock.prototype.colour = "purpleblue";
+splash.WhileBlock.prototype.expectedArgsCount = 1;
+splash.WhileBlock.prototype.inputLimits = [{max:1, min:0}];
+splash.WhileBlock.prototype.codeSnippet = function() {
+	this.argumentValidityCheck();
+
+	if(this.subBlocksLinks[0].child == undefined) //Nothing to repeat, continue
+		return;
+
+	var postExecutionFollowUpDelayTicketNumber = splash.Interpreter.getPostExecutionFollowUpDelayTicketNumber();
+
+	var repeatCallbackFunction = function(thisWhileBlock, nextBlock, ticketNumber) {
+		if(!splash.Interpreter.evaluateExpression(thisWhileBlock.args[0], thisWhileBlock.expressionBlockLinks[0])) {
+			splash.Interpreter.runPostBlockExecutionFollowUp(ticketNumber);
+			return;
+		}
+
+		splash.Interpreter.executeBlockChain(
+			thisWhileBlock.subBlocksLinks[0].child, 
+			_.partial(repeatCallbackFunction, thisWhileBlock, nextBlock, ticketNumber)
+		);
+	};
+
+	splash.Interpreter.executeBlockChain(
+		this.subBlocksLinks[0].child,
+		_.partial(repeatCallbackFunction, this, this.nextBlockLink.child, postExecutionFollowUpDelayTicketNumber)
 	);
 
 	return postExecutionFollowUpDelayTicketNumber;

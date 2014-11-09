@@ -168,6 +168,10 @@
 	background-color: #191970;
 }
 
+.block-purpleblue {
+	background-color: #3333CC;
+}
+
 .block-indigo {
 	background-color: #4b0082;
 }
@@ -182,6 +186,10 @@
 
 .block-orange {
 	background-color: #FF6600;
+}
+
+.block-tangerine {
+	background-color: #FF9900;
 }
 
 .block-maroon {

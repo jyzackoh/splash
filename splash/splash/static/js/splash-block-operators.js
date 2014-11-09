@@ -64,6 +64,7 @@ splash.AdditionBlock = function AdditionBlock(parameters){
 }
 splash.Util.inherits(splash.AdditionBlock, splash.OperatorBlock);
 splash.AdditionBlock.prototype.name = "+";
+splash.AdditionBlock.prototype.colour = "tangerine";
 splash.AdditionBlock.prototype.codeSnippet = function() {
 	return parseFloat(splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0])) + 
 		parseFloat(splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1]));
@@ -75,6 +76,7 @@ splash.SubtractionBlock = function SubtractionBlock(parameters){
 }
 splash.Util.inherits(splash.SubtractionBlock, splash.OperatorBlock);
 splash.SubtractionBlock.prototype.name = "-";
+splash.SubtractionBlock.prototype.colour = "tangerine";
 splash.SubtractionBlock.prototype.codeSnippet = function() {
 	return parseFloat(splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0])) - 
 		parseFloat(splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1]));
@@ -86,6 +88,7 @@ splash.MultiplicationBlock = function MultiplicationBlock(parameters){
 }
 splash.Util.inherits(splash.MultiplicationBlock, splash.OperatorBlock);
 splash.MultiplicationBlock.prototype.name = "&#215;";
+splash.MultiplicationBlock.prototype.colour = "tangerine";
 splash.MultiplicationBlock.prototype.codeSnippet = function() {
 	return parseFloat(splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0])) * 
 		parseFloat(splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1]));
@@ -97,6 +100,7 @@ splash.DivisionBlock = function DivisionBlock(parameters){
 }
 splash.Util.inherits(splash.DivisionBlock, splash.OperatorBlock);
 splash.DivisionBlock.prototype.name = "&#247;";
+splash.DivisionBlock.prototype.colour = "tangerine";
 splash.DivisionBlock.prototype.codeSnippet = function() {
 	var value = parseFloat(splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0])) /
 		parseFloat(splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1]));
@@ -111,6 +115,7 @@ splash.ModuloBlock = function ModuloBlock(parameters){
 }
 splash.Util.inherits(splash.ModuloBlock, splash.OperatorBlock);
 splash.ModuloBlock.prototype.name = "%";
+splash.ModuloBlock.prototype.colour = "tangerine";
 splash.ModuloBlock.prototype.codeSnippet = function() {
 	var value = parseFloat(splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0])) % 
 		parseFloat(splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1]));

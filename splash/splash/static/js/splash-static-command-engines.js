@@ -1,13 +1,9 @@
 var splash = splash || {};
 
 splash.Interpreter = {
-	stopAll: false,
 	postExecutionFollowUpDelayTicketNumberCounter: 0,
 	postExecutionFollowUpDelayStorage: {},
 	executeBlockChain: function(startingBlock, chainCallback) {
-		if(splash.Interpreter.stopAll)
-			return;
-
 		var postExecutionFollowUpDelayTicketNumber = startingBlock.codeSnippet();
 		
 		if(postExecutionFollowUpDelayTicketNumber != undefined) {
