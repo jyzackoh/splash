@@ -306,7 +306,7 @@ splash.WhileBlock.prototype.codeSnippet = function() {
 		);
 	};
 
-	if(!splash.Interpreter.evaluateExpression(thisWhileBlock.args[0], thisWhileBlock.expressionBlockLinks[0]) {
+	if(splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0])) {
 		splash.Interpreter.executeBlockChain(
 			this.subBlocksLinks[0].child,
 			_.partial(repeatCallbackFunction, this, this.nextBlockLink.child, postExecutionFollowUpDelayTicketNumber)

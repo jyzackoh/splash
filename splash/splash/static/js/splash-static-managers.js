@@ -175,6 +175,8 @@ splash.StageManager = {
 				return;
 			}
 
+			$(".canvas").find("input").attr("disabled", true);
+
 			splash.StageManager.isPlaying = true;
 			_.forEach(splash.SpriteManager.spriteList, function(sprite) {
 				splash.Interpreter.runAllStripeBlocks(sprite);
@@ -194,6 +196,8 @@ splash.StageManager = {
 			splash.SpriteManager.getCurrentSprite().changeCostume(0);
 			splash.SpriteManager.getCurrentSprite().setPosition("x", $(".stageOutput").width() / 2);
 			splash.SpriteManager.getCurrentSprite().setPosition("y", $(".stageOutput").height() / 2);
+
+			$(".canvas").find("input").attr("disabled", false);
 		});
 	},
 	setStageDimensions: function() {
