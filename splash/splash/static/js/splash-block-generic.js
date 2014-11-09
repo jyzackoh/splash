@@ -39,12 +39,6 @@ splash.Block.prototype.serialize = function(splashObjectId) {
 			top: this.htmlElement.position().top
 		};
 	}
-	
-	returnObject.blockArgValues = [];
-
-	for (var i = 0; i < this.expectedArgsCount; i++) {
-		returnObject.blockArgValues.push(this.htmlElement.find(".block-arg").eq(i).val());
-	}
 
 	return returnObject;
 };
@@ -53,10 +47,6 @@ splash.Block.prototype.deserialize = function(obj) {
 
 	if(obj.positionInfo != undefined) {
 		this.positionInfo = _.clone(obj.positionInfo);
-	}
-
-	for (var i = 0; i < this.expectedArgsCount; i++) {
-		this.htmlElement.find(".block-arg").eq(i).val(obj.blockArgValues[i]);
 	}
 };
 

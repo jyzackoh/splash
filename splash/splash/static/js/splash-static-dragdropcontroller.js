@@ -146,7 +146,7 @@ splash.DragDropController = {
 			var pathToWrapper = (((thisBlock instanceof splash.ExpressionBlock) ? "" : "> .block-statement") + "> .block-signature > .block-arg-wrapper");
 			for(var i = 0; i < thisBlock.expectedArgsCount; i++) {
 				if(thisBlock.expressionBlockLinks[i].child == undefined) {
-					var argWrapper = $(thisBlock.htmlElement.find(pathToWrapper)[i]);
+					var argWrapper = thisBlock.htmlElement.find(pathToWrapper).eq(i);
 
 					argWrapper
 						.children(".block-arg-drop-area")
@@ -238,7 +238,7 @@ splash.DragDropController = {
 
 		for(var i = 0; i < thisBlock.expectedArgsCount; i++) {
 			if(thisBlock.expressionBlockLinks[i] == dropAreaLink) {
-				var argWrapper = $(thisBlock.htmlElement.find(pathToWrapper)[i]);
+				var argWrapper = thisBlock.htmlElement.find(pathToWrapper).eq(i);
 
 				argWrapper
 					.children(".block-arg-drop-area")

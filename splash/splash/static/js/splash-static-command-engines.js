@@ -44,8 +44,6 @@ splash.Interpreter = {
 		return splash.Interpreter.postExecutionFollowUpDelayTicketNumberCounter++;
 	},
 	evaluateExpression: function(value, blockLink) {
-		console.log(value, blockLink);
-
 		if(blockLink.child != undefined) {
 			// We use the block
 			var expression = blockLink.child;
@@ -70,11 +68,57 @@ splash.Interpreter = {
 };
 
 splash.Renderer = {
-	renderBlockChain: function(startingBlock) {
-
+	renderBlock: function(block) {
+		if(block instanceof splash.ChainableBlock) {
+			splash.Renderer.renderChainableBlock(block);
+		}
+		else if(block instanceof splash.ExpressionBlock) {
+			splash.Renderer.renderExpressionBlock(block);
+		}
+	},
+	
+	renderChainableBlock: function(startingBlock) {
 		var currentBlock = startingBlock;
 
 		while(true) {
+			// Deal with arguments - render ExpressionBlocks if necessary.
+			for(var i = 0; i < currentBlock.expectedArgsCount; i++) {
+				if(currentBlock.expressionBlockLinks[i].child != undefined) {
+					var subBlocks = splash.Renderer.renderExpressionBlock(currentBlock.expressionBlockLinks[i].child);
+
+					subBlocks.css({
+						position: "relative"
+					});
+
+					var subBlocksWrapper = currentBlock.htmlElement.find("> .block-statement > .block-signature > .block-arg-wrapper").eq(i);
+
+					subBlocksWrapper
+						.children(".block-arg-drop-area")
+						.append(subBlocks)
+						.show();
+
+					subBlocksWrapper
+						.children(".block-arg")
+						.hide();
+				}
+			}
+
+			// Deal with sub-blocks
+			if(currentBlock.subBlocksLinks.length != 0) {
+				for(var i = 0; i < currentBlock.subBlocksLinks.length; i++) {
+					if(currentBlock.subBlocksLinks[i].child != undefined) {
+						var subBlocks = splash.Renderer.renderChainableBlock(currentBlock.subBlocksLinks[i].child);
+
+						subBlocks.css({
+							position: "relative"
+						});
+
+						currentBlock.subBlocksLinks[i].find(currentBlock.subBlocksLinks[i].attachPath).append(subBlocks);
+					}
+				}
+			}
+
+			// Deal with the children
 			if(currentBlock.nextBlockLink.child == undefined) {
                 break;
 			}
@@ -93,6 +137,34 @@ splash.Renderer = {
 		});
 
 		return startingBlock.htmlElement;
+	},
+	renderExpressionBlock: function(block) {
+		for(var i = 0; i < block.expectedArgsCount; i++) {
+			if(block.expressionBlockLinks[i].child != undefined) {
+				var subBlocks = splash.Renderer.renderExpressionBlock(block.expressionBlockLinks[i].child);
+
+				subBlocks.css({
+					position: "relative"
+				});
+
+				var subBlocksWrapper = block.htmlElement.find("> .block-signature > .block-arg-wrapper").eq(i);
+
+				subBlocksWrapper
+					.children(".block-arg-drop-area")
+					.append(subBlocks)
+					.show();
+
+				subBlocksWrapper
+					.children(".block-arg")
+					.hide();
+			}
+		}
+
+		block.htmlElement.css({
+			position: "absolute"
+		});
+
+		return block.htmlElement;
 	}
 };
 

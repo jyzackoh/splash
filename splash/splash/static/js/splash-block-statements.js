@@ -81,33 +81,22 @@ splash.StatementBlock.prototype.removeParentLink = function() {
 	this.parentLink = undefined;
 };
 splash.StatementBlock.prototype.serialize = function(splashObjectId) {
-	var returnObject = splash.Obj.prototype.serialize.call(this, splashObjectId);
+	var returnObject = splash.Block.prototype.serialize.call(this, splashObjectId);
 
-	if(this.htmlElement.css("position") == "absolute") {
-		returnObject.positionInfo = {
-			left: this.htmlElement.position().left,
-			top: this.htmlElement.position().top
-		};
-	}
-	
 	returnObject.blockArgValues = [];
 
 	for (var i = 0; i < this.expectedArgsCount; i++) {
-		returnObject.blockArgValues.push(this.htmlElement.find(".block-arg").eq(i).val());
+		returnObject.blockArgValues.push(this.htmlElement.find('> .block-signature > .block-arg-wrapper > .block-arg').eq(i).val());
 	}
 
 	return returnObject;
 };
 
 splash.StatementBlock.prototype.deserialize = function(obj) {
-	splash.Obj.prototype.deserialize.call(this, obj);
-
-	if(obj.positionInfo != undefined) {
-		this.positionInfo = _.clone(obj.positionInfo);
-	}
+	splash.Block.prototype.deserialize.call(this, obj);
 
 	for (var i = 0; i < this.expectedArgsCount; i++) {
-		this.htmlElement.find(".block-arg").eq(i).val(obj.blockArgValues[i]);
+		this.htmlElement.find('> .block-signature > .block-arg-wrapper > .block-arg').eq(i).val(obj.blockArgValues[i]);
 	}
 };
 

@@ -288,7 +288,7 @@ splash.PageManager = {
 
 					// console.log("checkpoint6");
 
-					var htmlElement = splash.Renderer.renderBlockChain(block);
+					var htmlElement = splash.Renderer.renderBlock(block);
 					htmlElement.css({
 						top: block.positionInfo.top,
 						left: block.positionInfo.left
