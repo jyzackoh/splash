@@ -176,6 +176,7 @@ splash.StageManager = {
 			}
 
 			$(".canvas").find("input").attr("disabled", true);
+			$(".draggable-element").draggable("disable");
 
 			splash.StageManager.isPlaying = true;
 			_.forEach(splash.SpriteManager.spriteList, function(sprite) {
@@ -198,6 +199,7 @@ splash.StageManager = {
 			splash.SpriteManager.getCurrentSprite().setPosition("y", $(".stageOutput").height() / 2);
 
 			$(".canvas").find("input").attr("disabled", false);
+			$(".draggable-element").draggable("enable");
 		});
 	},
 	setStageDimensions: function() {

@@ -67,6 +67,7 @@ splash.ExpressionBlock.prototype.render = function() {
 	var that = this;
 
 	var htmlElement = $("<div></div>")
+	.addClass("draggable-element")
 	.addClass("block-expression")
 	.draggable({
 		start: _.partial(splash.DragDropController.unchainAndDrawExpressionDroppables, this),
@@ -108,6 +109,7 @@ splash.ChainableBlock.prototype.render = function() {
 	var that = this;
 
 	var htmlElement = $('<div class="block-drag-area"><div class="block-statement block-'+ that.colour +'"><div class="block-signature"><div class="block-name block-text-outline">' + that.name + '</div></div><div class="sub-blocks"></div></div></div>')
+	.addClass("draggable-element")
 	.draggable({
 		start: _.partial(splash.DragDropController.unchainAndDrawDroppables, this),
 		stop: _.partial(splash.DragDropController.cleanupAndClearDroppables, this),
