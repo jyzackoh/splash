@@ -103,6 +103,7 @@
 
 .block-arg-wrapper {
 	display: inline-block;
+	vertical-align: middle;
 }
 
 .block-arg {
