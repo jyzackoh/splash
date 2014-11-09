@@ -306,10 +306,12 @@ splash.WhileBlock.prototype.codeSnippet = function() {
 		);
 	};
 
-	splash.Interpreter.executeBlockChain(
-		this.subBlocksLinks[0].child,
-		_.partial(repeatCallbackFunction, this, this.nextBlockLink.child, postExecutionFollowUpDelayTicketNumber)
-	);
+	if(!splash.Interpreter.evaluateExpression(thisWhileBlock.args[0], thisWhileBlock.expressionBlockLinks[0]) {
+		splash.Interpreter.executeBlockChain(
+			this.subBlocksLinks[0].child,
+			_.partial(repeatCallbackFunction, this, this.nextBlockLink.child, postExecutionFollowUpDelayTicketNumber)
+		);
+	}
 
 	return postExecutionFollowUpDelayTicketNumber;
 };
