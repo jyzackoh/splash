@@ -17,5 +17,14 @@ splash.OnSpaceBlock = function OnSpaceBlock(parameters) {
 }
 splash.Util.inherits(splash.OnSpaceBlock, splash.EventBlock);
 splash.OnSpaceBlock.prototype.name = "When Spacebar is Pressed";
-splash.OnSpaceBlock.prototype.colour = "crimson";
+splash.OnSpaceBlock.prototype.colour = "darkgray";
 splash.OnSpaceBlock.prototype.allowChildrenBlocks = false;
+splash.OnSpaceBlock.prototype.codeSnippet = function() {
+	var that = this;
+
+	$("body").on("keypress", function(event) {
+		if(event.which == 32) {
+			splash.Interpreter.executeBlockChain(that.subBlocksLinks[0].child);
+		}
+	});
+}

@@ -61,7 +61,7 @@ splash.Interpreter = {
 	},
 	runAllStripeBlocks: function(stripe) {
 		_.forEach(stripe.firstLevelBlocks, function(startingBlock) {
-			if(startingBlock instanceof splash.StatementBlock)
+			if(startingBlock instanceof splash.ChainableBlock)
 				splash.Interpreter.executeBlockChain(startingBlock);
 		});
 	}
