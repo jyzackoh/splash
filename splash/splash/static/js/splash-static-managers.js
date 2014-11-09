@@ -18,6 +18,8 @@ splash.TemplateManager = {
 					appendTo: "body"
 				});
 
+				block.htmlElement.tooltip("destroy");
+
 				block.htmlElement.addClass("template-block");
 
 				$(category + " .panel-body")

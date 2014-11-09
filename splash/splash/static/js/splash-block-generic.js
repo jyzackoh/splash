@@ -67,6 +67,8 @@ splash.ExpressionBlock = function ExpressionBlock(parameters) {
 }
 splash.Util.inherits(splash.ExpressionBlock, splash.Block);
 splash.ExpressionBlock.prototype.render = function() {
+	var that = this;
+
 	var htmlElement = $("<div></div>")
 	.addClass("block-expression")
 	.draggable({
@@ -76,6 +78,13 @@ splash.ExpressionBlock.prototype.render = function() {
 		refreshPositions: true,
 		helper: "clone",
 		appendTo: ".canvas"
+	});
+
+	htmlElement.tooltip({
+		container: "body",
+		title: function() {
+			return "" + that.codeSnippet();
+		}
 	});
 
 	return htmlElement;

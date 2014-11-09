@@ -77,8 +77,11 @@ splash.DivisionBlock = function DivisionBlock(parameters){
 splash.Util.inherits(splash.DivisionBlock, splash.OperatorBlock);
 splash.DivisionBlock.prototype.name = "&#247";
 splash.DivisionBlock.prototype.codeSnippet = function() {
-	return parseFloat(splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0])) /
+	var value = parseFloat(splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0])) /
 		parseFloat(splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1]));
+	if(isNaN(value))
+		return 0;
+	return value;
 };
 
 splash.ModuloBlock = function ModuloBlock(parameters){
@@ -88,8 +91,11 @@ splash.ModuloBlock = function ModuloBlock(parameters){
 splash.Util.inherits(splash.ModuloBlock, splash.OperatorBlock);
 splash.ModuloBlock.prototype.name = "%";
 splash.ModuloBlock.prototype.codeSnippet = function() {
-	return parseFloat(splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0])) % 
+	var value = parseFloat(splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0])) % 
 		parseFloat(splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1]));
+	if(isNaN(value))
+		return 0;
+	return value;
 };
 
 // Boolean Operator Blocks
