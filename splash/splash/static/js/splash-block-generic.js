@@ -8,11 +8,11 @@ splash.Block = function Block(parameters) {
 	splash.Util.parseParameters(this, parameters);
 
 	for(var i = 0; i < this.expectedArgsCount; i++) {
+		this.args[i] = 0;
 		this.expressionBlockLinks[i] = new splash.ExpressionBlockLink({parent: this});
 	}
 
 	this.htmlElement = this.render();
-	this.nextBlockLink = new splash.BlockLink({parent: this, htmlElementToAttachBlockTo: this.htmlElement});
 }
 splash.Util.inherits(splash.Block, splash.Obj);
 splash.Block.prototype.name = "Block";
@@ -26,13 +26,6 @@ splash.Block.prototype.render = function() {
   return htmlElement;
 };
 // Sub-classes should not overwrite the following functions (i.e. "final methods")
-splash.Block.prototype.setNextBlockLink = function(nextBlock) {
-	this.nextBlockLink.child = nextBlock;
-	nextBlock.parentLink = this.nextBlockLink; // the blocklink
-};
-splash.Block.prototype.getNextBlockLink = function() {
-	return this.nextBlockLink.child;
-};
 splash.Block.prototype.removeParentLink = function() {
 	this.parentLink.child = undefined;
 	this.parentLink = undefined;
@@ -69,8 +62,6 @@ splash.Block.prototype.deserialize = function(obj) {
 
 splash.ExpressionBlock = function ExpressionBlock(parameters) {
 	splash.Block.call(this);
-
-	this.args = [];
 
 	splash.Util.parseParameters(this, parameters);
 }

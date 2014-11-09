@@ -3,4 +3,6 @@ $(function() {
 	splash.GalleryManager.initialize();
 	splash.PageManager.initialize();
 	splash.TemplateManager.initialize();
+
+	ttemp = splash.SpriteManager.getCurrentSprite().firstLevelBlocks;
 });

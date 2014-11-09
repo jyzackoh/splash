@@ -12,6 +12,13 @@ splash.StatementBlock = function StatementBlock(parameters) {
 	this.nextBlockLink = new splash.StatementBlockLink({parent: this});
 }
 splash.Util.inherits(splash.StatementBlock, splash.Block);
+splash.StatementBlock.prototype.setNextBlockLink = function(nextBlock) {
+	this.nextBlockLink.child = nextBlock;
+	nextBlock.parentLink = this.nextBlockLink; // the blocklink
+};
+splash.StatementBlock.prototype.getNextBlockLink = function() {
+	return this.nextBlockLink.child;
+};
 splash.StatementBlock.prototype.inputLimits = [];
 splash.StatementBlock.prototype.render = function() {
 	var that = this;
@@ -57,14 +64,16 @@ splash.StatementBlock.prototype.render = function() {
 };
 splash.StatementBlock.prototype.argumentValidityCheck = function() {
 	for (var i = 0; i < this.args.length; i++) {
-		var argument = this.args[i];
+		var argument = splash.Interpreter.evaluateExpression(this.args[i], this.expressionBlockLinks[i]);
+		
 		if (argument > this.inputLimits[i].max) {
 			argument = (this.inputLimits[i].max);
 		}
 		if (argument < this.inputLimits[i].min) {
 			argment = (this.inputLimits[i].min);
 		}
-			this.args[i] = argument;
+		
+		this.args[i] = argument;
 	}
 }
 
@@ -181,7 +190,6 @@ splash.MoveXBlock.prototype.expectedArgsCount = 1;
 splash.MoveXBlock.prototype.inputLimits = [{max:50, min:-50}];
 splash.MoveXBlock.prototype.codeSnippet = function() {
 	this.argumentValidityCheck();
-	//console.log(this);
 	var steps = this.args[0] * splash.StageManager.pixelsPerStep;
 	splash.SpriteManager.getCurrentSprite().translate("x", steps);
 };
@@ -233,17 +241,14 @@ splash.RepeatBlock.prototype.expectedArgsCount = 1;
 splash.RepeatBlock.prototype.inputLimits = [{max:100, min:0}];
 splash.RepeatBlock.prototype.codeSnippet = function() {
 	this.argumentValidityCheck();
+
 	if(this.repeatSubBlocksLink.child == undefined) //Nothing to repeat, continue
 		return;
 
 	var postExecutionFollowUpDelayTicketNumber = splash.Interpreter.getPostExecutionFollowUpDelayTicketNumber();
 
-	// console.log("a", postExecutionFollowUpDelayTicketNumber);
-
 	var repeatCallbackFunction = function(repeatsLeft, thisRepeatBlock, nextBlock, ticketNumber) {
-		// console.log(thisRepeatBlock.htmlElement, repeatsLeft);
 		if(repeatsLeft == 0) {
-			// console.log("b", postExecutionFollowUpDelayTicketNumber);
 			splash.Interpreter.runPostBlockExecutionFollowUp(ticketNumber);
 			return;
 		}
@@ -340,7 +345,7 @@ splash.IfElseBlock = function IfElseBlock(parameters) {
 }
 splash.Util.inherits(splash.IfElseBlock, splash.StatementBlock);
 splash.IfElseBlock.prototype.name = "If";
-splash.IfElseBlock.prototype.colour = "crimson";
+splash.IfElseBlock.prototype.colour = "maroon";
 splash.IfElseBlock.prototype.expectedArgsCount = 1;
 splash.IfElseBlock.prototype.codeSnippet = function() {
 	this.argumentValidityCheck();

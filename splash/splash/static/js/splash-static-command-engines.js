@@ -20,7 +20,6 @@ splash.Interpreter = {
 		}
 	},
 	runPostBlockExecutionFollowUp: function(ticketNumber, startingBlock, chainCallback) {
-		// console.log("c", ticketNumber);
 		if(ticketNumber != -1) {
 			startingBlock = splash.Interpreter.postExecutionFollowUpDelayStorage[ticketNumber].startingBlock;
 			chainCallback = splash.Interpreter.postExecutionFollowUpDelayStorage[ticketNumber].chainCallback;
@@ -57,12 +56,13 @@ splash.Interpreter = {
 			return expression.codeSnippet();
 		}
 		else {
-			return parseFloat(expression);
+			return expression;
 		}
 	},
 	runAllStripeBlocks: function(stripe) {
 		_.forEach(stripe.firstLevelBlocks, function(startingBlock) {
-			splash.Interpreter.executeBlockChain(startingBlock);
+			if(startingBlock instanceof splash.StatementBlock)
+				splash.Interpreter.executeBlockChain(startingBlock);
 		});
 	}
 };
