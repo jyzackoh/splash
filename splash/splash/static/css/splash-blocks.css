@@ -1,3 +1,7 @@
+.block-drag-area {
+	text-align: center;
+}
+
 .block-statement {
 	border: 2px solid;
 	padding: 5px;
@@ -14,6 +18,7 @@
 	display: inline-block; /* to make parent wrap child for nesting*/
 	background: #FFF;
 	position: relative;
+	min-width: 120px;
 }
 
 .block-event {
@@ -26,51 +31,14 @@
 	min-width: 200px;
 }
 
-.block-default {
-	background-color: none;
-}
-
-.block-crimson {
-	background-color: #dc143c;
-}
-
-.block-goldenrod {
-	background-color: #daa520;
-}
-
-.block-gold {
-	background-color: #fdd700;
-}
-
-.block-forestgreen {
-	background-color: #228b22;
-}
-
-.block-pureblue {
-	background-color: #0000FF;
-}
-
-.block-dodgerblue {
-	background-color: #1e90ff;
-}
-
-.block-midnightblue {
-	background-color: #191970;
-}
-
-.block-indigo {
-	background-color: #4b0082;
-}
-
-.block-plum {
-	background-color: #dda0dd;
-}
 
 .block-signature {
     position: relative;
     margin: 0;
     white-space: nowrap;
     min-height: 23px;
+    text-align: center;
+    overflow: hidden;
 }
 
 .block-name {
@@ -142,10 +110,68 @@
 	background: #FFFF00;
 }
 
-.block-drag-area {
-	text-align: center;
-}
-
 .template-block {
 	text-align: left;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.block-default {
+	background-color: none;
+}
+
+.block-crimson {
+	background-color: #dc143c;
+}
+
+.block-goldenrod {
+	background-color: #daa520;
+}
+
+.block-gold {
+	background-color: #fdd700;
+}
+
+.block-forestgreen {
+	background-color: #228b22;
+}
+
+.block-pureblue {
+	background-color: #0000FF;
+}
+
+.block-dodgerblue {
+	background-color: #1e90ff;
+}
+
+.block-midnightblue {
+	background-color: #191970;
+}
+
+.block-indigo {
+	background-color: #4b0082;
+}
+
+.block-plum {
+	background-color: #dda0dd;
 }
