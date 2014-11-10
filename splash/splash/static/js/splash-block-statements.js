@@ -311,9 +311,9 @@ splash.WhileBlock.prototype.codeSnippet = function() {
 			this.subBlocksLinks[0].child,
 			_.partial(repeatCallbackFunction, this, this.nextBlockLink.child, postExecutionFollowUpDelayTicketNumber)
 		);
-	}
 
-	return postExecutionFollowUpDelayTicketNumber;
+		return postExecutionFollowUpDelayTicketNumber;
+	}	
 };
 
 //Change Costume Block
