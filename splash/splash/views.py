@@ -33,9 +33,9 @@ def save_program(request, program_code):
 def share_program(request, program_code):
 	share_code = utils.share_program(request, program_code)
 	if (share_code):
-		return HttpResponse('{"status":"ok", "data":share_code}', content_type="application/json")
+		return HttpResponse('{"success":"True", "data":"'+share_code+'"}', content_type="application/json")
 	else:
-		return HttpResponse('{"status":"error", "data":"Program not found!"}', content_type="application/json")
+		return HttpResponse('{"success":"False", "data":"Program not found!"}', content_type="application/json")
 
 def not_found_page(request, program_code):
 	return render(request, 'not_found.html', {"program_code": program_code})

@@ -116,7 +116,7 @@ def load_serialized_program(request, program_code):
 def get_failure_msg(error):
 	response = {}
 	response['success'] = "False"
-	response['error'] = error
+	response['data'] = error
 	response = json.dumps(response)
 	return response
 

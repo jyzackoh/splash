@@ -267,7 +267,7 @@ splash.PageManager = {
 				$.post("share/", shareData, function(reply) {
 					if(reply.success == "True") {
 						splash.PageManager.hideMessage();
-						window.open(reply.data, "_blank");
+						window.open("/" + reply.data, "_blank", "width=1000,height=700");
 					}
 					else {
 						splash.PageManager.showMessage(reply.data, true);

@@ -25,7 +25,8 @@
 }
 
 .stage-container {
-	width:41.66666667%;
+	width:100%;
+	max-width:550px;
 	padding-left:15px;
 	padding-right:15px;
 	margin: 0 auto;
