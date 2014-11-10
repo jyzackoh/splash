@@ -191,3 +191,29 @@ splash.LesserEqualBlock.prototype.codeSnippet = function() {
 	return (parseFloat(splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0])) <=
 		parseFloat(splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1]))) ? 1 : 0;
 };
+
+splash.OrBlock = function OrBlock(parameters){
+	splash.OperatorBlock.call(this);
+	splash.Util.parseParameters(this, parameters);
+}
+splash.Util.inherits(splash.OrBlock, splash.OperatorBlock);
+splash.OrBlock.prototype.name = "OR";
+splash.OrBlock.prototype.codeSnippet = function() {
+	var leftParameter = (parseFloat(splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0])) == 0) ? 0 : 1;
+	var rightParameter = (parseFloat(splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1])) == 0) ? 0 : 1;
+
+	return ((leftParameter + rightParameter) == 0) ? 0 : 1;
+};
+
+splash.AndBlock = function AndBlock(parameters){
+	splash.OperatorBlock.call(this);
+	splash.Util.parseParameters(this, parameters);
+}
+splash.Util.inherits(splash.AndBlock, splash.OperatorBlock);
+splash.AndBlock.prototype.name = "AND";
+splash.AndBlock.prototype.codeSnippet = function() {
+	var leftParameter = (parseFloat(splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0])) == 0) ? 0 : 1;
+	var rightParameter = (parseFloat(splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1])) == 0) ? 0 : 1;
+
+	return ((leftParameter * rightParameter) == 0) ? 0 : 1;
+};
