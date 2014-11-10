@@ -257,6 +257,27 @@ splash.PageManager = {
 				splash.PageManager.showMessage("An error occured while attempting to save the program.", true);
 			}
 		});
+		$("#shareButton").on("click", function() {
+			splash.PageManager.showMessage("Sharing...");
+
+			var shareData = JSON.stringify(splash.Serializer.serializeInitial(splash.SpriteManager.currentSprite.firstLevelBlocks));
+
+			try {
+
+				$.post("share/", shareData, function(reply) {
+					if(reply.success == "True") {
+						splash.PageManager.hideMessage();
+						window.open(reply.data, "_blank");
+					}
+					else {
+						splash.PageManager.showMessage(reply.data, true);
+					}
+				});
+			}
+			catch(e) {
+				splash.PageManager.showMessage("An error occured while attempting to save the program.", true);
+			}
+		});
 		$("#makePrivateButton").on("click", function() {
 			try {
 				$.get("perm/PR/", {}, function(reply) {
