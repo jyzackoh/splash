@@ -197,7 +197,7 @@ splash.OrBlock = function OrBlock(parameters){
 	splash.Util.parseParameters(this, parameters);
 }
 splash.Util.inherits(splash.OrBlock, splash.OperatorBlock);
-splash.OrBlock.prototype.name = "OR";
+splash.OrBlock.prototype.name = "or";
 splash.OrBlock.prototype.codeSnippet = function() {
 	var leftParameter = (parseFloat(splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0])) == 0) ? 0 : 1;
 	var rightParameter = (parseFloat(splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1])) == 0) ? 0 : 1;
@@ -210,10 +210,34 @@ splash.AndBlock = function AndBlock(parameters){
 	splash.Util.parseParameters(this, parameters);
 }
 splash.Util.inherits(splash.AndBlock, splash.OperatorBlock);
-splash.AndBlock.prototype.name = "AND";
+splash.AndBlock.prototype.name = "&amp;";
 splash.AndBlock.prototype.codeSnippet = function() {
 	var leftParameter = (parseFloat(splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0])) == 0) ? 0 : 1;
 	var rightParameter = (parseFloat(splash.Interpreter.evaluateExpression(this.args[1], this.expressionBlockLinks[1])) == 0) ? 0 : 1;
 
 	return ((leftParameter * rightParameter) == 0) ? 0 : 1;
+};
+
+splash.NotBlock = function NotBlock(parameters){
+	splash.OperatorBlock.call(this);
+	splash.Util.parseParameters(this, parameters);
+}
+splash.Util.inherits(splash.NotBlock, splash.OperatorBlock);
+splash.NotBlock.prototype.name = "not";
+splash.NotBlock.prototype.expectedArgsCount = 1;
+splash.NotBlock.prototype.render = function() {
+	var htmlElement = splash.OperatorBlock.prototype.render.call(this);
+
+	htmlElement.find('> .block-signature > .block-arg-wrapper').eq(0).remove();
+	htmlElement.css({
+		"min-width": "90px"
+	})
+	htmlElement.children('.block-signature').css({
+		"text-align": "left"
+	});
+
+	return htmlElement;
+}
+splash.NotBlock.prototype.codeSnippet = function() {
+	return (parseFloat(splash.Interpreter.evaluateExpression(this.args[0], this.expressionBlockLinks[0])) == 0) ? 1 : 0;
 };

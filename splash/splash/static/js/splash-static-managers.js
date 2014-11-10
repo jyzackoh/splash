@@ -76,6 +76,7 @@ splash.TemplateManager = {
 		setTemplateBlock(BOOLEAN, new splash.LesserEqualBlock());
 		setTemplateBlock(BOOLEAN, new splash.OrBlock());
 		setTemplateBlock(BOOLEAN, new splash.AndBlock());
+		setTemplateBlock(BOOLEAN, new splash.NotBlock());
 
 		setTemplateBlock(VARIABLE, new splash.SpriteXPositionBlock());
 		setTemplateBlock(VARIABLE, new splash.SpriteYPositionBlock());
