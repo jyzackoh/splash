@@ -210,6 +210,7 @@ splash.StageManager = {
 			splash.SpriteManager.getCurrentSprite().changeCostume(0);
 			splash.SpriteManager.getCurrentSprite().setPosition("x", $(".stageOutput").width() / 2);
 			splash.SpriteManager.getCurrentSprite().setPosition("y", $(".stageOutput").height() / 2);
+			splash.SpriteManager.getCurrentSprite().htmlElement.show();
 
 			$(".canvas").find("input").attr("disabled", false);
 			$(".draggable-element").draggable("enable");
