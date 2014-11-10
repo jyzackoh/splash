@@ -340,7 +340,7 @@ splash.Util.inherits(splash.ChangeBackgroundBlock, splash.StatementBlock);
 splash.ChangeBackgroundBlock.prototype.name = "Change background to";
 splash.ChangeBackgroundBlock.prototype.colour = "plum";
 splash.ChangeBackgroundBlock.prototype.expectedArgsCount = 1;
-splash.StatementBlock.prototype.inputLimits = [{max:1, min:0}];
+splash.StatementBlock.prototype.inputLimits = [{max:3, min:0}];
 splash.ChangeBackgroundBlock.prototype.codeSnippet = function() {
 	this.argumentValidityCheck();
 	splash.BackgroundManager.setCurrentBackground(this.args[0]);
