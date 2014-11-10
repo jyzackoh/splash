@@ -164,6 +164,16 @@ splash.StageManager = {
 			url: "background_school.png"
 		}));
 
+		splash.BackgroundManager.addBackground(new splash.Background({
+			name: "win",
+			url: "win.jpg"
+		}));
+
+		splash.BackgroundManager.addBackground(new splash.Background({
+			name: "lose",
+			url: "lose.jpg"
+		}));
+
 		splash.BackgroundManager.setCurrentBackground(0);
 	},
 	initializeSprites: function() {
