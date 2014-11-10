@@ -14,6 +14,16 @@ def save_permission(program_code, permission):
 	program.permission = permission
 	program.save()
 
+def set_is_share(share_code):
+	program = Programs.objects.get(program_code=share_code)
+	program.is_share_page = True
+	program.save()
+
+def save_share_code(program_code, share_code):
+	program = Programs.objects.get(program_code=program_code)
+	program.share_code = share_code
+	program.save()
+
 def load_program(program_code):
 	return Programs.objects.get(program_code=program_code)
 
@@ -37,6 +47,14 @@ def program_is_private(program_code):
 	else:
 		return False
 
+def program_is_share_page(program_code):
+	if (program_is_exist(program_code)):
+		program_obj = Programs.objects.get(program_code=program_code)
+		if (program_obj.is_share_page):
+			return True
+	else:
+		return False
+
 def get_owner(program_code):
 	try:
 		program_obj = Programs.objects.get(program_code=program_code)
@@ -47,5 +65,19 @@ def get_owner(program_code):
 
 	if (program_obj):
 		return program_obj.owner
+	else:
+		return None
+
+
+def get_share_code(program_code):
+	try:
+		program_obj = Programs.objects.get(program_code=program_code)
+	except Programs.DoesNotExist:
+		program_obj = None
+
+	print(str(program_obj.owner))
+
+	if (program_obj):
+		return program_obj.share_code
 	else:
 		return None

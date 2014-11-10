@@ -11,6 +11,8 @@ class Programs(models.Model):
 	serialized_program = models.TextField()
 	permission = models.CharField(max_length=2, choices=PERMISSIONS, default='PR')
 	owner = models.CharField(max_length=255)
+	is_share_page = models.BooleanField(default=False);
+	share_code = models.CharField(max_length=5, default="")
 
 class CredentialsModel(models.Model):
 	id = models.TextField(primary_key=True)

@@ -16,8 +16,7 @@ urlpatterns = patterns('',
     url(r'^([0-9a-zA-Z]{5})/perm/([A-Z]{2})/$', views.toggle_permissions),
     url(r'^([0-9a-zA-Z]{5})/save/$', views.save_program),
     url(r'^([0-9a-zA-Z]{5})/load/$', views.load_program),
-    url(r'^([0-9a-zA-Z]{5})/share/$', views.share_page),
-    url(r'^([0-9a-zA-Z]{5})/share/load/$', views.load_program),
+    url(r'^([0-9a-zA-Z]{5})/share/$', views.share_program),
     url(r'^([0-9a-zA-Z]{5})/$', views.load_page),
     url(r'^([0-9a-zA-Z]{0,9999})/$', views.not_found_page)
 )
